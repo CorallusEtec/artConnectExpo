@@ -1,4 +1,4 @@
-# ArtConnect (Mobile)
+# ArtConnect Mobile (Expo)
 
 ## Guia para Desenvolvedores
 
