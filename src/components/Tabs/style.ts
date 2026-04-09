@@ -3,14 +3,11 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
-    alignItems: "center",
-    gap: 7,
-    padding: 6,
-    borderRadius: 7,
+    borderTopWidth: 1,
+    borderTopColor: gStyles.cinza[200],
     flexDirection: "row",
-    backgroundColor: gStyles.cinza[200],
-  },
-  input: {
-    width: "90%",
+    alignItems: "center",
+    justifyContent: "space-around",
+    padding: 10,
   },
 });

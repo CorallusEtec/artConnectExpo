@@ -11,6 +11,6 @@ export const style = StyleSheet.create({
     backgroundColor: gStyles.cinza[200],
   },
   input: {
-    width: "90%",
+    width: "80%",
   },
 });
