@@ -1,8 +1,10 @@
 import { InputIcon } from "@/components/InputIcon";
+import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
+import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { gStyles } from "./style/gStyle";
 
 export default function Index() {
   return (
@@ -11,10 +13,14 @@ export default function Index() {
         <FontAwesome name="user" size={24} color={gStyles.azul[500]} />
       </InputIcon>
 
+      <InputSenha>
+        <FontAwesome name="lock" size={24} color={gStyles.azul[500]} />
+      </InputSenha>
+
       <TextButton
-        theme="secondary"
+        theme="primary"
         title="Olá Mundo"
-        onPress={() => console.log("Ola Mundo!")}
+        onPress={() => router.navigate("/home")}
       />
     </View>
   );
@@ -22,6 +28,8 @@ export default function Index() {
 
 const style = StyleSheet.create({
   container: {
+    marginTop: 60,
     padding: 8,
+    gap: 10,
   },
 });

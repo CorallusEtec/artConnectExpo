@@ -1,4 +1,4 @@
-import { gStyles } from "@/app/style/gStyle";
+import { gStyles } from "@/style/gStyle";
 import { ReactNode } from "react";
 import { TextInput, TextInputProps, View } from "react-native";
 import { style } from "./style";
