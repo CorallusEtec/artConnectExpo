@@ -5,8 +5,10 @@ import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { Redirect } from 'expo-router';
 
 export default function Index() {
+  return <Redirect href="/cadastro" />;
   return (
     <View style={style.container}>
       <InputIcon placeholder="Insira seu nome">
