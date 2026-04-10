@@ -1,10 +1,11 @@
 import { ReactNode } from "react";
 import { View } from "react-native";
+import { style } from "./style";
 
 type PostRootProps = {
   children?: ReactNode;
 };
 
 export function PostRoot({ children = <></> }: PostRootProps) {
-  return <View>{children}</View>;
+  return <View style={style.root}>{children}</View>;
 }

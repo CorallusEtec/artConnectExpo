@@ -22,6 +22,7 @@ export default function Index() {
         title="Olá Mundo"
         onPress={() => router.navigate("/home")}
       />
+
     </View>
   );
 }
