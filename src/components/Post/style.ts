@@ -2,7 +2,10 @@ import { gStyles } from "@/style/gStyle";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
-  root: {},
+  root: {
+    borderBottomWidth: 1,
+    borderBottomColor: gStyles.cinza[200],
+  },
 
   headerProfile: {
     height: 32,
@@ -21,8 +24,6 @@ export const style = StyleSheet.create({
     gap: 10,
     justifyContent: "space-between",
     flexDirection: "row",
-    borderBottomWidth: 1,
-    borderColor: gStyles.cinza[200],
   },
 
   header: {
