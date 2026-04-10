@@ -4,10 +4,10 @@ import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Pressable } from "react-native";
 import { style } from "./style"
 import {Picker} from '@react-native-picker/picker';
-import { useState } from "react";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export default function Index() {
 
@@ -21,13 +21,20 @@ export default function Index() {
             />
             <Image
                 source={require("@/assets/template/onda.png")}
-                style={{width: '100%', height: 350, position: 'absolute', alignItems: 'flex-end', justifyContent: 'flex-end'}}
+                style={{width: '100%', height: 350, position: 'absolute'}}
             />
+            <Pressable
+            onPress={() => router.navigate("/home")} 
+            //mudar rota para login quando tiver a tela
+            style={{position: 'absolute', backgroundColor: 'white', borderRadius: 25, top: 10, left: 10}}>
+                <FontAwesome6 name="circle-arrow-left" 
+                    size={35} 
+                    color={gStyles.azul[500]} 
+                    />
+            </Pressable>
         </View>
         
-
         <View style={style.titleContainer}>
-        
             <Text style={style.titulo}> Cadastre-se </Text>
         </View>
 
