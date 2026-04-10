@@ -14,7 +14,7 @@ export function InputIcon({ children = <></>, ...props }: InputIconProps) {
       <TextInput
         {...props}
         style={style.input}
-        placeholderTextColor={gStyles.cinza[600]}
+        placeholderTextColor={gStyles.cinza[500]}
       />
     </View>
   );

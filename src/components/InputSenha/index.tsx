@@ -17,6 +17,7 @@ export function InputSenha({ children = <></>, ...props }) {
         secureTextEntry={!mostrarSenha}
         {...props}
         style={style.input}
+        placeholderTextColor={gStyles.cinza[500]}
       />
       <Pressable onPress={() => setMostrarSenha(!mostrarSenha)}>
         <Feather

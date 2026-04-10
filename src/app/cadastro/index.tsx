@@ -4,17 +4,30 @@ import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import { style } from "./style"
+import {Picker} from '@react-native-picker/picker';
+import { useState } from "react";
 
 export default function Index() {
 
   return (
     <View style={style.container}>
 
-        {/* colocar o banner aqui dps */}
+        <View style={{flexDirection: 'row'}}>
+            <Image
+                source={require("@/assets/template/bannerLogin.png")}
+                style={{width: '100%', height: 200}}
+            />
+            <Image
+                source={require("@/assets/template/onda.png")}
+                style={{width: '100%', height: 350, position: 'absolute', alignItems: 'flex-end', justifyContent: 'flex-end'}}
+            />
+        </View>
+        
 
         <View style={style.titleContainer}>
+        
             <Text style={style.titulo}> Cadastre-se </Text>
         </View>
 
@@ -48,10 +61,20 @@ export default function Index() {
                 </InputSenha>
             </View>
 
-            {/* adicionar botão de selecionar genero mais tarde*/}
+            <View>
+                <Text style={style.label}> Selecione seu gênero </Text>
+                <Picker
+                style={style.picker}>
+                    <Picker.Item label="Masculino" value="m"/>
+                    <Picker.Item label="Feminino" value="f"/>
+                    <Picker.Item label="Não binário" value="nb"/>
+                    <Picker.Item label="Prefiro não informar" value=""/>
+                </Picker>
+            </View>
 
         </View>
 
+        {/* botoes */}
         <View style={style.btnContainer}>
             <View style={style.btnWrapper}>
                 <TextButton
@@ -68,9 +91,7 @@ export default function Index() {
                     onPress={() => router.navigate("/home")}
                 />
             </View>
-        </View>
-
-            
+        </View>    
     </View>
   );
 }

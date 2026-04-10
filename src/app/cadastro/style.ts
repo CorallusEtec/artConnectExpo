@@ -1,9 +1,11 @@
+import { gStyles } from "@/style/gStyle";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
     flex: 1,
-    gap:20
+    gap:25,
+    backgroundColor: 'white'
   },
 
   titleContainer: {
@@ -42,6 +44,15 @@ export const style = StyleSheet.create({
 
   btnWrapper: {
     width: '38%',
-    gap: 5
+    gap: 5,
   },
+
+  // relacionado ao picker
+  picker: {
+    padding: 6,
+    fontSize: 15,
+    borderRadius: 7,
+    backgroundColor: gStyles.cinza[200],
+    borderColor: gStyles.azul[500]
+  }
 });
