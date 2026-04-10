@@ -29,7 +29,7 @@ export default function Index() {
             style={{position: 'absolute', backgroundColor: 'white', borderRadius: 25, top: 10, left: 10}}>
                 <FontAwesome6 name="circle-arrow-left" 
                     size={35} 
-                    color={gStyles.azul[500]} 
+                    color={gStyles.azul[200]} 
                     />
             </Pressable>
         </View>
@@ -43,28 +43,28 @@ export default function Index() {
             <View style={style.inputWrapper}>
                 <Text style={style.label}> Nome </Text>
                 <InputIcon placeholder="  Digite seu nome">
-                    <FontAwesome name="user" size={24} color={gStyles.azul[500]} />
+                    <FontAwesome name="user" size={24} color={gStyles.azul[200]} />
                 </InputIcon>
             </View>
 
             <View style={style.inputWrapper}>
                 <Text style={style.label}> Email </Text>
                 <InputIcon placeholder="  Digite seu email">
-                    <FontAwesome name="envelope" size={24} color={gStyles.azul[500]} />
+                    <FontAwesome name="envelope" size={24} color={gStyles.azul[200]} />
                 </InputIcon>
             </View>
 
             <View style={style.inputWrapper}>
                 <Text style={style.label}> Senha </Text>
                 <InputSenha placeholder="Crie sua senha">
-                    <FontAwesome name="lock" size={24} color={gStyles.azul[500]} />
+                    <FontAwesome name="lock" size={24} color={gStyles.azul[200]} />
                 </InputSenha>
             </View>
 
             <View style={style.inputWrapper}>
                 <Text style={style.label}> Confirmar senha </Text>
                 <InputSenha placeholder="Digite a senha novamente">
-                    <FontAwesome name="lock" size={24} color={gStyles.azul[500]} />
+                    <FontAwesome name="lock" size={24} color={gStyles.azul[200  ]} />
                 </InputSenha>
             </View>
 

@@ -53,6 +53,6 @@ export const style = StyleSheet.create({
     fontSize: 15,
     borderRadius: 7,
     backgroundColor: gStyles.cinza[200],
-    borderColor: gStyles.azul[500]
+    borderColor: gStyles.azul[200]
   }
 });

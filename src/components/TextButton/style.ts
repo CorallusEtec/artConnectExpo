@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export const style = StyleSheet.create({
   containerPrimary: {
     paddingVertical: 5,
-    backgroundColor: gStyles.azul[500],
+    backgroundColor: gStyles.azul[200],
     borderRadius: 7,
     alignItems: "center",
   },
@@ -16,12 +16,12 @@ export const style = StyleSheet.create({
   containerSecondary: {
     paddingVertical: 5,
     borderWidth: 1,
-    borderColor: gStyles.azul[500],
+    borderColor: gStyles.azul[200],
     borderRadius: 7,
     alignItems: "center",
   },
   textSecondary: {
-    color: gStyles.azul[500],
+    color: gStyles.azul[200],
     fontWeight: "600",
   },
 });

@@ -23,7 +23,7 @@ export function InputSenha({ children = <></>, ...props }) {
         <Feather
           name={mostrarSenha ? "eye" : "eye-off"}
           size={22}
-          color={gStyles.azul[500]}
+          color={gStyles.azul[200]}
         />
       </Pressable>
     </View>
