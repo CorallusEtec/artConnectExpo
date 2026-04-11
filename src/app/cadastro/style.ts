@@ -4,8 +4,9 @@ import { StyleSheet } from "react-native";
 export const style = StyleSheet.create({
   container: {
     flex: 1,
-    gap:25,
-    backgroundColor: 'white'
+    gap:35,
+    backgroundColor: 'white',
+    height: '100%'
   },
 
   titleContainer: {
@@ -14,7 +15,7 @@ export const style = StyleSheet.create({
   },
 
   titulo: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold'
   },
 
@@ -30,7 +31,7 @@ export const style = StyleSheet.create({
   },
 
   label: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: '500'
   },
 
@@ -49,10 +50,10 @@ export const style = StyleSheet.create({
 
   // relacionado ao picker
   picker: {
-    padding: 6,
+    width: '80%',
     fontSize: 15,
     borderRadius: 7,
     backgroundColor: gStyles.cinza[200],
-    borderColor: gStyles.azul[200]
+    borderColor: gStyles.azul[200],
   }
 });
