@@ -86,6 +86,7 @@ export default function Cadastro() {
 
                 <View>
                     <Text style={style.label}> Selecione seu gênero </Text>
+                    
                     <DropDownPicker
                         open={open}
                         value={value}
@@ -96,7 +97,7 @@ export default function Cadastro() {
                         listMode="SCROLLVIEW"
                         style={style.picker}
                         placeholder="Selecione um gênero"
-                        dropDownContainerStyle={{width:'80%', backgroundColor: gStyles.cinza[200], borderColor: gStyles.azul[200],}}
+                        dropDownContainerStyle={{width:'80%', backgroundColor: gStyles.cinza[200], borderColor: gStyles.cinza[200],}}
                         />
                 </View>
 

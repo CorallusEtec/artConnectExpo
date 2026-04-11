@@ -54,6 +54,6 @@ export const style = StyleSheet.create({
     fontSize: 15,
     borderRadius: 7,
     backgroundColor: gStyles.cinza[200],
-    borderColor: gStyles.azul[200],
+    borderColor: gStyles.cinza[200],
   }
 });
