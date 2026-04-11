@@ -10,7 +10,7 @@ export const style = StyleSheet.create({
   headerProfile: {
     height: 32,
     width: 32,
-    borderRadius: "100%",
+    borderRadius: 100,
   },
 
   headerTitle: {
@@ -42,16 +42,16 @@ export const style = StyleSheet.create({
     padding: 7,
   },
   contentTextText: {
-    fontWeight: "500",
+    fontWeight: "400",
     color: gStyles.cinza[600],
-    fontSize: 17,
+    fontSize: 16,
   },
 
   img: {
-    width: "100%",
+    width: "auto",
     height: "auto",
-    aspectRatio: 16 / 9,
-    resizeMode: "contain",
+    aspectRatio: 1 / 1,
+    resizeMode: "cover",
   },
 
   actionsRoot: {
