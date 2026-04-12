@@ -17,12 +17,13 @@ export function InputSenha({ children = <></>, ...props }) {
         secureTextEntry={!mostrarSenha}
         {...props}
         style={style.input}
+        placeholderTextColor={gStyles.cinza[500]}
       />
       <Pressable onPress={() => setMostrarSenha(!mostrarSenha)}>
         <Feather
           name={mostrarSenha ? "eye" : "eye-off"}
           size={22}
-          color={gStyles.azul[500]}
+          color={gStyles.azul[200]}
         />
       </Pressable>
     </View>
