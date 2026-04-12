@@ -43,7 +43,7 @@ export default function Home() {
       <View style={style.container}>
         <Post.root>
           <Post.header
-            data={new Date("2023-04-10T09:00:00")}
+            data={new Date("2026-04-12T09:00:00")}
             nomePerfil="Samuel"
           >
             <Post.headerActions>

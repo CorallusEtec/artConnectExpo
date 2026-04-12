@@ -30,8 +30,9 @@ export function PostHeader({
       min: 60,
       hora: 60 * 60,
       dia: 60 * 60 * 24,
-      semana: 60 * 60 * 24 * 30,
-      mes: 60 * 60 * 24 * 30 * 12,
+      semana: 60 * 60 * 24 * 7,
+      mes: 60 * 60 * 24 * 7 * 4,
+      ano: 60 * 60 * 24 * 7 * 4 * 12,
     };
     /**
      * Lógica expicada: Iniciando pelos segundos, se a quantidade de tempo na
@@ -39,20 +40,22 @@ export function PostHeader({
      * Caso contrário, se compara com a próxima unidade da mesma forma a cima. Caso chegue em um valor maior ou igual a 12 meses,
      * apenas é dividido por 12, o que nos retorna a quantidade de tempo em anos do intervalo
      */
-    if (seg * t.min <= 0) {
-      return `${seg} segundos atrás`;
-    } else if (seg * t.hora <= 0) {
-      return `${seg * t.min} minutos atrás`;
-    } else if (seg * t.dia <= 0) {
-      return `${seg * t.hora} horas atrás`;
-    } else if (seg * t.semana <= 0) {
-      return `${seg * t.dia} dias atrás`;
-    } else if (seg * t.mes <= 0) {
-      return `${seg * t.semana} semanas atrás`;
-    } else if (seg * t.mes < 12) {
-      return `${seg * t.mes} meses atrás`;
+
+    
+    if (Math.trunc(seg / t.min) <= 0) {
+      return `${seg.toFixed(0)} segundos atrás`;
+    } else if (Math.trunc(seg / t.hora) <= 0) {
+      return `${(seg / t.min).toFixed(0)} minutos atrás`;
+    } else if (Math.trunc(seg / t.dia) <= 0) {
+      return `${(seg / t.hora).toFixed(0)} horas atrás`;
+    } else if (Math.trunc(seg / t.semana) <= 0) {
+      return `${(seg / t.dia).toFixed(0)} dias atrás`;
+    } else if (Math.trunc(seg / t.mes) <= 0) {
+      return `${(seg / t.semana).toFixed(0)} semanas atrás`;
+    } else if (Math.trunc(seg / t.ano) <= 0) {
+      return `${(seg / t.mes).toFixed(0)} meses atrás`;
     } else {
-      return `${(seg * t.mes) / 12} anos atrás`;
+      return `${(seg / t.ano).toFixed(0)} anos atrás`;
     }
   }
 
