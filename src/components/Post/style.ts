@@ -3,18 +3,18 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   root: {
-    borderBottomWidth: 1,
-    borderBottomColor: gStyles.cinza[200],
+  backgroundColor: gStyles.cinza[50],
+
   },
 
   headerProfile: {
     height: 32,
     width: 32,
-    borderRadius: "100%",
+    borderRadius: 100,
   },
 
   headerTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "600",
     color: gStyles.cinza[600],
   },
@@ -42,19 +42,24 @@ export const style = StyleSheet.create({
     padding: 7,
   },
   contentTextText: {
-    fontWeight: "500",
+    fontWeight: "400",
     color: gStyles.cinza[600],
     fontSize: 17,
   },
 
   img: {
-    width: "100%",
+    width: "auto",
     height: "auto",
-    aspectRatio: 16 / 9,
-    resizeMode: "contain",
+    aspectRatio: 1 / 1,
+    resizeMode: "cover",
   },
 
   actionsRoot: {
+    borderTopWidth: 1,
+    paddingTop: 10,
+    borderColor: gStyles.cinza[200],
+
+
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 7,
@@ -62,7 +67,7 @@ export const style = StyleSheet.create({
   },
   actionsGroup: {
     flexDirection: "row",
-    gap: 7,
+    gap: 25,
   },
 
   postActionContainer: {
@@ -70,4 +75,9 @@ export const style = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
+
+  actionInsight: {
+    fontWeight: "500",
+    
+  }
 });

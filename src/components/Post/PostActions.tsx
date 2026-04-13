@@ -14,7 +14,7 @@ export function PostActions({ children = <></>, ...props }: PostActionsProps) {
     <View style={style.actionsRoot}>
       <View style={style.actionsGroup}>{children}</View>
       <TouchableOpacity onPress={props.onSave}>
-        <FontAwesome name="bookmark-o" color={gStyles.cinza[600]} size={22} />
+        <FontAwesome name="bookmark-o" color={gStyles.cinza[600]} size={24} />
       </TouchableOpacity>
     </View>
   );

@@ -1,10 +1,19 @@
-import { Image, ImageProps } from "react-native";
+import { Image, ImageProps, ImageSourcePropType } from "react-native";
 import { style } from "./style";
 
 type PostImageProps = ImageProps & {
-  url?: string;
+  url?: ImageSourcePropType | string;
 };
 
-export function PostImage({ url = "", ...props }: PostImageProps) {
-  return <Image style={style.img} {...props} source={{ uri: url }} />;
+export function PostImage({
+  url = "" as ImageSourcePropType,
+  ...props
+}: PostImageProps) {
+  return (
+    <Image
+      style={style.img}
+      {...props}
+      source={typeof url == "string" ? { uri: url } : url}
+    />
+  );
 }
