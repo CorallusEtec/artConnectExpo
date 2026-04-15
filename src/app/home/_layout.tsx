@@ -9,6 +9,7 @@ export default function HomeLayout() {
     <SafeAreaView style={{ flex: 1 }}>
       <Slot />
       <Tabs>
+        
         <TabAction
           onPress={() => router.navigate("/home")}
           active={pathName == "/home"}

@@ -9,6 +9,7 @@ export const style = StyleSheet.create({
     borderRadius: 7,
     flexDirection: "row",
     backgroundColor: gStyles.cinza[200],
+    width: "70%",
   },
   input: {
     width: "90%",
