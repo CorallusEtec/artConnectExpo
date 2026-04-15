@@ -21,7 +21,11 @@ export default function HomeLayout() {
         />
         <TabAction active={pathName == "/home/create"} iconName="plus" />
         <TabAction active={pathName == "/home/search"} iconName="search" />
-        <TabAction active={pathName == "/home/profile"} iconName="user" />
+        <TabAction
+          onPress={() => router.navigate("/perfil")} 
+          active={pathName == "/home/profile"}
+          iconName="user"
+        />
       </Tabs>
     </SafeAreaView>
   );
