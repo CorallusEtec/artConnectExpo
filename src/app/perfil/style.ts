@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
-    padding: 5,
     gap: 5,
     flex: 1,
   },
@@ -14,16 +13,13 @@ export const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: gStyles.cinza[100],
+    backgroundColor: gStyles.azul[500],
   },
   navbarSon1: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     padding: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: gStyles.cinza[100],
   },
   navbarSon2: {
     width: 100,
@@ -31,8 +27,6 @@ export const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: gStyles.cinza[100],
   },
 
   banner: {
@@ -48,9 +42,11 @@ export const style = StyleSheet.create({
   },
 
   nomeProfile: {
-    width: 125,
+    width: 150,
     textAlign: "center",
-    fontSize: 18
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white"
   },
 
   profile: {
@@ -75,6 +71,7 @@ export const style = StyleSheet.create({
     width: 100,
     textAlign: "center",
     fontSize: 18,
+    color: "white"
   },
 
   botaoEdit: {
@@ -91,6 +88,15 @@ export const style = StyleSheet.create({
     height: 72,
     width: 72,
     borderRadius: "100%",
+  },
+
+  fundo: {
+    backgroundColor: gStyles.azul[500],
+  },
+
+  onda: {
+    height: "10%",
+    width: "100%",
   },
 
   icons: {
