@@ -8,7 +8,7 @@ type TabsProps = ViewProps & {
 
 export function Tabs({ children = <></>, ...props }: TabsProps) {
   return (
-    <View {...props} style={style.container}>
+    <View {...props} style={[style.container, props.style]}>
       {children}
     </View>
   );
