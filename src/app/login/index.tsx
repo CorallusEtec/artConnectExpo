@@ -22,11 +22,11 @@ export default function Login() {
            <View style={{flexDirection: 'row'}}>
             <Image
                 source={require("@/assets/template/bannerLogin.png")}
-                style={{width: "100%", height: 300, resizeMode: 'contain',}}
+                style={{width: "100%", height: 300}}
             />
             <Image
                 source={require("@/assets/template/onda.png")}
-                style={{width: '100%', height: 450, position: 'absolute',resizeMode: 'contain',}}
+                style={{width: '100%', height: 450, position: 'absolute'}}
             />
 
               <Pressable
