@@ -48,7 +48,7 @@ export default function Home() {
           contentContainerStyle={{gap: 30}}
           renderItem={({ item }) => (
             <Post.root>
-              <Post.header nomePerfil="João" data={new Date("0001-03-13T15:30:00")}>
+              <Post.header nomePerfil="João" data={new Date("2026-04-16T10:30:00")}>
                 <Post.headerActions>
                   <TextButton title="Seguir" theme="secondary" />
                 </Post.headerActions>
