@@ -9,6 +9,7 @@ export const style = StyleSheet.create({
     alignItems: "center",
   },
   textPrimary: {
+    fontFamily: "Inter_300Light",
     color: "#fff",
     fontWeight: "600",
   },
@@ -21,6 +22,7 @@ export const style = StyleSheet.create({
     alignItems: "center",
   },
   textSecondary: {
+    fontFamily: "Inter_300Light",
     color: gStyles.azul[200],
     fontWeight: "600",
   },
