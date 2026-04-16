@@ -22,7 +22,7 @@ export default function HomeLayout() {
         <TabAction active={pathName == "/home/create"} iconName="plus" />
         <TabAction active={pathName == "/home/search"} iconName="search" />
         <TabAction
-          onPress={() => router.navigate("/perfil")} 
+          onPress={() => router.navigate("/home/perfil")} 
           active={pathName == "/home/profile"}
           iconName="user"
         />
