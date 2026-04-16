@@ -2,12 +2,19 @@ import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
+import { Inter_300Light, Inter_400Regular } from "@expo-google-fonts/inter";
 import { FontAwesome } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { Redirect } from 'expo-router';
 
 export default function Index() {
+  const [load, erro] = useFonts({
+    Inter_300Light,
+    Inter_400Regular,
+  });
+
+  if (!load) return null; // Ou use o SplashScreen
 
   return (
     <View style={style.container}>
@@ -24,7 +31,6 @@ export default function Index() {
         title="Olá Mundo"
         onPress={() => router.navigate("/home")}
       />
-
     </View>
   );
 }

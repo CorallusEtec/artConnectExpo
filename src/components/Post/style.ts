@@ -3,8 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   root: {
-  backgroundColor: gStyles.cinza[50],
-
+    backgroundColor: gStyles.cinza[50],
   },
 
   headerProfile: {
@@ -14,6 +13,7 @@ export const style = StyleSheet.create({
   },
 
   headerTitle: {
+    fontFamily: "Inter_400Regular",
     fontSize: 20,
     fontWeight: "600",
     color: gStyles.cinza[600],
@@ -43,6 +43,7 @@ export const style = StyleSheet.create({
   },
   contentTextText: {
     fontWeight: "400",
+    fontFamily: "Inter_400Regular",
     color: gStyles.cinza[600],
     fontSize: 17,
   },
@@ -58,7 +59,6 @@ export const style = StyleSheet.create({
     borderTopWidth: 1,
     paddingTop: 10,
     borderColor: gStyles.cinza[200],
-
 
     flexDirection: "row",
     justifyContent: "space-between",
@@ -78,6 +78,5 @@ export const style = StyleSheet.create({
 
   actionInsight: {
     fontWeight: "500",
-    
-  }
+  },
 });
