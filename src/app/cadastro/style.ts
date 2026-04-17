@@ -50,7 +50,7 @@ export const style = StyleSheet.create({
 
   // relacionado ao picker
   picker: {
-    width: '80%',
+    width: '100%',
     fontSize: 15,
     borderRadius: 7,
     backgroundColor: gStyles.cinza[200],

@@ -54,7 +54,7 @@ export default function Cadastro() {
 
         <ScrollView>
             <View style={{gap:20}}>
-            <View style={style.inputContainer}>
+            <View style={[style.inputContainer, open && {marginBottom: 100}]}>
 
                 <View style={style.inputWrapper}>
                     <Text style={style.label}> Nome </Text>
@@ -96,8 +96,9 @@ export default function Cadastro() {
                         setItems={setItems}
                         listMode="SCROLLVIEW"
                         style={style.picker}
+                        maxHeight={100}
                         placeholder="Selecione um gênero"
-                        dropDownContainerStyle={{width:'80%', backgroundColor: gStyles.cinza[200], borderColor: gStyles.cinza[200],}}
+                        dropDownContainerStyle={{width:'100%', backgroundColor: gStyles.cinza[200], borderColor: gStyles.cinza[200],}}
                         />
                 </View>
 
@@ -109,7 +110,7 @@ export default function Cadastro() {
                     <TextButton
                         theme="primary"
                         title="Cadastrar"
-                        onPress={() => router.navigate("/home")}
+                        onPress={() => router.navigate("/tipoArte")}
                     />
                 </View>
 
