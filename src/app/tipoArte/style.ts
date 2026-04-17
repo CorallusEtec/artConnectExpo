@@ -11,7 +11,7 @@ export const style = StyleSheet.create({
 
     label: {
     fontSize: 18,
-    fontWeight: '400'
+    fontFamily: "Inter_400Regular",
   },
 
   pickerContainer: {
@@ -24,6 +24,7 @@ export const style = StyleSheet.create({
     borderRadius: 7,
     backgroundColor: gStyles.cinza[200],
     borderColor: gStyles.cinza[200],
+    fontFamily: "Inter_400Regular",
   },
 
   bottomPage: {
@@ -50,14 +51,16 @@ export const style = StyleSheet.create({
 
   titulo: {
     fontSize: 32,
-    color: '#6b7280'
+    color: '#6b7280',
+    fontFamily: "Inter_400Regular",
   },
 
   subTitulo: {
     fontSize: 20,
     width: '85%',
     textAlign: 'center',
-    color: '#6b7280'
+    color: '#6b7280',
+    fontFamily: "Inter_400Regular",
   },
 });
 
