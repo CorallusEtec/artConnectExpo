@@ -1,29 +1,42 @@
-    import { InputIcon } from "@/components/InputIcon";
-    import { InputSenha } from "@/components/InputSenha";
     import { TextButton } from "@/components/TextButton";
-    import { gStyles } from "@/style/gStyle";
-    import { FontAwesome } from "@expo/vector-icons";
-    import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-    import { router } from "expo-router";
-    import { useState } from "react";
-    import { Image, Pressable, ScrollView, Text, View } from "react-native";
-    import DropDownPicker from 'react-native-dropdown-picker';
-    import { SafeAreaView } from "react-native-safe-area-context";
-    import { style } from "./style";
+import ArteService from "@/services/ArteService";
+import { gStyles } from "@/style/gStyle";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import DropDownPicker from 'react-native-dropdown-picker';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { style } from "./style";
 
-    export default function tipoArte() {
+export default function tipoArte() {
+    type ItemPicker = {
+        label: string;
+        value: number;
+    };
 
-        const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        {label: 'Música', value: 'musica'},
-        {label: 'Teatro', value: 'teatro'},
-        {label: 'Pintura', value: 'pintura'},
-        {label: 'Stand-up', value: 'stand-up'},
-        {label: 'Dança', value: 'dança'},
-        {label: 'Exemplo', value: 'exemplo'},
-        {label: 'Exemplo', value: 'exemplo'}
-    ]);
+    const [items, setItems] = useState<ItemPicker[]>([]);
+
+    useEffect(()=> {
+        async function carregarArte() {
+            try {
+                const dados = await ArteService.findAll();
+                console.log(dados);
+
+                const dadosFormatados = dados.map((item) => ({
+                label: item.nomeArte,
+                value: item.id,
+                }));
+
+            setItems(dadosFormatados);
+            } catch(erro) {
+                console.error(erro);
+            }
+        }
+        carregarArte();
+    }, [])
 
     return (
 
@@ -58,7 +71,6 @@
                             items={items}
                             setOpen={setOpen}
                             setValue={setValue}
-                            setItems={setItems}
                             listMode="SCROLLVIEW"
                             style={style.picker}
                             labelStyle={{fontFamily: "Inter_400Regular"}}
