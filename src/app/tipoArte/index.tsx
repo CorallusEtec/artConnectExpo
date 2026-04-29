@@ -1,5 +1,6 @@
 import { TextButton } from "@/components/TextButton";
 import ArteService from "@/services/ArteService";
+import ArtistaService from "@/services/ArtistaService";
 import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -11,7 +12,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { style } from "./style";
 
 export default function tipoArte() {
-  const artista = useAuthStore((state) => state.artista);
+  const usuario = useAuthStore((state) => state.usuario);
+  const tipoConta = useAuthStore((state) => state.tipoConta);
 
   type ItemPicker = {
     label: string;
@@ -42,6 +44,29 @@ export default function tipoArte() {
     carregarArte();
   }, []);
 
+  async function salvarArte() {
+  try {
+    if (!value || !usuario || tipoConta !== 'artista') return;
+
+    setCarregando(true);
+
+    const atualizado = await ArtistaService.edit(usuario.id, {
+      ...usuario,
+      arte: { id: value },
+    });
+
+    useAuthStore.getState().setUsuario(atualizado, 'artista');
+    await ArtistaService.saveUserLocal(atualizado);
+
+    router.replace("/home");
+  } catch (erro) {
+    console.log(erro);
+    alert("Erro ao salvar arte");
+  } finally {
+    setCarregando(false);
+  }
+}
+
   return (
     <SafeAreaView style={style.container}>
       <Pressable
@@ -62,7 +87,7 @@ export default function tipoArte() {
       </Pressable>
 
       <View style={style.textContainer}>
-        <Text style={style.titulo}> Olá! </Text>
+        <Text style={style.titulo}> Olá! {usuario?.nome} </Text>
         <Text style={style.subTitulo}> Bem vindo ao Art Connect! </Text>
         <Text style={style.subTitulo}>
           {" "}
@@ -105,6 +130,7 @@ export default function tipoArte() {
             theme="primary"
             title="Criar conta"
             disabled={carregando}
+            onPress={salvarArte}
           />
         </View>
       </View>

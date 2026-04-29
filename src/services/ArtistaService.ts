@@ -8,13 +8,6 @@ interface ArtistaCadastroDTO {
   senha: string;
 }
 
-<<<<<<< HEAD:src/services/ArtistaService.ts
-
-
-export default class ArtistaService {
-
-    static async save(artista: ArtistaCadastroDTO) {
-=======
 interface ArtistaEditDTO {
   nome?: string;
   textoBio?: string;
@@ -33,8 +26,7 @@ interface ArtistaEditDTO {
 
 export default class ArtistaService {
 
-    static async save(artista: ArtistaDTO): Promise<Usuario> {
->>>>>>> 4c545ff4e4d0640c810ca7152eee1b9e88bbd8be:src/services/UsuarioService.ts
+    static async save(artista: ArtistaCadastroDTO): Promise<Usuario> {
         try {
             const response = await fetch(`${config.apiUrl}/artista/save`, {
                 method: 'POST',

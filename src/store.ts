@@ -28,16 +28,34 @@ interface ArtistaDTO {
   contatos: any[];
 }
 
+interface ContratanteDTO {
+  id: number;
+  nome: string;
+  email: string;
+  tipoConta: string;
+  status: string;
+  dataCriacao: string;
+  razaoSocial?: string;
+  cnpj?: string;
+  tipo?: 'cnpj' | 'cpf';
+}
+
+type UsuarioAutenticado = ArtistaDTO | ContratanteDTO;
+
 interface AuthState {
-  artista: ArtistaDTO | null;
-  setArtista: (artista: ArtistaDTO) => void;
+  usuario: UsuarioAutenticado | null;
+  tipoConta: 'artista' | 'contratante' | null;
+  setUsuario: (usuario: UsuarioAutenticado, tipo: 'artista' | 'contratante') => void;
   clear: () => void;
 }
 
+export type Usuario = UsuarioAutenticado;
+
 export const useAuthStore = create<AuthState>((set) => ({
-  artista: null,
+  usuario: null,
+  tipoConta: null,
 
-  setArtista: (artista) => set({ artista }),
+  setUsuario: (usuario, tipo) => set({ usuario, tipoConta: tipo }),
 
-  clear: () => set({ artista: null }),
+  clear: () => set({ usuario: null, tipoConta: null }),
 }));

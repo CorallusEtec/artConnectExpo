@@ -3,6 +3,7 @@ import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
 import ArtistaService from "@/services/ArtistaService";
+import ContratanteService from "@/services/ContratanteService";
 import LoginService from "@/services/LoginService";
 import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
@@ -19,21 +20,45 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const setArtista = useAuthStore.getState().setArtista;
+  const setUsuario = useAuthStore.getState().setUsuario;
 
   async function logar() {
-    try {
-      const data = await LoginService.login(email, senha);
-      if (data) {
-        await ArtistaService.saveUserLocal(data);
-        const artista = await ArtistaService.getById(data);
-        setArtista(artista);
-        router.replace("/tipoArte");
+  try {
+    const data = await LoginService.login(email, senha);
+
+    if (data) {
+      let usuario = null;
+      let tipoConta: 'artista' | 'contratante' = 'artista';
+
+      try {
+        usuario = await ArtistaService.getById(data);
+        await ArtistaService.saveUserLocal(usuario);
+        tipoConta = 'artista';
+      
+        if (usuario.arte == null) {
+          router.replace("/tipoArte");
+        } else {
+          router.replace("/home");
+        }
+      } catch (error) {
+        try {
+          usuario = await ContratanteService.getById(data);
+          await ContratanteService.saveUserLocal(usuario);
+          router.replace("/home");
+          tipoConta = 'contratante';
+        } catch (contratanteError) {
+          throw new Error("Tipo de conta não identificado");
+        }
       }
-    } catch (erro) {
-      alert("Falha no login");
+
+      setUsuario(usuario, tipoConta);
+      
     }
+  } catch (erro) {
+    console.log("erro:", erro);
+    alert("Falha no login");
   }
+}
 
   return (
     <SafeAreaView style={style.container}>
