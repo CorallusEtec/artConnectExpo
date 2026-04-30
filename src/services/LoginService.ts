@@ -1,3 +1,4 @@
+import { ErroValidacao } from "@/services/ErroValidacao";
 import config from "./config";
 
 export default class LoginService {
@@ -7,8 +8,8 @@ export default class LoginService {
       const response = await fetch(`${config.apiUrl}/login/logar?email=${email}&senha=${senha}`);
 
       if (!response.ok) {
-        throw new Error("Login inválido");
-      }
+      throw new Error("Email ou senha inválidos");
+    }
 
       const data = await response.json();
       return data;
@@ -16,4 +17,13 @@ export default class LoginService {
       throw erro;
     }
   }
+
+  static validarLogin(dados: {email:string, senha:string}): ErroValidacao {
+      const erro = new ErroValidacao();
+  
+      if (!dados.email || !dados.senha) {
+        return erro.invalido("Todos os campos são obrigatórios");
+      }
+      return erro;
+    }
 }

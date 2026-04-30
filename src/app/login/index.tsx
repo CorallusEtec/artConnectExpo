@@ -20,10 +20,13 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
   const setUsuario = useAuthStore.getState().setUsuario;
 
   async function logar() {
   try {
+    const validacao = LoginService.validarLogin({email, senha});
+    
     const data = await LoginService.login(email, senha);
 
     if (data) {
@@ -40,23 +43,18 @@ export default function Login() {
         } else {
           router.replace("/home");
         }
-      } catch (error) {
-        try {
-          usuario = await ContratanteService.getById(data);
-          await ContratanteService.saveUserLocal(usuario);
-          router.replace("/home");
-          tipoConta = 'contratante';
-        } catch (contratanteError) {
-          throw new Error("Tipo de conta não identificado");
-        }
+      } catch {
+        usuario = await ContratanteService.getById(data);
+        await ContratanteService.saveUserLocal(usuario);
+        tipoConta = 'contratante';
+        router.replace("/home");
       }
 
-      setUsuario(usuario, tipoConta);
+      useAuthStore.getState().setUsuario(usuario, tipoConta);
       
     }
-  } catch (erro) {
-    console.log("erro:", erro);
-    alert("Falha no login");
+  } catch (erro: any) {
+    setErro(erro.message);
   }
 }
 
@@ -92,6 +90,12 @@ export default function Login() {
 
       <View style={style.view1}>
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>Login</Text>
+
+        {erro ? (
+          <Text style={{ color: "red", textAlign: "center" }}>
+            {erro}
+          </Text>
+        ) : null}
 
         <InputIcon
           style={{ width: 185 }}

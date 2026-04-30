@@ -13,10 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { style } from "./style";
 
 export default function Cadastro() {
+  const [erro, setErro] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-
+  const [confirmaSenha, setConfirmaSenha] = useState("");
   //picker
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -30,13 +31,24 @@ export default function Cadastro() {
   const handleCadastro = async () => {
     try {
 
-      const res = await ArtistaService.save({
+      const body = {
+        nome,
+        email,
+        senha,
+        confirmaSenha,
+      };
+      const validacao = ArtistaService.validarCadastro(body);
+      
+      if (!validacao.valido) {
+        setErro(validacao.mensagem);
+        return;
+      }
+
+      await ArtistaService.save({
         nome,
         email,
         senha,
       });
-    
-      console.log("CADASTRO OK:", res);
 
       router.navigate("/login");
     } catch (err) {
@@ -56,8 +68,7 @@ export default function Cadastro() {
           style={{ width: "100%", height: 350, position: "absolute" }}
         />
         <Pressable
-          onPress={() => router.navigate("/home")}
-          //mudar rota para login quando tiver a tela
+          onPress={() => router.navigate("/login")}
           style={{
             position: "absolute",
             backgroundColor: "white",
@@ -78,6 +89,11 @@ export default function Cadastro() {
         <View style={style.titleContainer}>
           <Text style={style.titulo}> Cadastre-se </Text>
         </View>
+        {erro ? (
+              <Text style={{ color: "red", textAlign: "center" }}>
+                {erro}
+              </Text>
+            ) : null}
 
         <ScrollView>
           <View style={{ gap: 20 }}>
@@ -130,7 +146,9 @@ export default function Cadastro() {
               <View style={style.inputWrapper}>
                 <Text style={style.label}> Confirmar senha </Text>
                 <InputSenha 
-                placeholder="Digite a senha novamente">
+                placeholder="Digite a senha novamente"
+                onChangeText={setConfirmaSenha}
+                value={confirmaSenha}>
                   <FontAwesome
                     name="lock"
                     size={24}

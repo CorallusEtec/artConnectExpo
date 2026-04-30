@@ -50,15 +50,18 @@ export default function tipoArte() {
 
     setCarregando(true);
 
-    const atualizado = await ArtistaService.edit(usuario.id, {
+    await ArtistaService.edit(usuario.id, {
       ...usuario,
       arte: { id: value },
     });
+
+    const atualizado = await ArtistaService.getById(usuario.id);
 
     useAuthStore.getState().setUsuario(atualizado, 'artista');
     await ArtistaService.saveUserLocal(atualizado);
 
     router.replace("/home");
+
   } catch (erro) {
     console.log(erro);
     alert("Erro ao salvar arte");

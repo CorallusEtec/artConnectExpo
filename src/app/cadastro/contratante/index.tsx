@@ -19,32 +19,28 @@ export default function CadastroContratante() {
   const [senha, setSenha] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
   const [documento, setDocumento] = useState("");
+  const [erro, setErro] = useState("");
 
   const handleCadastro = async () => {
     try {
-      if (!nome || !email || !senha || !confirmaSenha) {
-        alert("Preencha todos os campos obrigatórios");
-        return;
-      }
-
-      if (senha !== confirmaSenha) {
-        alert("As senhas não conferem");
-        return;
-      }
-
-      if (isEmpresa && (!razaoSocial || !documento)) {
-        alert("Preencha razão social e CNPJ");
-        return;
-      }
 
       const body = {
         nome,
         email,
         senha,
+        confirmaSenha,
         razaoSocial: isEmpresa ? razaoSocial : null,
         cnpj: isEmpresa ? documento : null,
+        cpf: !isEmpresa ? documento : null,
         tipo: isEmpresa ? ("cnpj" as const) : ("cpf" as const),
       };
+
+      const validacao = ContratanteService.validarCadastro(body);
+
+      if (!validacao.valido) {
+        setErro(validacao.mensagem);
+        return;
+      }
 
       await ContratanteService.save(body);
 
@@ -66,7 +62,7 @@ export default function CadastroContratante() {
           style={{ width: "100%", height: 350, position: "absolute" }}
         />
         <Pressable
-          onPress={() => router.navigate("/home")}
+          onPress={() => router.navigate("/cadastro")}
           style={{
             position: "absolute",
             backgroundColor: "white",
@@ -123,6 +119,11 @@ export default function CadastroContratante() {
                 </Pressable>
               </View>
             </View>
+            {erro ? (
+              <Text style={{ color: "red", textAlign: "center" }}>
+                {erro}
+              </Text>
+            ) : null}
 
             <View style={[style.inputContainer]}>
               {isEmpresa && (

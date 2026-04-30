@@ -1,5 +1,7 @@
 import config from './config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ErroValidacao } from "@/services/ErroValidacao";
+import { ValidationService } from "@/services/ValidacaoService";
 
 interface ContratanteCadastroDTO {
   nome: string;
@@ -7,35 +9,40 @@ interface ContratanteCadastroDTO {
   senha: string;
   razaoSocial: string | null;
   cnpj: string | null;
+  cpf: string | null;
   tipo: 'cnpj' | 'cpf';
 }
 
 export default class ContratanteService {
 
-  static async save(contratante: ContratanteCadastroDTO) {
-    try {
-      const { tipo, ...body } = contratante;
+ static async save(contratante: ContratanteCadastroDTO): Promise<string> {
+  try {
+    const { tipo, ...body } = contratante;
 
-      const response = await fetch(`${config.apiUrl}/contratante/save?tipo=${tipo}`, {
+    const response = await fetch(
+      `${config.apiUrl}/contratante/save?tipo=${tipo}`,
+      {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'text/plain'
         },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(errorData || 'Erro ao cadastrar');
+        body: JSON.stringify(body)
       }
+    );
 
-      return await response.text();
+    const text = await response.text();
 
-    } catch (error) {
-      console.error("Erro ao cadastrar contratante", error);
-      throw error;
+    if (!response.ok) {
+      throw new Error(text);
     }
+
+    return text;
+  } catch (error) {
+    console.error("Erro ao cadastrar contratante", error);
+    throw error;
   }
+}
 
   static async saveUserLocal(user: any) {
     await AsyncStorage.setItem('@login-contratante', JSON.stringify(user));
@@ -55,4 +62,32 @@ export default class ContratanteService {
 
     return response.json();
   }
+
+static validarCadastro(dados: any): ErroValidacao {
+  const erro = new ErroValidacao();
+
+  if (
+    !dados.nome ||
+    !dados.email ||
+    !dados.senha ||
+    !dados.tipo ||
+    (dados.tipo === "cpf" && !dados.cpf) ||
+    (dados.tipo === "cnpj" && (!dados.razaoSocial || !dados.cnpj))
+  ) {
+    return erro.invalido("Todos os campos são obrigatórios");
+  }
+
+  if (!ValidationService.validarEmail(dados.email)) {
+    return erro.invalido("Email inválido");
+  }
+
+  if (!ValidationService.validarSenha(dados.senha)) {
+    return erro.invalido("Senha deve ter no mínimo 6 caracteres");
+  }
+
+  if (dados.senha !== dados.confirmaSenha) {
+    return erro.invalido("As senhas não conferem");
+  }
+  return erro;
+}
 }
