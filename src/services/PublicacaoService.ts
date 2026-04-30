@@ -1,3 +1,4 @@
+import { ErroValidacao } from "@/services/ErroValidacao";
 import config from "./config";
 
 interface CriarPublicacaoDTO {
@@ -7,40 +8,43 @@ interface CriarPublicacaoDTO {
 }
 
 export default class PublicacaoService {
+  static validarPublicacao(res: { legenda: string; file: any; autorId: number; }) {
+    throw new Error("Method not implemented.");
+  }
 
-static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
-  try {
-    const formData = new FormData();
-    formData.append("legenda", legenda ?? "");
+  static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
+    try {
+      const formData = new FormData();
+      formData.append("legenda", legenda ?? "");
 
 
-    if (file?.uri) {
+      if (file?.uri) {
 
-      let blob: Blob;
-      try {
-        const fileResponse = await fetch(file.uri);
-        blob = await fileResponse.blob();
-      } catch (blobErr) {
-        throw blobErr;
+        let blob: Blob;
+        try {
+          const fileResponse = await fetch(file.uri);
+          blob = await fileResponse.blob();
+        } catch (blobErr) {
+          throw blobErr;
+        }
+
+        formData.append("file", blob, `image-${Date.now()}.jpg`);
       }
 
-      formData.append("file", blob, `image-${Date.now()}.jpg`);
+      const response = await fetch(
+        `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
+        { method: "POST", body: formData }
+      );
+
+      const text = await response.text();
+      if (!response.ok) throw new Error(text);
+      return text;
+
+    } catch (error) {
+      console.error("erro ao criar publicação", error);
+      throw error;
     }
-
-    const response = await fetch(
-      `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
-      { method: "POST", body: formData }
-    );
-
-    const text = await response.text();
-    if (!response.ok) throw new Error(text);
-    return text;
-
-  } catch (error) {
-    console.error("erro ao criar publicação", error);
-    throw error;
   }
-}
 
   static async listar() {
     try {
@@ -57,4 +61,16 @@ static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
       throw error;
     }
   }
+
+  static validarCriacao(dados: any): ErroValidacao {
+  const erro = new ErroValidacao();
+
+  if (!dados.legenda && !dados.file) {
+    return erro.invalido(
+      "Ao menos uma legenda ou uma mídia deve ser fornecida"
+    );
+  }
+
+  return erro;
+}
 }

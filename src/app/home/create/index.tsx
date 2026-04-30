@@ -10,6 +10,7 @@ import { Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react
 import { style } from "./style";
 
 export default function create() {
+  const [erro, setErro] = useState("");
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState<any>(null);
   const usuario = useAuthStore((state) => state.usuario);
@@ -41,6 +42,12 @@ export default function create() {
       autorId: usuario.id,
     };
 
+    const validacao = PublicacaoService.validarCriacao(res);
+      if (!validacao.valido) {
+        setErro(validacao.mensagem);
+        return;
+      }
+
   try {
     if (!legenda && !midia) {
       return;
@@ -69,6 +76,11 @@ export default function create() {
       </View>
 
       <Text style={style.title}>Criar publicação</Text>
+      {erro ? (
+        <Text style={{ color: "red", textAlign: "center" }}>
+          {erro}
+        </Text>
+      ) : null}
 
       <TextInput
         placeholder="Texto do post..."
