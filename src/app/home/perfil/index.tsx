@@ -1,13 +1,15 @@
 import { TextButton } from "@/components/TextButton";
+import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
 import { Feather } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
 
+
 export default function Perfil() {
+  const usuario = useAuthStore((state) => state.usuario);
 
   return (
     <>
@@ -39,7 +41,7 @@ export default function Perfil() {
                 source={require("@/assets/template/avatar.png")}
               />
             </Pressable>
-            <Text style={style.nomeProfile}>Nome do perfil</Text>
+            <Text style={style.nomeProfile}>{usuario?.nome}</Text>
           </View>
           <View style={style.infosProfile}>
             <View style={style.infoDuo}>

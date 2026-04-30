@@ -1,0 +1,93 @@
+import config from './config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ErroValidacao } from "@/services/ErroValidacao";
+import { ValidationService } from "@/services/ValidacaoService";
+
+interface ContratanteCadastroDTO {
+  nome: string;
+  email: string;
+  senha: string;
+  razaoSocial: string | null;
+  cnpj: string | null;
+  cpf: string | null;
+  tipo: 'cnpj' | 'cpf';
+}
+
+export default class ContratanteService {
+
+ static async save(contratante: ContratanteCadastroDTO): Promise<string> {
+  try {
+    const { tipo, ...body } = contratante;
+
+    const response = await fetch(
+      `${config.apiUrl}/contratante/save?tipo=${tipo}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/plain'
+        },
+        body: JSON.stringify(body)
+      }
+    );
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(text);
+    }
+
+    return text;
+  } catch (error) {
+    console.error("Erro ao cadastrar contratante", error);
+    throw error;
+  }
+}
+
+  static async saveUserLocal(user: any) {
+    await AsyncStorage.setItem('@login-contratante', JSON.stringify(user));
+  }
+
+  static async getUserLocal() {
+    const user = await AsyncStorage.getItem('@login-contratante');
+    return user ? JSON.parse(user) : null;
+  }
+
+  static async getById(id: number) {
+    const response = await fetch(`${config.apiUrl}/contratante/${id}`);
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar contratante");
+    }
+
+    return response.json();
+  }
+
+static validarCadastro(dados: any): ErroValidacao {
+  const erro = new ErroValidacao();
+
+  if (
+    !dados.nome ||
+    !dados.email ||
+    !dados.senha ||
+    !dados.tipo ||
+    (dados.tipo === "cpf" && !dados.cpf) ||
+    (dados.tipo === "cnpj" && (!dados.razaoSocial || !dados.cnpj))
+  ) {
+    return erro.invalido("Todos os campos são obrigatórios");
+  }
+
+  if (!ValidationService.validarEmail(dados.email)) {
+    return erro.invalido("Email inválido");
+  }
+
+  if (!ValidationService.validarSenha(dados.senha)) {
+    return erro.invalido("Senha deve ter no mínimo 6 caracteres");
+  }
+
+  if (dados.senha !== dados.confirmaSenha) {
+    return erro.invalido("As senhas não conferem");
+  }
+  return erro;
+}
+}
