@@ -1,33 +1,48 @@
 import { Post } from "@/components/Post";
 import { Action } from "@/components/Post/Action";
 import { TextButton } from "@/components/TextButton";
+import PublicacaoService from "@/services/PublicacaoService";
 import { gStyles } from "@/style/gStyle";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-import { ActivityIndicator, FlatList, Image, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Image, TouchableOpacity, View, Modal } from "react-native";
 import { style } from "./style";
+import * as ImagePicker from "expo-image-picker";
 
 export default function Home() {
-  const [post, setPost] = useState<any>();
-  const [load, setLoad] = useState(true);
+  const [modalVisible, setModalVisible] = useState(true);
+  const [legenda, setLegenda] = useState("");
+  const [midia, setMidia] = useState<any>(null);
 
-  async function getPost() {
-    const data = await fetch("https://dummyjson.com/posts");
-    return data.json();
+  const [load, setLoad] = useState(false);
+  const [publicacoes, setPublicacoes] = useState([]);
+
+  useEffect(() => {
+    async function carregar() {
+    try {
+      const data = await PublicacaoService.listar();
+      setPublicacoes(data);
+    } catch (err) {
+      console.log(err);
+    }
   }
-
-  useFocusEffect(
-    useCallback(() => {
-      (async () => {
-        const data = await getPost();
-        setPost(data);
-        setLoad(false);
-      })();
-    }, []),
-  );
+    setLoad(false);
+    carregar();
+  }, []);
 
   if (load) return <ActivityIndicator size={"large"} />;
+
+  async function escolherImagem() {
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    quality: 0.6,
+  });
+
+  if (!result.canceled) {
+    setMidia(result.assets[0]);
+  }
+}
 
   return (
     <>
@@ -43,29 +58,39 @@ export default function Home() {
       <View style={style.container}>
         
         <FlatList
-          data={post.posts}
-          keyExtractor={(post) => post.id}
-          contentContainerStyle={{gap: 30}}
+          data={publicacoes}
+          keyExtractor={(item: any) => String(item.id)}
           renderItem={({ item }) => (
-            <Post.root>
-              <Post.header nomePerfil="João" data={new Date("2026-04-16T10:30:00")}>
-                <Post.headerActions>
-                  <TextButton title="Seguir" theme="secondary" />
-                </Post.headerActions>
-              </Post.header>
-              <Post.legend data={item.body} />
-              <Post.actions>
-                <Action insight={item.reactions.likes}>
-                  <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
-                </Action>
-                <Action insight={item.views}>
-                  <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
-                </Action>
-              </Post.actions>
-            </Post.root>
-          )}
+          <Post.root>
+            <Post.header
+              nomePerfil={item.autor?.nome ?? "Usuário"}
+              data={new Date(item.dataPublicacao)}
+            >
+              <Post.headerActions>
+                <TextButton title="Seguir" theme="secondary" />
+              </Post.headerActions>
+            </Post.header>
+
+            <Post.legend data={item.legenda} />
+            {item.urlMidia && (
+              <Post.image url={item.urlMidia} />
+            )}
+            
+            <Post.actions>
+              <Action insight={0}>
+                <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
+              </Action>
+
+              <Action insight={0}>
+                <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
+              </Action>
+            </Post.actions>
+          </Post.root>
+        )}
         />
         
+        
+
       </View>
     </>
   );
