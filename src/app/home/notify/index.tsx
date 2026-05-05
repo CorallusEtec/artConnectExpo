@@ -17,15 +17,14 @@ export default function Notify() {
         </TouchableOpacity>
       </View>
 
+      <Text style={style.notifs}>Você tem 2 notificações</Text>
       <View style={style.userRow}>
         <Image
           style={style.pic}
           source={require("@/assets/template/avatar.png")}
         />
         <View>
-          <Text style={style.userName}>Djavan</Text>
-          <Text style={style.subtitle}>Curtiu sua postagem</Text>
-          <FontAwesome name="heart" size={24} color={gStyles.vermelho[400]} />
+          <Text style={style.subtitle}><Text style={style.userName}>Djavan</Text> Curtiu sua postagem <FontAwesome name="heart" size={24} color={gStyles.vermelho[400]} /></Text>
         </View>
       </View>
 
@@ -35,60 +34,9 @@ export default function Notify() {
           source={require("@/assets/template/avatar.png")}
         />
         <View>
-          <Text style={style.userName}>Marcos Zuckberg</Text>
-          <Text style={style.subtitle}>Curtiu sua postagem</Text>
-          <FontAwesome name="heart" size={24} color={gStyles.vermelho[400]} />
+          <Text style={style.subtitle}><Text style={style.userName}>Clodoaldo</Text> Começou a te seguir <Ionicons name="person" size={24} color={gStyles.azul[400]} /></Text>
         </View>
   
-      </View>
-
-      <View style={style.userRow}>
-        <Image
-          style={style.pic}
-          source={require("@/assets/template/avatar.png")}
-        />
-        <View>
-          <Text style={style.userName}>Clodoaldo</Text>
-          <Text style={style.subtitle}>Começou a te seguir</Text>
-          <Ionicons name="person" size={24} color={gStyles.azul[400]} />
-        </View>
-      </View>
-
-      <View style={style.userRow}>
-        <Image
-          style={style.pic}
-          source={require("@/assets/template/avatar.png")}
-        />
-        <View>
-          <Text style={style.userName}>aline </Text>
-          <Text style={style.subtitle}>Curtiu sua postagem</Text>
-          <FontAwesome name="heart" size={24} color={gStyles.vermelho[400]} />
-        </View>
-      </View>
-
-      <View style={style.userRow}>
-        <Image
-          style={style.pic}
-          source={require("@/assets/template/avatar.png")}
-        />
-        <View>
-          <Text style={style.userName}>Adoilson Musk</Text>
-          <Text style={style.subtitle}>Curtiu sua postagem</Text>
-          <FontAwesome name="heart" size={24} color={gStyles.vermelho[400]} />
-        </View>
-  
-      </View>
-
-      <View style={style.userRow}>
-        <Image
-          style={style.pic}
-          source={require("@/assets/template/avatar.png")}
-        />
-        <View>
-          <Text style={style.userName}>neymar </Text>
-          <Text style={style.subtitle}>Começou a te seguir</Text>
-          <Ionicons name="person" size={24} color={gStyles.azul[400]} />
-        </View>
       </View>
     </View>
   );

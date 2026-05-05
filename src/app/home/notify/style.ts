@@ -45,5 +45,12 @@ export const style = StyleSheet.create({
   subtitle: {
     color: gStyles.cinza[500],
     fontSize: 14,
-  }
+  },
+
+  notifs: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: gStyles.cinza[500], 
+    textAlign: "center"
+  },
 });
