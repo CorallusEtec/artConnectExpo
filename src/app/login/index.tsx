@@ -1,20 +1,45 @@
+import { style } from "@/app/login/style";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
-import {View, Image, Pressable,Text} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { Redirect } from 'expo-router';
 import Checkbox from "expo-checkbox";
-import { useState } from "react"
-import  { style } from "@/app/login/style"
+import { router } from "expo-router";
+import { useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import LoginService from "@/services/LoginService";
+LoginService
 
 
 export default function Login() {
       const [checked, setChecked] = useState(false);
+      const [email, setEmail] = useState("");
+      const [senha, setSenha] = useState("");
+      const [erro, setErro] = useState("");
+
+      async function logar() {
+        try {
+
+          const validacao = LoginService.validarLogin({email, senha});
+            if (!validacao.valido) {
+            setErro(validacao.mensagem);
+            return; 
+          }
+
+
+          const data = await LoginService.login(email, senha);
+
+          router.replace("/home");
+
+
+        } catch(erro: any) {
+          setErro(erro.message);
+        }
+      }
 
   return (
     <SafeAreaView style={style.container}>
@@ -44,13 +69,24 @@ export default function Login() {
      <View style={style.view1}>
 
       <Text style={{fontSize: 25, fontWeight: "bold"}}>Login</Text>
+      
+      {erro ? (
+          <Text style={{ color: "red", textAlign: "center" }}>
+            {erro}
+          </Text>
+        ) : null}
 
-      <InputIcon style={{width:185}} placeholder="Digite seu Email" >
+      <InputIcon style={{width:185}} 
+        placeholder="Digite seu Email" 
+        value={email} 
+        onChangeText={setEmail}>
         <FontAwesome name="envelope" size={17} color={gStyles.azul[500]} />
       </InputIcon>
 
       <InputSenha style={{width:163}}
-        placeholder="Digite sua Senha">
+        placeholder="Digite sua Senha" 
+        value={senha} 
+        onChangeText={setSenha}>
         <FontAwesome name="lock" size={17} color={gStyles.azul[500]}/>
       </InputSenha>
 
@@ -76,7 +112,7 @@ export default function Login() {
       <TextButton
         theme="primary"
         title="Login"
-        onPress={() => router.navigate("/home")}
+        onPress={logar}
         style={{
         width: "55%", 
         height: "15%",
