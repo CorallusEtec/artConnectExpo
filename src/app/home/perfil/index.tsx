@@ -4,16 +4,20 @@ import { Feather } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View, Modal, Button } from "react-native";
 import { style } from "./style";
+import { router } from "expo-router";
+import { useState } from "react";
 
 export default function Perfil() {
+
+  const [visivel, setVisivel] = useState(false);
 
   return (
     <>
       <View style={style.navbarMom}>
         <View style={style.navbarSon1}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.navigate("/home")}>
             <FontAwesome5
               name="arrow-left"
               color={gStyles.cinza[100]}
@@ -64,11 +68,25 @@ export default function Perfil() {
           
         <Image style={style.onda} source={require("@/assets/img/onda.png")} />
         
-        <Pressable>
+        <Pressable >
           <View style={style.botaoEdit}>
-            <TextButton style={{width: '30%', backgroundColor: gStyles.azul[500], borderWidth: 3, borderColor: 'white'}} title="Editar perfil" />
+            <TextButton onPress={() => setVisivel(true)} style={{width: '30%', backgroundColor: gStyles.azul[500], borderWidth: 3, borderColor: 'white'}} title="Editar perfil" />
           </View>
         </Pressable>
+
+        <Modal
+        animationType="fade"
+        transparent={true}
+        visible={visivel}
+        onRequestClose={() => setVisivel(false)}
+        >
+          <View style={style.shadow}>
+            <View style={style.modalView}>
+              <Text style={style.modalText}>Modal</Text>
+              <Pressable onPress={() => setVisivel(false)}>fechar</Pressable>
+            </View>
+          </View>
+        </Modal>
 
 
         <View style={style.icons}>

@@ -122,4 +122,22 @@ export const style = StyleSheet.create({
     height: 160,
     margin: 4
   },
+
+  shadow: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,100,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+  },
 });
