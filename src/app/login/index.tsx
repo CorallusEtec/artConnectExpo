@@ -12,34 +12,44 @@ import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import LoginService from "@/services/LoginService";
-LoginService
-
+import ArtistaService from "@/services/ArtistaService";
+import ContratanteService from "@/services/ContratanteService";
+import { useAuthStore } from "@/store";
 
 export default function Login() {
-      const [checked, setChecked] = useState(false);
-      const [email, setEmail] = useState("");
-      const [senha, setSenha] = useState("");
-      const [erro, setErro] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const { setUsuario } = useAuthStore();
 
-      async function logar() {
-        try {
+  async function logar() {
+  try {
+    const validacao = LoginService.validarLogin({ email, senha });
 
-          const validacao = LoginService.validarLogin({email, senha});
-            if (!validacao.valido) {
-            setErro(validacao.mensagem);
-            return; 
-          }
+    if (!validacao.valido) {
+      setErro(validacao.mensagem);
+      return;
+    }
 
+    const data = await LoginService.login(email, senha);
 
-          const data = await LoginService.login(email, senha);
+    const id = data.id;
 
-          router.replace("/home");
+    try {
+      const contratante = await ContratanteService.getById(id);
+      setUsuario(contratante);
+    } catch {
+      const artista = await ArtistaService.getById(id);
+      setUsuario(artista);
+    }
 
+    router.replace("/home");
 
-        } catch(erro: any) {
-          setErro(erro.message);
-        }
-      }
+    } catch (erro: any) {
+      setErro(erro.message);
+    }
+  }
 
   return (
     <SafeAreaView style={style.container}>

@@ -1,5 +1,9 @@
 import { ErroValidacao } from "@/services/ErroValidacao";
 import config from './config';
+import ArtistaService from "./ArtistaService";
+import ContratanteService from "./ContratanteService";
+ArtistaService
+ContratanteService
 
 export default class LoginService {
 
@@ -25,5 +29,9 @@ export default class LoginService {
         return erro.invalido("Todos os campos são obrigatórios");
       }
       return erro;
+    }
+
+    static async saveLocal() {
+      
     }
 }
