@@ -1,6 +1,7 @@
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
+import ContratanteService from "@/services/ContratanteService";
 import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -19,6 +20,34 @@ export default function CadastroContratante() {
   const [confirmaSenha, setConfirmaSenha] = useState("");
   const [documento, setDocumento] = useState("");
   const [erro, setErro] = useState("");
+
+  const handleCadastro = async () => {
+    try {
+      const body = {
+        nome,
+        email,
+        senha,
+        confirmaSenha,
+        razaoSocial: isEmpresa ? razaoSocial : null,
+        cnpj: isEmpresa ? documento : null,
+        cpf: !isEmpresa ? documento : null,
+        tipo: isEmpresa ? ("cnpj" as const) : ("cpf" as const),
+      };
+
+      const validacao = ContratanteService.validarCadastro(body);
+
+      if (!validacao.valido) {
+        setErro(validacao.mensagem);
+        return;
+      }
+
+      await ContratanteService.save(body);
+
+      router.navigate("/login");
+    } catch (err) {
+      console.log("ERRO CADASTRO:", err);
+    }
+  };
 
   return (
     <SafeAreaView style={style.container}>
@@ -55,7 +84,7 @@ export default function CadastroContratante() {
         </View>
 
         <ScrollView>
-          <View style={{ gap: 20 }}>
+          <View style={{ gap: 15 }}>
             <View style={style.inputContainer}>
               <View style={style.toggleContainer}>
                 <Pressable
@@ -196,6 +225,7 @@ export default function CadastroContratante() {
                 <TextButton
                   theme="primary"
                   title="Cadastrar"
+                  onPress={handleCadastro}
                 />
               </View>
 

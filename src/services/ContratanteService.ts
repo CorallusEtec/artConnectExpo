@@ -1,4 +1,6 @@
 import config from './config';
+import { ErroValidacao } from './ErroValidacao';
+import { ValidationService } from './ValidacaoService';
 
 interface ContratanteCadastroDTO {
   nome: string;
@@ -23,7 +25,7 @@ export default class ContratanteService {
 
     static async save(contratante: ContratanteCadastroDTO) {
         try {
-            const response = await fetch(`${config.apiUrl}/contratante/save`, {
+            const response = await fetch(`${config.apiUrl}/contratante/save?tipo=${contratante.tipo}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,4 +45,32 @@ export default class ContratanteService {
             throw error;
         }
     }
+
+    static validarCadastro(dados: any): ErroValidacao {
+  const erro = new ErroValidacao();
+
+  if (
+    !dados.nome ||
+    !dados.email ||
+    !dados.senha ||
+    !dados.tipo ||
+    (dados.tipo === "cpf" && !dados.cpf) ||
+    (dados.tipo === "cnpj" && (!dados.razaoSocial || !dados.cnpj))
+  ) {
+    return erro.invalido("Todos os campos são obrigatórios");
+  }
+
+  if (!ValidationService.validarEmail(dados.email)) {
+    return erro.invalido("Email inválido");
+  }
+
+  if (!ValidationService.validarSenha(dados.senha)) {
+    return erro.invalido("Senha deve ter no mínimo 6 caracteres");
+  }
+
+  if (dados.senha !== dados.confirmaSenha) {
+    return erro.invalido("As senhas não conferem");
+  }
+  return erro;
+}
 }

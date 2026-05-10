@@ -158,6 +158,13 @@ export default function Cadastro() {
                     />
                 </View>
             </View>
+            <View style={{ alignItems: 'center', marginTop: 10, marginBottom: 20 }}>
+              <Pressable onPress={() => router.navigate("/cadastro/contratante")}>
+                <Text style={{ color: gStyles.azul[200], fontWeight: '600', fontSize: 14 }}>
+                  Deseja cadastrar como Contratante? Clique aqui
+                </Text>
+              </Pressable>
+            </View>
         </View>
         </ScrollView>
         </View>
