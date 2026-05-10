@@ -54,7 +54,6 @@ export default class ContratanteService {
     !dados.email ||
     !dados.senha ||
     !dados.tipo ||
-    (dados.tipo === "cpf" && !dados.cpf) ||
     (dados.tipo === "cnpj" && (!dados.razaoSocial || !dados.cnpj))
   ) {
     return erro.invalido("Todos os campos são obrigatórios");
