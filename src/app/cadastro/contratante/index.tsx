@@ -18,7 +18,7 @@ export default function CadastroContratante() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
-  const [documento, setDocumento] = useState("");
+  const [cnpj, setCnpj] = useState("");
   const [erro, setErro] = useState("");
 
   const handleCadastro = async () => {
@@ -29,8 +29,8 @@ export default function CadastroContratante() {
         senha,
         confirmaSenha,
         razaoSocial: isEmpresa ? razaoSocial : null,
-        cnpj: isEmpresa ? documento : null,
-        cpf: !isEmpresa ? documento : null,
+        cnpj: isEmpresa ? cnpj : null,
+        cpf: null,
         tipo: isEmpresa ? ("cnpj" as const) : ("cpf" as const),
       };
 
@@ -98,7 +98,7 @@ export default function CadastroContratante() {
                     style.toggleButtonText,
                     isEmpresa ? style.toggleButtonTextActive : style.toggleButtonTextInactive
                   ]}>
-                    Empresa
+                    Conta Empresa
                   </Text>
                 </Pressable>
 
@@ -113,7 +113,7 @@ export default function CadastroContratante() {
                     style.toggleButtonText,
                     !isEmpresa ? style.toggleButtonTextActive : style.toggleButtonTextInactive
                   ]}>
-                    Pessoa Física
+                    Conta Padrão
                   </Text>
                 </Pressable>
               </View>
@@ -202,22 +202,22 @@ export default function CadastroContratante() {
                 </InputSenha>
               </View>
 
-              <View style={style.inputWrapper}>
-                <Text style={style.label}>
-                  {isEmpresa ? "CNPJ" : "CPF"}
-                </Text>
-                <InputIcon
-                  placeholder={isEmpresa ? "  XX.XXX.XXX/XXXX-XX" : "  XXX.XXX.XXX-XX"}
-                  onChangeText={setDocumento}
-                  value={documento}
-                >
-                  <FontAwesome
-                    name="id-card"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputIcon>
-              </View>
+                {isEmpresa && (
+                <View style={style.inputWrapper}>
+                  <Text style={style.label}> CNPJ </Text>
+                  <InputIcon
+                    placeholder="Digite o CNPJ"
+                    onChangeText={setCnpj}
+                    value={cnpj}
+                  >
+                    <FontAwesome
+                      name="id-card"
+                      size={24}
+                      color={gStyles.azul[200]}
+                    />
+                  </InputIcon>
+                </View>
+              )}
             </View>
 
             <View style={style.btnContainer}>
