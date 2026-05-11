@@ -8,6 +8,22 @@ export interface ArtistaCadastroDTO {
     senha: string;
 }
 
+export interface ArtistaEditDTO {
+  nome?: string;
+  textoBio?: string;
+  contatos?: any[];
+  arte?: { id: number };
+  nomeArtistico?: string;
+  dataNasc?: string;
+  nomeLog?: string;
+  numLog?: number;
+  cep?: string;
+  bairro?: string;
+  complemento?: string;
+  cidade?: string;
+  uf?: string;
+}
+
 export default class ArtistaService {
     static async getById(id: number) {
         const response = await fetch(`${config.apiUrl}/artista/${id}`);
@@ -41,6 +57,23 @@ export default class ArtistaService {
             throw error;
         }
     }
+
+    static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
+  const response = await fetch(`${config.apiUrl}/artista/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(artista),
+  });
+
+  const text = await response.text();
+
+  if (!response.ok) {
+    throw new Error(text);
+  }
+}
 
     static validarCadastro(dados: any): ErroValidacao {
     const erro = new ErroValidacao();

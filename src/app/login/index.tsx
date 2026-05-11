@@ -11,9 +11,9 @@ import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import LoginService from "@/services/LoginService";
 import ArtistaService from "@/services/ArtistaService";
 import ContratanteService from "@/services/ContratanteService";
+import LoginService from "@/services/LoginService";
 import { useAuthStore } from "@/store";
 
 export default function Login() {
@@ -42,9 +42,13 @@ export default function Login() {
     } catch {
       const artista = await ArtistaService.getById(id);
       setUsuario(artista);
-    }
 
-    router.replace("/home");
+      if (artista.arte==null) {
+        router.replace("/tipoArte")
+      } else {
+        router.replace("/home")
+      }
+    }
 
     } catch (erro: any) {
       setErro(erro.message);
