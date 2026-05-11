@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
 export interface ContratanteDTO {
+  id: number;
+
   nome: string;
   email: string;
   textoBio: string;
@@ -20,6 +22,8 @@ export interface ContratanteDTO {
 }
 
 export interface ArtistaDTO {
+  id: number;
+
   nome: string;
   email: string;
   textoBio: string;
