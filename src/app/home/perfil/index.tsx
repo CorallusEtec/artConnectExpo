@@ -6,6 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
+import { router } from "expo-router";
 
 export default function Perfil() {
 
@@ -64,11 +65,9 @@ export default function Perfil() {
           
         <Image style={style.onda} source={require("@/assets/img/onda.png")} />
         
-        <Pressable>
           <View style={style.botaoEdit}>
-            <TextButton style={{width: '30%', backgroundColor: gStyles.azul[500], borderWidth: 3, borderColor: 'white'}} title="Editar perfil" />
+            <TextButton onPress={() => router.navigate("/home/perfil/editar")}  style={{width: '30%', backgroundColor: gStyles.azul[500], borderWidth: 3, borderColor: 'white'}} title="Editar perfil" />
           </View>
-        </Pressable>
 
 
         <View style={style.icons}>
