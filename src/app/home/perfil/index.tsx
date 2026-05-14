@@ -1,17 +1,49 @@
 import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
-import { Feather } from "@expo/vector-icons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Image, Pressable, Text, TouchableOpacity, View, Modal, Button } from "react-native";
+import { Feather, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Image, Pressable, Text, TouchableOpacity, View, Modal, TextInput } from "react-native";
 import { style } from "./style";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import React from "react";
+import * as ImagePicker from 'expo-image-picker';
+import ViewShot from 'react-native-view-shot';
 
 export default function Perfil() {
 
   const [visivel, setVisivel] = useState(false);
+  const [name, setName] = useState('João Silva');
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const viewShotRef = useRef<any>(null);
+
+  const pickImage = async () => {
+    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!granted) {
+      alert("Precisamos de permissão para acessar suas fotos!");
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  const saveImage = async () => {
+    if (viewShotRef.current) {
+      const uri = await viewShotRef.current.capture();
+      console.log("Imagem processada salva em:", uri);
+      setVisivel(false);
+    }
+  };
 
   return (
     <>
@@ -37,13 +69,13 @@ export default function Perfil() {
       <View style={style.container}>
         <View style={style.fundo}>
           <View style={style.profile}>
-            <Pressable>
-              <Image
-                style={style.headerProfile}
-                source={require("@/assets/template/avatar.png")}
-              />
-            </Pressable>
-            <Text style={style.nomeProfile}>Nome do perfil</Text>
+            <ViewShot ref={viewShotRef} options={{ format: 'jpg', quality: 0.9 }}>
+                  <Image 
+                    source={imageUri ? { uri: imageUri } : require("@/assets/template/avatar.png")}
+                    style={style.headerProfile}
+                  />
+            </ViewShot>
+            <Text style={style.nomeProfile}>{name}</Text>
           </View>
           <View style={style.infosProfile}>
             <View style={style.infoDuo}>
@@ -81,13 +113,43 @@ export default function Perfil() {
         onRequestClose={() => setVisivel(false)}
         >
           <View style={style.shadow}>
+
             <View style={style.modalView}>
-              <Text style={style.modalText}>Modal</Text>
-              <Pressable onPress={() => setVisivel(false)}>fechar</Pressable>
+                  <Text style={style.titleModal}>Editar Perfil</Text>
+                  <ViewShot ref={viewShotRef} options={{ format: 'jpg', quality: 0.9 }}>
+                    <Image 
+                      source={imageUri ? { uri: imageUri } : require("@/assets/template/avatar.png")}
+                      style={{ width: 102, height: 92, borderRadius: 60, marginBottom: 10 }}
+                    />
+                  </ViewShot>
+                  <TouchableOpacity style={style.modalBotao} onPress={pickImage}>
+                    <Text style={style.modalText}>Alterar Foto</Text>
+                  </TouchableOpacity>
+
+                  {isEditing ? (
+                    <TextInput
+                      value={name}
+                      onChangeText={setName}
+                      autoFocus={true}
+                      style={style.textInputEdit}
+                    />
+                  ) : (
+                    <Text style={style.textInput}>{name}</Text>
+                  )}
+
+                  <TouchableOpacity 
+                    onPress={() => setIsEditing(!isEditing)}
+                    style={style.modalBotao}
+                  >
+                    <Text style={style.modalText}>
+                      {isEditing ? 'Salvar' : 'Editar Nome'}
+                    </Text>
+                  </TouchableOpacity>
+
+              <Pressable style={style.modalFechar} onPress={() => setVisivel(false)}><Text style={style.modalText}>fechar</Text></Pressable>
             </View>
           </View>
         </Modal>
-
 
         <View style={style.icons}>
           <Pressable>

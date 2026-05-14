@@ -37,17 +37,19 @@ export const style = StyleSheet.create({
   },
 
   headerProfile: {
+    marginHorizontal: 10,
     height: 92,
     width: 92,
     borderRadius: "100%",
   },
 
   nomeProfile: {
-    width: 150,
-    textAlign: "center",
+    width: 175,
+    textAlign: "left",
     fontSize: 20,
     fontWeight: "bold",
-    color: "white"
+    color: "white",
+    marginLeft: 25
   },
 
   profile: {
@@ -129,15 +131,49 @@ export const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  titleModal: {
+    fontSize: 20,
+    fontWeight: 500,
+    marginBottom: 20
+  },
   modalView: {
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 35,
+    padding: 55,
     alignItems: 'center',
     shadowColor: '#000',
     elevation: 5,
   },
+  modalBotao: {
+    backgroundColor: gStyles.azul[500],
+    width: 100,
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: 25,
+  },
+  modalFechar: {
+    backgroundColor: gStyles.azul[500],
+    width: 100,
+    borderRadius: 8,
+    padding: 4,
+  },
   modalText: {
-    marginBottom: 15,
+    fontWeight: 600,
+    color: "#fff",
+    textAlign: "center",
+  },
+  textInput: {
+    textAlign: "center",
+    backgroundColor: "#c0c0c0",
+    borderRadius: 8,
+    width: 150,
+    padding: 4,
+  },
+  textInputEdit: {
+    backgroundColor: "#c0c0c0",
+    borderRadius: 8,
+    width: 150,
+    padding: 4,
   },
 });
