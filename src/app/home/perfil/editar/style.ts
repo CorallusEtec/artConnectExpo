@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
 import { gStyles } from '@/style/gStyle';
+import { StyleSheet } from 'react-native';
 
 export const style = StyleSheet.create({
   container: {
@@ -79,5 +79,11 @@ export const style = StyleSheet.create({
   textoSalvar: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+
+  headerProfile: {
+    height: 92,
+    width: 92,
+    borderRadius: "100%",
   },
 });
