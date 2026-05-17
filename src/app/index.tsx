@@ -8,6 +8,7 @@ export default function Splash() {
 
   useEffect(() => {
     const checkAuth = async () => {
+    
       try {
         const token = await AsyncStorage.getItem('@artconnect:token');
 
@@ -16,10 +17,10 @@ export default function Splash() {
         if (token) {
           router.replace('/home');
         } else {
-          router.replace('/cadastro');
+          router.replace('/login');
         }
       } catch {
-        router.replace('/cadastro');
+        router.replace('/login');
       } finally {
         setLoading(false);
       }
@@ -31,7 +32,7 @@ export default function Splash() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/template/bannerLogin.png')}
+        source={require('../../assets/images/splash-icon.png')}
         style={styles.logo}
         resizeMode="contain"
       />
@@ -43,7 +44,7 @@ export default function Splash() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#2563eb',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 20,
