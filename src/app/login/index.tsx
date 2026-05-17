@@ -11,11 +11,21 @@ import { Redirect } from 'expo-router';
 import Checkbox from "expo-checkbox";
 import { useState } from "react"
 import  { style } from "@/app/login/style"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Login() {
       const [checked, setChecked] = useState(false);
 
+      const handleLogin = async () => {
+  try {
+    const token = 'token_simulado';
+    await AsyncStorage.setItem('@artconnect:token', token);
+    router.replace('/home');
+  } catch (error) {
+    console.error('Erro no login:', error);
+  }
+};  
   return (
     <SafeAreaView style={style.container}>
 
@@ -30,7 +40,7 @@ export default function Login() {
             />
 
               <Pressable
-            onPress={() => router.navigate("/home")} 
+            onPress={() => router.back()}
             style={{position: 'absolute', backgroundColor: 'white', borderRadius: 25, top: 60, left: 10}}>
                 <FontAwesome6 name="circle-arrow-left" 
                     size={35} 
@@ -76,7 +86,7 @@ export default function Login() {
       <TextButton
         theme="primary"
         title="Login"
-        onPress={() => router.navigate("/home")}
+       onPress={handleLogin} 
         style={{
         width: "55%", 
         height: "15%",
@@ -88,7 +98,7 @@ export default function Login() {
       <TextButton
         theme="secondary"
         title="Cadastrar"
-        onPress={() => router.navigate("/home")}
+       onPress={() => router.navigate("/cadastro")} 
         style={{
         width: "55%", 
         height: "15%",
