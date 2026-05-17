@@ -8,7 +8,7 @@ export default function Splash() {
 
   useEffect(() => {
     const checkAuth = async () => {
-    
+      
       try {
         const token = await AsyncStorage.getItem('@artconnect:token');
 
@@ -36,7 +36,7 @@ export default function Splash() {
         style={styles.logo}
         resizeMode="contain"
       />
-      {loading && <ActivityIndicator size="large" color="#fff" />}
+      {loading && <ActivityIndicator size="large" color="#0e2bcc" />}
     </View>
   );
 }
@@ -44,7 +44,7 @@ export default function Splash() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2563eb',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 20,
