@@ -1,5 +1,4 @@
 import { gStyles } from "@/style/gStyle";
-import iconSet from "@expo/vector-icons/build/Fontisto";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
@@ -78,7 +77,8 @@ export const style = StyleSheet.create({
   botaoEdit: {
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1
+    zIndex: 1,
+    marginBottom: 6,
   },
 
   users: {
@@ -94,22 +94,30 @@ export const style = StyleSheet.create({
 
   fundo: {
     backgroundColor: gStyles.azul[500],
+    paddingTop: 18,
+    paddingBottom: 26,
+    paddingHorizontal: 16,
   },
 
-  onda: {
-    marginTop: 90,
-    height: "10%",
-    width: "100%",
-    position: "absolute",
-    backgroundColor: gStyles.azul[500],
+  bioContainer: {
+    marginTop: 8,
+    marginBottom: 6,
+    paddingHorizontal: 6,
+  },
+
+  bioText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 20,
   },
 
   icons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: '30%',
-    marginTop: 50,
-    margin: 15,
+    marginHorizontal: '20%',
+    marginTop: 12,
+    margin: 8,
   },
 
   posts: {
