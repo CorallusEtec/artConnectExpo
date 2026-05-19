@@ -77,7 +77,7 @@
                     <TextButton
                         theme="primary"
                         title="Criar conta"
-                        onPress={() => router.navigate("/home")}
+                        onPress={() => router.navigate("/login")}
                     />
                 </View>
             </View>
