@@ -7,7 +7,7 @@ import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Image, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
-
+import { router } from "expo-router";
 export default function Home() {
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState([]);
@@ -37,9 +37,15 @@ export default function Home() {
           style={style.banner}
           source={require("@/assets/img/banner.png")}
         />
-        <TouchableOpacity>
-          <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 16 }}>
+  <TouchableOpacity onPress={() => router.push("./search")}>
+    <Feather name="search" color={gStyles.cinza[600]} size={22} />
+  </TouchableOpacity>
+
+  <TouchableOpacity>
+    <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
+  </TouchableOpacity>
+</View>
       </View>
       <View style={style.container}>
 

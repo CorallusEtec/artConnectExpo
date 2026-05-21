@@ -3,9 +3,9 @@ import config from './config';
 import { ValidationService } from "./ValidacaoService";
 
 export interface ArtistaCadastroDTO {
-    nome: string;
-    email: string;
-    senha: string;
+  nome: string;
+  email: string;
+  senha: string;
 }
 
 export interface ArtistaEditDTO {
@@ -22,88 +22,92 @@ export interface ArtistaEditDTO {
   complemento?: string;
   cidade?: string;
   uf?: string;
+
+  tipoArtista?: string;
+  genero?: string;
+  estilo?: string;
 }
 export default class ArtistaService {
 
-    static async getById(id: number) {
-        const response = await fetch(`${config.apiUrl}/artista/${id}`);
+  static async getById(id: number) {
+    const response = await fetch(`${config.apiUrl}/artista/${id}`);
 
-        if(!response.ok) {
-            throw new Error("Erro ao buscar usuario");
-        }
-
-        return response.json();
+    if (!response.ok) {
+      throw new Error("Erro ao buscar usuario");
     }
 
-    static async listar() {
-        const response = await fetch(`${config.apiUrl}/artista/findAll`);
+    return response.json();
+  }
 
-        if (!response.ok) {
-            throw new Error("Erro ao buscar artistas");
-        }
+  static async listar() {
+    const response = await fetch(`${config.apiUrl}/artista/findAll`);
 
-        return response.json();
+    if (!response.ok) {
+      throw new Error("Erro ao buscar artistas");
     }
 
-    static async save(artista: ArtistaCadastroDTO) {
-        try {
-            const response = await fetch(`${config.apiUrl}/artista/save`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(artista),
-            });
+    return response.json();
+  }
 
-            const text = await response.text();
+  static async save(artista: ArtistaCadastroDTO) {
+    try {
+      const response = await fetch(`${config.apiUrl}/artista/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(artista),
+      });
 
-            if (!response.ok) {
-                throw new Error(text);
-            }
+      const text = await response.text();
 
-            return text;
-        } catch (error) {
-            console.error("Erro ao salvar artista:", error);
-            throw error;
-        }
-    }
+      if (!response.ok) {
+        throw new Error(text);
+      }
 
-    static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
-        const response = await fetch(`${config.apiUrl}/artista/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(artista),
-        });
-
-        const text = await response.text();
-
-        if (!response.ok) {
-            throw new Error(text);
-        }
-    }
-
-    static validarCadastro(dados: any): ErroValidacao {
-        const erro = new ErroValidacao();
-
-        if (!dados.nome || !dados.email || !dados.senha) {
-            return erro.invalido("Todos os campos são obrigatórios");
-        }
-
-        if (!ValidationService.validarEmail(dados.email)) {
-            return erro.invalido("Email inválido");
-        }
-
-        if (!ValidationService.validarSenha(dados.senha)) {
-            return erro.invalido("Senha deve ter no mínimo 6 caracteres");
-        }
-
-        if (dados.senha !== dados.confirmaSenha) {
-            return erro.invalido("As senhas não conferem");
-        }
-
-        return erro;
+      return text;
+    } catch (error) {
+      console.error("Erro ao salvar artista:", error);
+      throw error;
     }
   }
+
+  static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
+    const response = await fetch(`${config.apiUrl}/artista/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(artista),
+    });
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(text);
+    }
+  }
+
+  static validarCadastro(dados: any): ErroValidacao {
+    const erro = new ErroValidacao();
+
+    if (!dados.nome || !dados.email || !dados.senha) {
+      return erro.invalido("Todos os campos são obrigatórios");
+    }
+
+    if (!ValidationService.validarEmail(dados.email)) {
+      return erro.invalido("Email inválido");
+    }
+
+    if (!ValidationService.validarSenha(dados.senha)) {
+      return erro.invalido("Senha deve ter no mínimo 6 caracteres");
+    }
+
+    if (dados.senha !== dados.confirmaSenha) {
+      return erro.invalido("As senhas não conferem");
+    }
+
+    return erro;
+  }
+}
