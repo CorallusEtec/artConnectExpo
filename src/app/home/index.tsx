@@ -39,7 +39,7 @@ export default function Home() {
         />
         <View style={{ flexDirection: "row", gap: 16 }}>
   <TouchableOpacity onPress={() => router.push("./search")}>
-    <Feather name="search" color={gStyles.cinza[600]} size={22} />
+   
   </TouchableOpacity>
 
   <TouchableOpacity>
