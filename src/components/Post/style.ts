@@ -13,7 +13,6 @@ export const style = StyleSheet.create({
   },
 
   headerTitle: {
-    fontFamily: "Inter_400Regular",
     fontSize: 20,
     fontWeight: "600",
     color: gStyles.cinza[600],
@@ -43,7 +42,6 @@ export const style = StyleSheet.create({
   },
   contentTextText: {
     fontWeight: "400",
-    fontFamily: "Inter_400Regular",
     color: gStyles.cinza[600],
     fontSize: 17,
   },

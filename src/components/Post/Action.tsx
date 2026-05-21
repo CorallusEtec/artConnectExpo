@@ -8,7 +8,7 @@ import {
 import { style } from "./style";
 
 type PostActionProps = TouchableOpacityProps & {
-  insight?: number;
+  insight: number;
   children?: ReactNode;
 };
 

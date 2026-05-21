@@ -8,6 +8,7 @@ export const gStyles = {
     200: "#0081CC"
   },
   cinza: {
+    1000: "#000000",
     600: "#313131",
     500: "#696969",
     400: "#9C9B9B",
@@ -15,6 +16,7 @@ export const gStyles = {
     200: "#dadada",
     100: "#e9e9e9",
     50: "#f7f4f4ff",
+    0: "#ffffff"
   },
   vermelho: {
     100: "#FF8585",
@@ -23,4 +25,6 @@ export const gStyles = {
     400: "#B31616",
     500: "#8D0101",
   }
+
+
 };

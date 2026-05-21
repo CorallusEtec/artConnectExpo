@@ -7,13 +7,20 @@ import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Image, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
+import { Comments } from "@/components/Comments";
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState([]);
 
-  const [publicacoes, setPublicacoes] = useState([]);
+  const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [load, setLoad] = useState(true);
+
+  const [modalStatus, setModalStatus] = useState(false);
+  
+  // Estado que gerencia qual o id do post para entrar na seção de comentarios
+  const [postId, setPostId] = useState<number>(0);
 
   useEffect(() => {
     async function carregar() {
@@ -44,7 +51,7 @@ export default function Home() {
       <View style={style.container}>
 
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {publicacoes.map((item: any) => (
+          {publicacoes.map((item) => (
             <Post.root key={item.id}>
               <Post.header
                 nomePerfil={item.autor?.nome ?? "Usuário"}
@@ -63,12 +70,16 @@ export default function Home() {
                   <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
                 </Action>
 
-                <Action insight={0}>
+                <Action insight={item.totalComentarios} onPress={()=>{
+                  setModalStatus(true)
+                  setPostId(item.id as number)
+                }}>
                   <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
                 </Action>
               </Post.actions>
             </Post.root>
           ))}
+          <Comments setModalStatus={setModalStatus} postId={postId} visible={modalStatus} />
         </ScrollView>
         
       </View>
