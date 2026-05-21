@@ -1,14 +1,20 @@
+import { CommentSection } from "@/components/CommentSection";
 import { Post } from "@/components/Post";
-import { Action } from "@/components/Post/Action";
+import { Reacao } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import PublicacoesService from "@/services/PublicacoesService";
 import { gStyles } from "@/style/gStyle";
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Image, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { style } from "./style";
-import { Comments } from "@/components/Comments";
-import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
@@ -18,13 +24,13 @@ export default function Home() {
   const [load, setLoad] = useState(true);
 
   const [modalStatus, setModalStatus] = useState(false);
-  
+
   // Estado que gerencia qual o id do post para entrar na seção de comentarios
-  const [postId, setPostId] = useState<number>(0);
+  const [postId, setPostId] = useState<number>();
 
   useEffect(() => {
     async function carregar() {
-      try{
+      try {
         const data = await PublicacoesService.listar();
         setPublicacoes(data);
       } catch (Erro) {
@@ -49,13 +55,12 @@ export default function Home() {
         </TouchableOpacity>
       </View>
       <View style={style.container}>
-
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
           {publicacoes.map((item) => (
             <Post.root key={item.id}>
               <Post.header
                 nomePerfil={item.autor?.nome ?? "Usuário"}
-                data={new Date(item.dataPublicacao)}
+                dataPublicacao={new Date(item.dataPublicacao)}
               >
                 <Post.headerActions>
                   <TextButton title="Seguir" theme="secondary" />
@@ -66,32 +71,48 @@ export default function Home() {
               {item.urlMidia && <Post.image url={item.urlMidia} />}
 
               <Post.actions>
-                <Action insight={0}>
-                  <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
-                </Action>
+                <Reacao insight={0}>
+                  <MaterialCommunityIcons
+                    name="thumb-up-outline"
+                    size={24}
+                    color={gStyles.cinza[600]}
+                  />
+                </Reacao>
 
-                <Action insight={item.totalComentarios} onPress={()=>{
-                  setModalStatus(true)
-                  setPostId(item.id as number)
-                }}>
-                  <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
-                </Action>
+                <Reacao
+                  insight={item.totalComentarios}
+                  onPress={() => {
+                    setModalStatus(true);
+                    setPostId(item.id as number);
+                  }}
+                >
+                  <Feather
+                    name="message-circle"
+                    size={24}
+                    color={gStyles.cinza[600]}
+                  />
+                </Reacao>
               </Post.actions>
             </Post.root>
           ))}
-          <Comments setModalStatus={setModalStatus} postId={postId} visible={modalStatus} />
+
+          {/* MODAL DA AREA DE COMENTARIOS */}
+          <CommentSection
+            setModalStatus={setModalStatus}
+            postId={postId}
+            visible={modalStatus}
+          />
         </ScrollView>
-        
       </View>
     </>
   );
 }
 
 /**
- * 
- * 
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
+ *
+ *
  */

@@ -23,9 +23,12 @@ export function CommentInput({...props}: CommentInputProps) {
 
     // Handler que checa a entrada e se o estado vai ficar vazio
     function write(char: string) {
+
+        
+
         setCommentText(char);
         // Se estiver com o input vazio, desabilitar o envio
-        if(char == "") {
+        if(char.trim() == "") {
             setSendDisable(true);
         } else {
             setSendDisable(false);

@@ -2,7 +2,7 @@ import { Image, View } from "react-native";
 import { CommentInput } from "../CommentInput";
 import { style } from "./style";
 
-export function CommentWriter() {
+export function CommentInputBar() {
   return (
     <View style={style.container}>
       {/* SUBSTITUIR PELA FOTO DO USUARIO */}

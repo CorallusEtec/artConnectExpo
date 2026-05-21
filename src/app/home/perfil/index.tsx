@@ -1,15 +1,23 @@
-import { Post } from '@/components/Post';
-import { Action } from '@/components/Post/Action';
+import { Post } from "@/components/Post";
+import { Action } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
-import PublicacoesService from '@/services/PublicacoesService';
-import { useAuthStore } from '@/store';
+import PublicacoesService from "@/services/PublicacoesService";
+import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Pressable,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { style } from "./style";
 
 export default function Perfil() {
@@ -22,7 +30,9 @@ export default function Perfil() {
       try {
         const data = await PublicacoesService.listar();
         if (usuario) {
-          const meus = (data ?? []).filter((p: any) => p.autor?.id === (usuario as any).id);
+          const meus = (data ?? []).filter(
+            (p: any) => p.autor?.id === (usuario as any).id,
+          );
           setPublicacoes(meus);
         } else {
           setPublicacoes([]);
@@ -88,15 +98,24 @@ export default function Perfil() {
           </View>
 
           <View style={style.bioContainer}>
-            <Text style={style.bioText}>{usuario?.textoBio ?? 'Sem biografia.'}</Text>
+            <Text style={style.bioText}>
+              {usuario?.textoBio ?? "Sem biografia."}
+            </Text>
           </View>
-
         </View>
-        
-          <View style={style.botaoEdit}>
-            <TextButton onPress={() => router.navigate("/home/perfil/editar")}  style={{width: '30%', backgroundColor: gStyles.azul[500], borderWidth: 3, borderColor: 'white'}} title="Editar perfil" />
-          </View>
 
+        <View style={style.botaoEdit}>
+          <TextButton
+            onPress={() => router.navigate("/home/perfil/editar")}
+            style={{
+              width: "30%",
+              backgroundColor: gStyles.azul[500],
+              borderWidth: 3,
+              borderColor: "white",
+            }}
+            title="Editar perfil"
+          />
+        </View>
 
         <View style={style.icons}>
           <Pressable>
@@ -117,7 +136,7 @@ export default function Perfil() {
               renderItem={({ item }) => (
                 <Post.root>
                   <Post.header
-                    nomePerfil={item.autor?.nome ?? 'Usuário'}
+                    nomePerfil={item.autor?.nome ?? "Usuário"}
                     data={new Date(item.dataPublicacao)}
                   >
                     <Post.headerActions>
@@ -130,11 +149,19 @@ export default function Perfil() {
 
                   <Post.actions>
                     <Action insight={0}>
-                      <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
+                      <FontAwesome
+                        name="heart-o"
+                        size={24}
+                        color={gStyles.vermelho[400]}
+                      />
                     </Action>
 
                     <Action insight={0}>
-                      <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
+                      <Feather
+                        name="message-circle"
+                        size={24}
+                        color={gStyles.cinza[600]}
+                      />
                     </Action>
                   </Post.actions>
                 </Post.root>

@@ -6,6 +6,7 @@ export const style = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     padding: 2,
     backgroundColor: gStyles.cinza[100],
     borderRadius: 14

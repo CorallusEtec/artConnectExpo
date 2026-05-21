@@ -2,17 +2,17 @@ import { ActivityIndicator, Modal, ModalProps, Pressable, Text, TouchableOpacity
 import { style } from "./style";
 import { Ionicons } from "@expo/vector-icons";
 import { gStyles } from "@/style/gStyle";
-import { CommentWriter } from "./CommentWriter";
+import { CommentInputBar } from "./CommentInputBar";
 import { Suspense } from "react";
-import { CommentArea } from "./CommentArea";
+import { CommentList } from "./CommentList";
 import { ComentarioService } from "@/services/ComentarioService";
 
 type CommentsProps = ModalProps & {
     setModalStatus: (status: boolean) => void,
-    postId: number
+    postId: undefined |number
 };
 
-export function Comments({ ...props }: CommentsProps) {
+export function CommentSection({ ...props }: CommentsProps) {
 
     const commentsPromise = ComentarioService.findByPost(props.postId)
 
@@ -32,12 +32,10 @@ export function Comments({ ...props }: CommentsProps) {
                         <Text>Comentários</Text>
                     </View>
                     
-                    <CommentWriter />
-
+                    <CommentInputBar />
                     <Suspense fallback={<ActivityIndicator size={"large"} />}>
-                        <CommentArea promise={commentsPromise} />
+                        <CommentList promise={commentsPromise} />
                     </Suspense>
-                
                 </View>
             </View>
         </Modal>
