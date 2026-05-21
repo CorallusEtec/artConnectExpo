@@ -39,15 +39,26 @@ export default class ArtistaService {
     return response.json();
   }
 
-  static async listar() {
-    const response = await fetch(`${config.apiUrl}/artista/findAll`);
+  static async listar(filtros?: { tipoArtista?: string; genero?: string; estilo?: string; nome?: string }) {
+  const params = new URLSearchParams();
+  if (filtros?.nome)        params.append("nome", filtros.nome);
+  if (filtros?.tipoArtista) params.append("tipoArtista", filtros.tipoArtista);
+  if (filtros?.genero)      params.append("genero", filtros.genero);
+  if (filtros?.estilo)      params.append("estilo", filtros.estilo);
 
-    if (!response.ok) {
-      throw new Error("Erro ao buscar artistas");
-    }
+  const query = params.toString();
+  const url = query
+    ? `${config.apiUrl}/artista/findAll?${query}`
+    : `${config.apiUrl}/artista/findAll`;
 
-    return response.json();
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar artistas");
   }
+
+  return response.json();
+}
 
   static async save(artista: ArtistaCadastroDTO) {
     try {
