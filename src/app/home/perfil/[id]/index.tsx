@@ -11,10 +11,25 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
+import UsuarioService from '@/services/UsuarioService';
+
+interface Usuario {
+  nome: String;
+  email: String;
+}
 
 export default function Perfil() {
-  
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+
   const {id} = useLocalSearchParams();
+
+  async function preencherCampos()  {
+    const dados = await UsuarioService.getById(Number(id));
+    setUsuario(dados);
+  }
+  useEffect(() => {
+    preencherCampos();
+    },);
 
   return (
     <>
@@ -46,7 +61,7 @@ export default function Perfil() {
                 source={require("@/assets/template/avatar.png")}
               />
             </Pressable>
-            <Text style={style.nomeProfile}>Nome do perfil</Text>
+            <Text style={style.nomeProfile}>{usuario?.email}</Text>
           </View>
           <View style={style.infosProfile}>
             <View style={style.infoDuo}>
