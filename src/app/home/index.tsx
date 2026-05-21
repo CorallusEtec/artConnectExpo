@@ -34,7 +34,7 @@ export default function Home() {
         const data = await PublicacoesService.listar();
         setPublicacoes(data);
       } catch (Erro) {
-        console.log(Erro);
+        console.log("Erro no index: "+Erro);
       }
     }
     setLoad(false);
@@ -42,7 +42,7 @@ export default function Home() {
   }, []);
 
   if (load) return <ActivityIndicator size={"large"} />;
-
+  
   return (
     <>
       <View style={style.navbar}>

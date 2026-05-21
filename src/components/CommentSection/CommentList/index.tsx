@@ -13,7 +13,6 @@ export function CommentList({...props}:CommentListProps) {
     
     const comments = use(props.promise);
     
-    
     return (
         <FlatList 
         data={comments}

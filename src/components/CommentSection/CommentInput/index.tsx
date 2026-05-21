@@ -4,10 +4,15 @@ import { gStyles } from "@/style/gStyle";
 import EmojiPicker, {pl, pt, type EmojiType} from 'rn-emoji-keyboard';
 import { useState } from "react";
 import { Entypo, Ionicons } from "@expo/vector-icons";
+import { ComentarioResponse } from "@/models/response/ComentarioResponse";
+import { ComentarioService } from "@/services/ComentarioService";
+import { ComentarioRequest } from "@/models/request/ComentarioRequest";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 type CommentInputProps = TextInputProps & {
-
+    postId: undefined | number,
+    attComments: () => void
 }
 
 
@@ -35,6 +40,35 @@ export function CommentInput({...props}: CommentInputProps) {
         }
     }
 
+    // Função para enviar o comentario
+    async function sendComment() {
+        const idAutor = await AsyncStorage.getItem("@artconnect:token");
+
+        if(idAutor == null) {
+            throw new Error("Erro de permissão");
+        } else {
+
+            // Remove possíveis espaços em branco em volta do comentario
+            commentText.trim()
+
+            // Request
+            const comment: ComentarioRequest = {
+                idAutor: Number(idAutor),
+                mensagem: commentText,
+                idPublicacao: props.postId as number
+            }
+  
+            // Envia o comentário
+            await ComentarioService.comment(comment);  
+            
+        }
+        // Atualiza os comentarios
+        props.attComments();
+
+        // Limpa o input
+        setCommentText("");
+    }
+
     return (
         <View style={style.container}>
             <TextInput style={style.input} value={commentText} onChangeText={write} {...props} placeholderTextColor={gStyles.cinza[500]} />
@@ -45,7 +79,7 @@ export function CommentInput({...props}: CommentInputProps) {
                 <TouchableOpacity onPress={()=>setEmojiOpen(true)}>
                     <Entypo name="emoji-happy" size={18} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity style={sendDisable?style.sendBtnDisable:style.sendBtnEnable} disabled={sendDisable}>
+                <TouchableOpacity onPress={()=>sendComment()} style={sendDisable?style.sendBtnDisable:style.sendBtnEnable} disabled={sendDisable}>
                     <Ionicons style={sendDisable?style.sendIconDisable:style.sendIconEnable} name="send" size={18} />
                 </TouchableOpacity>
                 <EmojiPicker translation={pt} onEmojiSelected={getEmoji} open={emojiOpen} onClose={()=>setEmojiOpen(false)}/>

@@ -36,14 +36,6 @@ export function CommentHeader({
               )}
             </Text>
           )}
-          {/* MOCK DE DATA */}
-          {
-            <Text>
-              {AppUtils.labelData(
-                AppUtils.converterData(new Date("2023-02-10T09:32:10")),
-              )}
-            </Text>
-          }
         </View>
       </View>
       {children}

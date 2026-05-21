@@ -37,5 +37,25 @@ export const style = StyleSheet.create({
     headerContainer: {
         alignItems: "center",
         marginBottom: 20
+    },
+
+    InputBarcontainer: {
+        flexDirection: "row",
+        marginBottom: 25
+        
+    },
+
+    imgUsuarioContainer: {
+        width: "15%",
+        alignItems: "center"
+    },
+    imgUsuario: {
+        
+        aspectRatio: 1,
+        width: 32,
+        height: 32
+    },
+    inputContainer: {
+        width: "85%"
     }
 })
