@@ -15,27 +15,42 @@ import UsuarioService from '@/services/UsuarioService';
 
 interface Usuario {
   nome: String;
-  email: String;
 }
 
 export default function Perfil() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [publicacoes, setPublicacoes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const {id} = useLocalSearchParams();
 
-  async function preencherCampos()  {
-    const dados = await UsuarioService.getById(Number(id));
-    setUsuario(dados);
-  }
   useEffect(() => {
+    async function preencherCampos()  {
+      const dados = await UsuarioService.getById(Number(id));
+      setUsuario(dados);
+    }
+
+    async function carregar() {
+      try {
+        const data = await PublicacoesService.listar();
+          const meus = (data ?? []).filter((p: any) => p.autor?.id === Number(id));
+          setPublicacoes(meus);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
     preencherCampos();
-    },);
+    carregar();
+    },[id]);
 
   return (
     <>
       <View style={style.navbarMom}>
         <View style={style.navbarSon1}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={router.back}>
             <FontAwesome5
               name="arrow-left"
               color={gStyles.cinza[100]}
@@ -61,7 +76,7 @@ export default function Perfil() {
                 source={require("@/assets/template/avatar.png")}
               />
             </Pressable>
-            <Text style={style.nomeProfile}>{usuario?.email}</Text>
+            <Text style={style.nomeProfile}>{usuario?.nome}</Text>
           </View>
           <View style={style.infosProfile}>
             <View style={style.infoDuo}>
@@ -88,7 +103,7 @@ export default function Perfil() {
         </View>
 
         <View style={style.posts}>
-          {/* {loading ? (
+           {loading ? (
             <ActivityIndicator />
           ) : (
             <FlatList
@@ -120,7 +135,7 @@ export default function Perfil() {
                 </Post.root>
               )}
             />
-          )} */}
+          )} 
         </View>
       </View>
     </>

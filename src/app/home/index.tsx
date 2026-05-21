@@ -5,6 +5,7 @@ import PublicacoesService from "@/services/PublicacoesService";
 import { gStyles } from "@/style/gStyle";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
+import { router } from "expo-router";
 import { ActivityIndicator, ScrollView, Image, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
 
@@ -49,6 +50,7 @@ export default function Home() {
               <Post.header
                 nomePerfil={item.autor?.nome ?? "Usuário"}
                 data={new Date(item.dataPublicacao)}
+                onProfile={() => router.push(`/home/perfil/${item.autor?.id}`as any)}
               >
                 <Post.headerActions>
                   <TextButton title="Seguir" theme="secondary" />
