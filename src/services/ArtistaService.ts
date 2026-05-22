@@ -8,10 +8,19 @@ export interface ArtistaCadastroDTO {
     senha: string;
 }
 
+export interface TipoContato {
+  id: number;
+}
+
+export interface Contato {
+  valorContato: string;
+  tipoContato: TipoContato;
+}
+
 export interface ArtistaEditDTO {
   nome?: string;
   textoBio?: string;
-  contatos?: any[];
+  contatos?: Contato[];
   arte?: { id: number };
   nomeArtistico?: string;
   dataNasc?: string;
@@ -59,13 +68,38 @@ export default class ArtistaService {
     }
 
     static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
+  // Processa contatos se existirem na edição
+  let payload = { ...artista };
+  
+  if (artista.contatos && artista.contatos.length > 0) {
+    // Valida se os contatos têm a estrutura correta
+    payload.contatos = artista.contatos.map(contato => {
+      // Se for string ou objeto sem tipoContato, assume tipo 1 (telefone/padrão)
+      if (typeof contato === 'string') {
+        return {
+          valorContato: contato,
+          tipoContato: { id: 1 }
+        };
+      }
+      
+      if (!contato.tipoContato) {
+        return {
+          ...contato,
+          tipoContato: { id: 1 }
+        };
+      }
+      
+      return contato;
+    });
+  }
+
   const response = await fetch(`${config.apiUrl}/artista/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: JSON.stringify(artista),
+    body: JSON.stringify(payload),
   });
 
   const text = await response.text();

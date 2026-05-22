@@ -5,6 +5,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ActivityIndicator,
   Pressable,
@@ -45,7 +46,8 @@ export default function EditPerfil() {
       nome: usuario.nome || "",
       textoBio: usuario.textoBio || "",
       contatos: (usuario.contatos || [])
-        .map((c: any) => c.valor || c)
+        .map((c: any) => c.valorContato || c.valor || "")
+        .filter((c: string) => c.length > 0)
         .join(", "),
 
       nomeLog: usuario.nomeLog || "",
@@ -66,13 +68,14 @@ export default function EditPerfil() {
   }
 
   async function handleSalvar() {
-    if (!usuario) {
-      router.navigate("/login");
-      return;
-    }
-
     try {
       setLoading(true);
+
+      const token = await AsyncStorage.getItem('@artconnect:token');
+      if (!token) {
+        router.navigate("/login");
+        return;
+      }
 
       const payload: ArtistaEditDTO = {
         nome: form.nome,
@@ -82,7 +85,10 @@ export default function EditPerfil() {
           .split(",")
           .map((item) => item.trim())
           .filter(Boolean)
-          .map((valor) => ({ valor })),
+          .map((valor) => ({ 
+            valorContato: valor,
+            tipoContato: { id: 1 }
+          })),
 
         arte: (usuario as any).arte,
         nomeArtistico: (usuario as any).nomeArtistico,
@@ -97,7 +103,7 @@ export default function EditPerfil() {
         uf: form.uf,
       };
 
-      await ArtistaService.edit((usuario as any).id, payload);
+      await ArtistaService.edit(parseInt(token), payload);
 
       setUsuario({
         ...(usuario as any),
