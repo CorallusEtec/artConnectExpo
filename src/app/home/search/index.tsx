@@ -50,7 +50,7 @@ export default function Search() {
   const [estiloSel, setEstiloSel] = useState("");
 
   useEffect(() => {
-    carregar();
+    buscar();
   }, []);
 
   async function carregar() {
