@@ -1,3 +1,4 @@
+import { ContextRoot } from "./ContextRoot";
 import { PostActions } from "./PostActions";
 import { PostContentText } from "./PostContentText";
 import { PostHeader } from "./PostHeader";
@@ -6,6 +7,7 @@ import { PostImage } from "./PostImage";
 import { PostRoot } from "./PostRoot";
 
 export const Post = {
+  context: ContextRoot,
   root: PostRoot,
   header: PostHeader,
   headerActions: PostHeaderActions,

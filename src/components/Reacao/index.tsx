@@ -7,26 +7,25 @@ import {
 } from "react-native";
 import { style } from "./style";
 
-type PostActionProps = TouchableOpacityProps & {
-  insight?: number;
+type ReacaoProps = TouchableOpacityProps & {
+  insight: number;
   children?: ReactNode;
 };
 
-export function Action({
-  insight = 1,
+export function Reacao({
+  insight = 0,
   children = <></>,
   ...props
-}: PostActionProps) {
+}: ReacaoProps) {
   function labelInsight(valor: number): string {
-    if(valor < 1000) {
+    if (valor < 1000) {
       return `${valor}`;
-    } else if(valor < 1000000) {
+    } else if (valor < 1000000) {
       return `${(valor / 1000).toFixed(1)} mil`;
     } else {
       return `${valor}`;
     }
   }
-
 
   return (
     <View style={style.postActionContainer}>
