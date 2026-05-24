@@ -2,7 +2,7 @@ import { Post } from '@/components/Post';
 import { Action } from '@/components/Post/Action';
 import { TextButton } from "@/components/TextButton";
 import PublicacoesService from '@/services/PublicacoesService';
-import { useAuthStore } from '@/store';
+import UsuarioService from '@/services/UsuarioService';
 import { gStyles } from "@/style/gStyle";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -11,10 +11,17 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
-import UsuarioService from '@/services/UsuarioService';
 
+interface Contato {
+  idContato: number;
+  valorContato: string;
+  tipoContato: {
+    idTipoContato: number;
+  };
+}
 interface Usuario {
-  nome: String;
+  nome: string;
+  contatos?: Contato[];
 }
 
 export default function Perfil() {
@@ -23,6 +30,15 @@ export default function Perfil() {
   const [loading, setLoading] = useState(true);
 
   const {id} = useLocalSearchParams();
+
+  function mapearContatos(contatos: Contato[] = [], tipo: number) {
+    return contatos.filter(
+      contato => contato.tipoContato?.idTipoContato === tipo
+    );
+  }
+
+const contatosWhatsapp = mapearContatos(usuario?.contatos, 1);
+const contatosEmail = mapearContatos(usuario?.contatos, 2);
 
   useEffect(() => {
     async function preencherCampos()  {
@@ -81,7 +97,7 @@ export default function Perfil() {
           <View style={style.infosProfile}>
             <View style={style.infoDuo}>
               <Text style={style.info}>Posts</Text>
-              <Text style={style.info}>{id}</Text>
+              <Text style={style.info}>{publicacoes.length}</Text>
             </View>
             <Pressable>
               <View style={style.infoDuo}>
@@ -97,8 +113,31 @@ export default function Perfil() {
             </Pressable>
           </View>
 
-          <View style={style.ContatarContainer}>
-            <Text style={style.ContatarText}>Contatar</Text>
+          <View style={style.contatoContainer}>
+
+            {contatosWhatsapp.length > 0 && (
+              <View style={style.contatoWrapper}>
+                <FontAwesome name="whatsapp" size={26} color="white" />
+
+                {contatosWhatsapp.map((contato: any) => (
+                  <Text style={style.contatoText} key={contato.idContato}>
+                    {contato.valorContato}
+                  </Text>
+                ))}
+              </View>
+            )}
+
+            {contatosEmail.length > 0 && (
+              <View style={style.contatoWrapper}>
+                <FontAwesome name="instagram" size={26} color="white" />
+
+                {contatosEmail.map((contato: any) => (
+                  <Text style={style.contatoText} key={contato.idContato}>
+                    {contato.valorContato}
+                  </Text>
+                ))}
+              </View>
+            )}
           </View>
         </View>
 

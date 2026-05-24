@@ -99,24 +99,6 @@ export const style = StyleSheet.create({
     paddingHorizontal: 16,
   },
 
-  ContatarContainer: {
-    marginTop: 8,
-    marginBottom: 6,
-    paddingHorizontal: 6,
-    alignItems: 'center'
-  },
-
-  ContatarText: {
-    color: 'white',
-    fontSize: 17,
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: 'white',
-    width: 100,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-
   icons: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -134,5 +116,20 @@ export const style = StyleSheet.create({
     width: '100%',
     height: 160,
     margin: 4
+  },
+
+  contatoWrapper: {
+    flexDirection: "row",
+    gap: 10
+  },
+
+  contatoContainer: {
+    paddingTop: 10,
+    gap: 10
+  },
+
+  contatoText: {
+    color: "white",
+    fontSize: 16
   },
 });
