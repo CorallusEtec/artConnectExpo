@@ -60,6 +60,17 @@ export default class ArtistaService {
   return response.json();
 }
 
+static async listarTodos() {
+  const response = await fetch(
+    `${config.apiUrl}/artista/findAll`
+  );
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar artistas");
+  }
+
+  return response.json();
+}
   static async save(artista: ArtistaCadastroDTO) {
     try {
       const response = await fetch(`${config.apiUrl}/artista/save`, {

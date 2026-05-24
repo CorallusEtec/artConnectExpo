@@ -21,7 +21,7 @@ export default function Home() {
         const data = await PublicacoesService.listar();
         setPublicacoes(data);
       } catch (Erro) {
-        console.log(Erro);
+        
       }
     }
     setLoad(false);
