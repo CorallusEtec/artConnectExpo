@@ -51,7 +51,7 @@ export default function EditPerfil() {
   });
 
   const [contatosWhatsapp, setContatosWhatsapp] = useState(mapearContatos(user?.contatos, 1));
-  const [contatosEmail, setContatosEmail] = useState(mapearContatos(user?.contatos, 2));
+  const [contatosInstagram, setContatosInstagram] = useState(mapearContatos(user?.contatos, 2));
 
   useEffect(() => {
     if (!usuario) return;
@@ -76,7 +76,7 @@ export default function EditPerfil() {
         });
 
         setContatosWhatsapp(mapearContatos(dados.contatos, 1));
-        setContatosEmail(mapearContatos(dados.contatos, 2));
+        setContatosInstagram(mapearContatos(dados.contatos, 2));
       } catch (error) {
         console.log(error);
       }
@@ -134,7 +134,7 @@ export default function EditPerfil() {
 
       await ArtistaService.edit(userId, payload);
 
-      const contatos = [...contatosWhatsapp, ...contatosEmail].filter(c => c.valor.trim());
+      const contatos = [...contatosWhatsapp, ...contatosInstagram].filter(c => c.valor.trim());
 
       for (const contato of contatos) {
         if (contato.id) {
@@ -177,34 +177,35 @@ export default function EditPerfil() {
 
   function renderContatos(titulo: string, lista: Contato[], setLista: any, tipo: number, texto: string) {
     return (
-      <View style={{ marginTop: 16 }}>
-        <Text style={style.label}>{titulo}</Text>
+    <View style={{ marginTop: 16 }}>
+      <Text style={style.label}>{titulo}</Text>
 
-        {lista.map((contato, index) => (
-          <View key={index} style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-            <TextInput
-              style={[style.input, { flex: 1, marginRight: 8 }]}
-              placeholder={texto}
-              placeholderTextColor={placeholder}
-              value={contato.valor}
-              onChangeText={text => atualizarContato(lista, setLista, index, text)}
-            />
+      {lista.map((contato, index) => (
+        <View key={index} style={style.contatoRow}>
+          <TextInput
+            style={[style.input, style.contatoInput]}
+            placeholder={texto}
+            placeholderTextColor={placeholder}
+            value={contato.valor}
+            onChangeText={text =>
+              atualizarContato(lista, setLista, index, text)
+            }
+          />
 
-            <TouchableOpacity onPress={() => removerContato(lista, setLista, index)}>
-              <Feather name="trash-2" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-        ))}
+          <TouchableOpacity onPress={() =>removerContato(lista, setLista, index)}>
+            <Feather name="trash-2" size={24} color="black"/>
+          </TouchableOpacity>
+        </View>
+      ))}
 
-        <TouchableOpacity
-          style={[style.input, { justifyContent: "center", alignItems: "center", backgroundColor: gStyles.azul[200] }]}
-          onPress={() => adicionarContato(setLista, tipo)}
-        >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>+ Adicionar</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+      <TouchableOpacity
+        style={[style.input,style.botaoAdicionarContato]}
+        onPress={() =>adicionarContato(setLista, tipo)}>
+        <Text style={style.textoAdicionarContato}> + Adicionar </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
   return (
     <ScrollView style={style.container}>
@@ -244,7 +245,7 @@ export default function EditPerfil() {
       />
 
       {renderContatos("WhatsApp", contatosWhatsapp, setContatosWhatsapp, 1, "Digite seu WhatsApp")}
-      {renderContatos("Email", contatosEmail, setContatosEmail, 2, "Digite seu Email")}
+      {renderContatos("Instagram", contatosInstagram, setContatosInstagram, 2, "Digite seu instagram")}
 
       <Text style={style.label}>Logradouro</Text>
       <TextInput

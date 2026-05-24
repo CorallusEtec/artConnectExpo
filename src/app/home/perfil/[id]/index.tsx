@@ -38,7 +38,7 @@ export default function Perfil() {
   }
 
 const contatosWhatsapp = mapearContatos(usuario?.contatos, 1);
-const contatosEmail = mapearContatos(usuario?.contatos, 2);
+const contatosInstagram = mapearContatos(usuario?.contatos, 2);
 
   useEffect(() => {
     async function preencherCampos()  {
@@ -127,11 +127,11 @@ const contatosEmail = mapearContatos(usuario?.contatos, 2);
               </View>
             )}
 
-            {contatosEmail.length > 0 && (
+            {contatosInstagram.length > 0 && (
               <View style={style.contatoWrapper}>
                 <FontAwesome name="instagram" size={26} color="white" />
 
-                {contatosEmail.map((contato: any) => (
+                {contatosInstagram.map((contato: any) => (
                   <Text style={style.contatoText} key={contato.idContato}>
                     {contato.valorContato}
                   </Text>
