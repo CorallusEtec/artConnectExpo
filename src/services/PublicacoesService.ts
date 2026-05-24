@@ -1,3 +1,4 @@
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
@@ -35,7 +36,7 @@ export default class PublicacoesService {
         }
     }
 
-    static async listar() {
+    static async listar(): Promise<PublicacaoResponse[]> {
     try {
       const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
 

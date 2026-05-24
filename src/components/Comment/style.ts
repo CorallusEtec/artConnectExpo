@@ -2,10 +2,6 @@ import { gStyles } from "@/style/gStyle";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
-  root: {
-    backgroundColor: gStyles.cinza[50],
-  },
-
   headerProfile: {
     height: 32,
     width: 32,
@@ -37,34 +33,20 @@ export const style = StyleSheet.create({
     gap: 5,
   },
 
-  contentTextContainer: {
-    padding: 7,
-  },
-  contentTextText: {
-    fontWeight: "400",
-    color: gStyles.cinza[600],
-    fontSize: 17,
-  },
 
-  img: {
-    width: "auto",
-    height: "auto",
-    aspectRatio: 1 / 1,
-    resizeMode: "cover",
-  },
-
-  actionsRoot: {
-    borderTopWidth: 1,
-    paddingTop: 10,
-    borderColor: gStyles.cinza[200],
-
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 7,
+  contentContainer: {
     padding: 5,
   },
-  actionsGroup: {
-    flexDirection: "row",
-    gap: 25,
+  messageContainer: {
+    marginBottom: 10
   },
-});
+  contentActionsContainer: {
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: gStyles.cinza[200],
+    
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20
+  }
+})
