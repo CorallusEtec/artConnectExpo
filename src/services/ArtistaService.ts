@@ -3,9 +3,9 @@ import config from './config';
 import { ValidationService } from "./ValidacaoService";
 
 export interface ArtistaCadastroDTO {
-    nome: string;
-    email: string;
-    senha: string;
+  nome: string;
+  email: string;
+  senha: string;
 }
 
 export interface ArtistaEditDTO {
@@ -22,60 +22,96 @@ export interface ArtistaEditDTO {
   complemento?: string;
   cidade?: string;
   uf?: string;
+
+  tipoArtista?: string;
+  genero?: string;
+  estilo?: string;
 }
-
 export default class ArtistaService {
-    static async getById(id: number) {
-        const response = await fetch(`${config.apiUrl}/artista/${id}`);
 
-        if(!response.ok) {
-            throw new Error("Erro ao buscar usuario");
-        }
+  static async getById(id: number) {
+    const response = await fetch(`${config.apiUrl}/artista/${id}`);
 
-        return response.json();
+    if (!response.ok) {
+      throw new Error("Erro ao buscar usuario");
     }
 
-    static async save(artista: ArtistaCadastroDTO) {
-        try {
-            const response = await fetch(`${config.apiUrl}/artista/save`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(artista),
-            });
+    return response.json();
+  }
 
-            const text = await response.text();
+  static async listar(filtros?: { tipoArtista?: string; genero?: string; estilo?: string; nome?: string }) {
+  const params = new URLSearchParams();
+  if (filtros?.nome)        params.append("nome", filtros.nome);
+  if (filtros?.tipoArtista) params.append("tipoArtista", filtros.tipoArtista);
+  if (filtros?.genero)      params.append("genero", filtros.genero);
+  if (filtros?.estilo)      params.append("estilo", filtros.estilo);
 
-            if (!response.ok) {
-                throw new Error(text);
-            }
+  const query = params.toString();
+  const url = query
+    ? `${config.apiUrl}/artista/findAll?${query}`
+    : `${config.apiUrl}/artista/findAll`;
 
-            return text;
-        } catch (error) {
-            console.error("Erro ao salvar artista:", error);
-            throw error;
-        }
-    }
-
-    static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
-  const response = await fetch(`${config.apiUrl}/artista/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(artista),
-  });
-
-  const text = await response.text();
+  const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(text);
+    throw new Error("Erro ao buscar artistas");
   }
+
+  return response.json();
 }
 
-    static validarCadastro(dados: any): ErroValidacao {
+static async listarTodos() {
+  const response = await fetch(
+    `${config.apiUrl}/artista/findAll`
+  );
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar artistas");
+  }
+
+  return response.json();
+}
+  static async save(artista: ArtistaCadastroDTO) {
+    try {
+      const response = await fetch(`${config.apiUrl}/artista/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(artista),
+      });
+
+      const text = await response.text();
+
+      if (!response.ok) {
+        throw new Error(text);
+      }
+
+      return text;
+    } catch (error) {
+      console.error("Erro ao salvar artista:", error);
+      throw error;
+    }
+  }
+
+  static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
+    const response = await fetch(`${config.apiUrl}/artista/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(artista),
+    });
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(text);
+    }
+  }
+
+  static validarCadastro(dados: any): ErroValidacao {
     const erro = new ErroValidacao();
 
     if (!dados.nome || !dados.email || !dados.senha) {

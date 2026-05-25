@@ -5,7 +5,7 @@ import { TextButton } from "@/components/TextButton";
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import PublicacoesService from "@/services/PublicacoesService";
 import { gStyles } from "@/style/gStyle";
-import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -15,34 +15,33 @@ import {
   View,
 } from "react-native";
 import { style } from "./style";
+import { router } from "expo-router";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState([]);
-
   const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [load, setLoad] = useState(true);
-
   const [modalStatus, setModalStatus] = useState(false);
-
-  // Estado que gerencia qual o id do post para entrar na seção de comentarios
   const [postId, setPostId] = useState<number>();
 
-  useEffect(() => {
+ useEffect(() => {
     async function carregar() {
       try {
         const data = await PublicacoesService.listar();
         setPublicacoes(data);
       } catch (Erro) {
-        console.log("Erro no index: "+Erro);
+        console.error(Erro); 
+      } finally {
+        setLoad(false); 
       }
     }
-    setLoad(false);
+
     carregar();
   }, []);
 
   if (load) return <ActivityIndicator size={"large"} />;
-  
+
   return (
     <>
       <View style={style.navbar}>
@@ -50,9 +49,11 @@ export default function Home() {
           style={style.banner}
           source={require("@/assets/img/banner.png")}
         />
-        <TouchableOpacity>
-          <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 16 }}>
+          <TouchableOpacity>
+            <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={style.container}>
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
@@ -96,7 +97,6 @@ export default function Home() {
             </Post.root>
           ))}
 
-          {/* MODAL DA AREA DE COMENTARIOS */}
           <CommentSection
             setModalStatus={setModalStatus}
             postId={postId}
@@ -107,12 +107,3 @@ export default function Home() {
     </>
   );
 }
-
-/**
- *
- *
- *
- *
- *
- *
- */
