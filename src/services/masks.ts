@@ -15,12 +15,12 @@ export default class masks {
   }
 
     static handleTelefone(digitosAtuais: string, novoTexto: string): string {
-        const novosDígitos = masks.unmask(novoTexto);
-        const usuarioDeletou = novoTexto.length < masks.telefone(digitosAtuais).length;
+        const novosDigitos = masks.unmask(novoTexto);
+        const deletou = novoTexto.length < masks.telefone(digitosAtuais).length;
 
-        if (novosDígitos === digitosAtuais && usuarioDeletou) {
+        if (novosDigitos === digitosAtuais && deletou) {
             return digitosAtuais.slice(0, -1);
         }
-        return novosDígitos;
+        return novosDigitos;
     }
 }
