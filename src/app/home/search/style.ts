@@ -8,7 +8,7 @@ export const style = StyleSheet.create({
     padding: 16,
     gap: 16,
     flex: 1,
-    backgroundColor: "#FFFFFF", // ou gStyles.branco se houver
+    backgroundColor: "#FFFFFF", 
   },
 
   navbar: {
@@ -40,7 +40,7 @@ export const style = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    color: gStyles.cinza[500], // Ajuste conforme os índices do seu gStyles
+    color: gStyles.cinza[500], 
   },
 
   botaoFiltro: {
@@ -52,9 +52,9 @@ export const style = StyleSheet.create({
     alignItems: "center",
   },
 
-  // BOTÃO DE BUSCAR PRINCIPAL
+
   botaoBuscarPrincipal: {
-    backgroundColor: "#113093", // Azul escuro do seu print
+    backgroundColor: "#113093", 
     height: 48,
     borderRadius: 8,
     justifyContent: "center",
@@ -67,9 +67,8 @@ export const style = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // CARD DE RESULTADOS (Cinza do mockup)
   cardResultado: {
-    backgroundColor: gStyles.cinza[300], // Tom de cinza para os cards desativados/mockup
+    backgroundColor: gStyles.cinza[300], 
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -87,7 +86,6 @@ export const style = StyleSheet.create({
     marginTop: 4,
   },
 
-  // ESTRUTURA DO MODAL DE FILTROS AVANÇADOS
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -117,7 +115,7 @@ export const style = StyleSheet.create({
   },
 
   textoLimpar: {
-    color: "#EF4444", // Vermelho padrão para ações de limpar/deletar
+    color: "#EF4444", 
     fontSize: 14,
     fontWeight: "600",
   },
@@ -141,7 +139,6 @@ export const style = StyleSheet.create({
     color: gStyles.cinza[500],
   },
 
-  // BOTÕES INTERNOS DE SELEÇÃO (Tipo de Usuário)
   containerBotoesTipo: {
     flexDirection: "row",
     gap: 12,
@@ -159,7 +156,7 @@ export const style = StyleSheet.create({
   },
 
   botaoTipoAtivo: {
-    backgroundColor: "#2563EB", // Azul de destaque
+    backgroundColor: "#2563EB", 
     borderColor: "#2563EB",
   },
 
@@ -173,7 +170,7 @@ export const style = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // BOTÃO APLICAR FILTROS (Azul Royal inferior do modal)
+ 
   botaoAplicar: {
     backgroundColor: "#2563EB",
     height: 48,

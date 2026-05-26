@@ -3,86 +3,145 @@ import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
 interface CriarPublicacaoDTO {
-    legenda: string;
-    file: any;
-    autorId: number;
+  legenda: string;
+  file: any;
+  autorId: number;
 }
 
 export default class PublicacoesService {
-    static async save({legenda, file, autorId}: CriarPublicacaoDTO) {
+  static async save({
+    legenda,
+    file,
+    autorId,
+  }: CriarPublicacaoDTO) {
+    try {
+      const formData = new FormData();
+
+      formData.append("legenda", legenda ?? "");
+
+      if (file?.uri) {
+        let blob: Blob;
+
         try {
-            const formData = new FormData();
-            formData.append("legenda", legenda ?? "");
+          const fileResponse = await fetch(file.uri);
 
-            if(file?.uri) {
-                let blob:Blob;
-                try {
-                    const fileResponse = await fetch(file.uri);
-                    blob = await fileResponse.blob();
-                } catch (blobErr) {
-                    throw blobErr;
-                }
-                formData.append("file", blob, `image-${Date.now()}.jpg`);
-            }
-            const response = await fetch(`${config.apiUrl}/publicacao/save?autorId=${autorId}`,
-                {method: 'POST', body: formData}
-            );
-            const text = await response.text();
-            if (!response.ok) throw new Error(text);
-            return text;
-        } catch (error) {
-            console.error("Erro ao salvar publicação:", error);
-            throw error;
+          blob = await fileResponse.blob();
+        } catch (blobErr) {
+          throw blobErr;
         }
+
+        formData.append(
+          "file",
+          blob,
+          `image-${Date.now()}.jpg`
+        );
+      }
+
+      const response = await fetch(
+        `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const text = await response.text();
+
+      if (!response.ok) {
+        throw new Error(text);
+      }
+
+      return text;
+    } catch (error) {
+      console.error(
+        "Erro ao salvar publicação:",
+        error
+      );
+
+      throw error;
     }
-
-static async listar(params?: any): Promise<PublicacaoResponse[]> {
-  try {
-
-    const queryParams = new URLSearchParams();
-
-    if (params?.legenda) {
-      queryParams.append("legenda", params.legenda);
-    }
-
-    if (params?.nomeAutor) {
-      queryParams.append("nomeAutor", params.nomeAutor);
-    }
-
-    if (params?.dataInicio) {
-      queryParams.append("dataInicio", params.dataInicio);
-    }
-
-    if (params?.dataFim) {
-      queryParams.append("dataFim", params.dataFim);
-    }
-
-    const url = `${config.apiUrl}/publicacao/findAll?${
-      queryParams.toString()
-    }`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Erro ao buscar publicações");
-    }
-
-    return await response.json();
-
-  } catch (error) {
-    console.error("Erro ao listar publicações", error);
-    throw error;
   }
-}
 
-  static validarCriacao(dados: any): ErroValidacao {
+  static async listar(
+    params?: any
+  ): Promise<PublicacaoResponse[]> {
+    try {
+      console.log("PARAMS RECEBIDOS:", params);
+
+      const queryParams =
+        new URLSearchParams();
+
+      if (params?.legenda) {
+        queryParams.append(
+          "legenda",
+          params.legenda
+        );
+      }
+
+      if (params?.nomeAutor) {
+        queryParams.append(
+          "nomeAutor",
+          params.nomeAutor
+        );
+      }
+
+      if (params?.dataInicio) {
+        queryParams.append(
+          "dataInicio",
+          params.dataInicio
+        );
+      }
+
+      if (params?.dataFim) {
+        queryParams.append(
+          "dataFim",
+          params.dataFim
+        );
+      }
+
+      const url = `${
+        config.apiUrl
+      }/publicacao/findAll?${queryParams.toString()}`;
+
+      console.log("URL FINAL:", url);
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(
+          "Erro ao buscar publicações"
+        );
+      }
+
+      const data = await response.json();
+
+      console.log(
+        "RESPOSTA PUBLICAÇÕES:",
+        data
+      );
+
+      return data;
+    } catch (error) {
+      console.error(
+        "Erro ao listar publicações",
+        error
+      );
+
+      throw error;
+    }
+  }
+
+  static validarCriacao(
+    dados: any
+  ): ErroValidacao {
     const erro = new ErroValidacao();
 
     if (!dados.legenda && !dados.file) {
-        return erro.invalido(
+      return erro.invalido(
         "Ao menos uma legenda ou uma mídia deve ser fornecida"
-        );
+      );
     }
+
     return erro;
-}
+  }
 }
