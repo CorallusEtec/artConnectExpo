@@ -36,21 +36,44 @@ export default class PublicacoesService {
         }
     }
 
-    static async listar(): Promise<PublicacaoResponse[]> {
-    try {
-      const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
+static async listar(params?: any): Promise<PublicacaoResponse[]> {
+  try {
 
-      if (!response.ok) {
-        throw new Error("Erro ao buscar publicações");
-      }
+    const queryParams = new URLSearchParams();
 
-      return await response.json();
-
-    } catch (error) {
-      console.error("Erro ao listar publicações", error);
-      throw error;
+    if (params?.legenda) {
+      queryParams.append("legenda", params.legenda);
     }
+
+    if (params?.nomeAutor) {
+      queryParams.append("nomeAutor", params.nomeAutor);
+    }
+
+    if (params?.dataInicio) {
+      queryParams.append("dataInicio", params.dataInicio);
+    }
+
+    if (params?.dataFim) {
+      queryParams.append("dataFim", params.dataFim);
+    }
+
+    const url = `${config.apiUrl}/publicacao/findAll?${
+      queryParams.toString()
+    }`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar publicações");
+    }
+
+    return await response.json();
+
+  } catch (error) {
+    console.error("Erro ao listar publicações", error);
+    throw error;
   }
+}
 
   static validarCriacao(dados: any): ErroValidacao {
     const erro = new ErroValidacao();
