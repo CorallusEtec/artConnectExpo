@@ -10,6 +10,7 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
+import masks from "@/services/masks";
 
 interface Contato {
   id?: number;
@@ -187,26 +188,34 @@ export default function EditPerfil() {
   }
 }
 
-  function renderContatos(titulo: string, lista: Contato[], setLista: any, tipo: number, texto: string) {
-    const jaExisteContatoDoTipo = lista.some(c => c.tipo === tipo);
-    return (
+  function renderContatos(titulo: string,lista: Contato[],setLista: any,tipo: number,texto: string,maskFn?: (v: string) => string   
+) {
+  const jaExisteContatoDoTipo = lista.some(c => c.tipo === tipo);
+
+  return (
     <View style={{ marginTop: 16 }}>
       <Text style={style.label}>{titulo}</Text>
 
       {lista.map((contato, index) => (
         <View key={index} style={style.contatoRow}>
           <TextInput
+            maxLength={maskFn ? 15 : undefined}
             style={[style.input, style.contatoInput]}
             placeholder={texto}
             placeholderTextColor={placeholder}
-            value={contato.valor}
+            keyboardType={maskFn ? "phone-pad" : "default"}
+            value={maskFn ? maskFn(contato.valor) : contato.valor} 
             onChangeText={text =>
-              atualizarContato(lista, setLista, index, text)
+              atualizarContato(
+                lista,
+                setLista,
+                index,
+                maskFn ? masks.handleTelefone(contato.valor, text) : text
+              )
             }
           />
-
-          <TouchableOpacity onPress={() =>removerContato(lista, setLista, index)}>
-            <Feather name="trash-2" size={24} color="black"/>
+          <TouchableOpacity onPress={() => removerContato(lista, setLista, index)}>
+            <Feather name="trash-2" size={24} color="black" />
           </TouchableOpacity>
         </View>
       ))}
@@ -214,15 +223,13 @@ export default function EditPerfil() {
       {!jaExisteContatoDoTipo && (
         <TouchableOpacity
           style={[style.input, style.botaoAdicionarContato]}
-          onPress={() => adicionarContato(setLista, tipo)}
-        >
+          onPress={() => adicionarContato(setLista, tipo)}>
           <Text style={style.textoAdicionarContato}> + Adicionar </Text>
         </TouchableOpacity>
       )}
     </View>
   );
 }
-
   return (
     <ScrollView style={style.container}>
       <TouchableOpacity onPress={() => router.navigate("/home")}>
@@ -260,7 +267,7 @@ export default function EditPerfil() {
         onChangeText={text => alterarCampo("textoBio", text)}
       />
 
-      {renderContatos("WhatsApp", contatosWhatsapp, setContatosWhatsapp, 1, "Digite seu WhatsApp")}
+      {renderContatos("WhatsApp", contatosWhatsapp, setContatosWhatsapp, 1, "(00) 00000-0000", masks.telefone)}
       {renderContatos("Instagram", contatosInstagram, setContatosInstagram, 2, "Digite seu instagram")}
 
       <Text style={style.label}>Logradouro</Text>
