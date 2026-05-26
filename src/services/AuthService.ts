@@ -6,28 +6,22 @@ import { useQuery } from "@/hooks/useQuery";
 
 export class AuthService {
     static async login(loginRequest: AuthLoginRequest): Promise<AuthLoginResponse> {
-        const teste = await useQuery({method: "POST", url:`${config.apiUrl}/auth/login`, body:JSON.stringify(loginRequest)})
+        const request = await useQuery({
+            method: "POST", 
+            url:`${config.apiUrl}/auth/login`, 
+            body:JSON.stringify(loginRequest)
+        })
         
-        const request = await fetch(`${config.apiUrl}/auth/login`,{
-            method: "POST",
-            body: JSON.stringify(loginRequest),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    
-        return teste.json()
+       
+        return request.json()
     }
 
     static async register(registerRequest: AuthRegisterRequest) {
-        const request = await fetch(`${config.apiUrl}/auth/register`, {
+        await useQuery({
+            url: `${config.apiUrl}/auth/register`,
+            body: JSON.stringify(registerRequest),
             method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(registerRequest)
         });
 
-        return request.json();
     }
 }
