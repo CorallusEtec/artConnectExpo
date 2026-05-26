@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { style } from "./style";
+import { AuthService } from "@/services/AuthService";
 
 export default function CadastroContratante() {
   const [isEmpresa, setIsEmpresa] = useState(true);
@@ -31,7 +32,7 @@ export default function CadastroContratante() {
         razaoSocial: isEmpresa ? razaoSocial : null,
         cnpj: isEmpresa ? cnpj : null,
         cpf: null,
-        tipo: isEmpresa ? ("cnpj" as const) : ("cpf" as const),
+        tipo: isEmpresa ? ("CONTRATANTE_CNPJ" as const) : ("CONTRATANTE_CPF" as const),
       };
 
       const validacao = ContratanteService.validarCadastro(body);
@@ -41,7 +42,15 @@ export default function CadastroContratante() {
         return;
       }
 
-      await ContratanteService.save(body);
+      await AuthService.register({
+        nome,
+        email,
+        senha,
+        tipoConta: body.tipo,
+        cnpj,
+        razaoSocial
+      });
+
 
       router.navigate("/login");
     } catch (err) {
