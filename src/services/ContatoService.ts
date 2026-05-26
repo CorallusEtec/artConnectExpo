@@ -1,5 +1,6 @@
 import { ErroValidacao } from "@/services/ErroValidacao";
 import config from './config';
+import { useQuery } from "@/hooks/useQuery";
 
 export interface ContatoSaveDTO {
     valorContato: string;
@@ -14,11 +15,9 @@ export interface ContatoEditDTO {
 export default class ContatoService {
 
     static async save(contato: ContatoSaveDTO): Promise<string> {
-        const response = await fetch(`${config.apiUrl}/contato/save`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+        const response = await useQuery({
+            url: `${config.apiUrl}/contato/save`,
+            method: "POST",
             body: JSON.stringify(contato),
         });
 
@@ -32,8 +31,9 @@ export default class ContatoService {
     }
 
     static async delete(idContato: number): Promise<string> {
-        const response = await fetch(`${config.apiUrl}/contato/${idContato}`, {
-            method: 'DELETE',
+        const response = await useQuery({
+            url: `${config.apiUrl}/contato/${idContato}`,
+            method: "DELETE",
         });
 
         const text = await response.text();
@@ -46,13 +46,10 @@ export default class ContatoService {
     }
 
     static async edit(idContato: number, editRequest: ContatoEditDTO): Promise<string> {
-        const response = await fetch(`${config.apiUrl}/contato/${idContato}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(editRequest),
+        const response = await useQuery({
+            url: `${config.apiUrl}/contato/${idContato}`,
+            method: "PUT",
+            body: JSON.stringify(editRequest)
         });
 
         const text = await response.text();

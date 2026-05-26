@@ -7,20 +7,9 @@ import PublicacoesService from "@/services/PublicacoesService";
 import { gStyles } from "@/style/gStyle";
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
 import { router } from "expo-router";
 import { ActivityIndicator, ScrollView, Image, TouchableOpacity, View } from "react-native";
-=======
-import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from "react-native";
->>>>>>> 6491d9375150eef5cbf7e0cd10fd67d3323423d8
 import { style } from "./style";
-import { router } from "expo-router";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
@@ -66,12 +55,7 @@ export default function Home() {
             <Post.root key={item.id}>
               <Post.header
                 nomePerfil={item.autor?.nome ?? "Usuário"}
-<<<<<<< HEAD
-                data={new Date(item.dataPublicacao)}
-                onProfile={() => router.push(`/home/perfil/${item.autor?.id}`as any)}
-=======
                 dataPublicacao={new Date(item.dataPublicacao)}
->>>>>>> 6491d9375150eef5cbf7e0cd10fd67d3323423d8
               >
                 <Post.headerActions>
                   <TextButton title="Seguir" theme="secondary" />

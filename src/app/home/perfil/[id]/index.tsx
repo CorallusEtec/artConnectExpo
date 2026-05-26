@@ -1,5 +1,5 @@
 import { Post } from '@/components/Post';
-import { Action } from '@/components/Post/Action';
+import { PostActions } from '@/components/Post/PostActions';
 import { TextButton } from "@/components/TextButton";
 import PublicacoesService from '@/services/PublicacoesService';
 import UsuarioService from '@/services/UsuarioService';
@@ -152,7 +152,7 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
                 <Post.root>
                   <Post.header
                     nomePerfil={item.autor?.nome ?? 'Usuário'}
-                    data={new Date(item.dataPublicacao)}
+                    dataPublicacao={new Date(item.dataPublicacao)}
                   >
                     <Post.headerActions>
                       <TextButton title="Seguir" theme="secondary" />
@@ -163,13 +163,13 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
                   {item.urlMidia && <Post.image url={item.urlMidia} />}
 
                   <Post.actions>
-                    <Action insight={0}>
+                    <PostActions>
                       <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
-                    </Action>
+                    </PostActions>
 
-                    <Action insight={0}>
+                    <PostActions>
                       <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
-                    </Action>
+                    </PostActions>
                   </Post.actions>
                 </Post.root>
               )}

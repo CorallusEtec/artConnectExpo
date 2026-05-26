@@ -1,5 +1,5 @@
 import { Post } from "@/components/Post";
-import { Action } from "@/components/Reacao";
+import { Reacao as Action } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
 import PublicacoesService from "@/services/PublicacoesService";
 import { useAuthStore } from "@/store";
@@ -137,7 +137,7 @@ export default function Perfil() {
                 <Post.root>
                   <Post.header
                     nomePerfil={item.autor?.nome ?? "Usuário"}
-                    data={new Date(item.dataPublicacao)}
+                    dataPublicacao={new Date(item.dataPublicacao)}
                   >
                     <Post.headerActions>
                       <TextButton title="Seguir" theme="secondary" />

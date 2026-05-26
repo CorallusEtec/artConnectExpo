@@ -52,7 +52,7 @@ export default function EditPerfil() {
 
   const [contatosWhatsapp, setContatosWhatsapp] = useState(mapearContatos(user?.contatos, 1));
   const [contatosInstagram, setContatosInstagram] = useState(mapearContatos(user?.contatos, 2));
-
+  
   useEffect(() => {
     if (!usuario) return;
 
@@ -108,74 +108,87 @@ export default function EditPerfil() {
   }
 
   async function handleSalvar() {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const token = await AsyncStorage.getItem("@artconnect:token");
+    const tokenData = await AsyncStorage.getItem("@artconnect:token");
 
-      if (!token) return router.navigate("/login");
-
-      const userId = parseInt(token);
-
-      const payload: ArtistaEditDTO = {
-        nome: form.nome,
-        textoBio: form.textoBio,
-        arte: user.arte,
-        nomeArtistico: user.nomeArtistico,
-        dataNasc: user.dataNasc,
-        nomeLog: form.nomeLog,
-        numLog: form.numLog ? Number(form.numLog) : undefined,
-        cep: form.cep,
-        bairro: form.bairro,
-        complemento: form.complemento,
-        cidade: form.cidade,
-        uf: form.uf,
-      };
-
-      await ArtistaService.edit(userId, payload);
-
-      const contatos = [...contatosWhatsapp, ...contatosInstagram].filter(c => c.valor.trim());
-
-      for (const contato of contatos) {
-        if (contato.id) {
-          const editPayload: ContatoEditDTO = { valorContato: contato.valor };
-          await ContatoService.edit(contato.id, editPayload);
-        } else {
-          const savePayload: ContatoSaveDTO = {
-            valorContato: contato.valor,
-            idUsuario: userId,
-            idTipoContato: contato.tipo,
-          };
-
-          await ContatoService.save(savePayload);
-        }
-      }
-
-      const dados = await UsuarioService.getById(userId);
-
-      setUsuario({
-        ...user,
-        nome: dados.nome,
-        textoBio: dados.textoBio,
-        nomeLog: dados.nomeLog,
-        numLog: dados.numLog,
-        cep: dados.cep,
-        bairro: dados.bairro,
-        complemento: dados.complemento,
-        cidade: dados.cidade,
-        uf: dados.uf,
-        contatos: dados.contatos || [],
-      });
-
-      router.navigate("/home/perfil");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+    if (!tokenData) {
+      return router.navigate("/login");
     }
+
+    const parsed = JSON.parse(tokenData);
+
+    const userId = parsed?.id;
+
+    if (!userId || isNaN(userId)) {
+      console.log("ID inválido no token:", parsed);
+      return router.navigate("/login");
+    }
+
+    const payload: ArtistaEditDTO = {
+      nome: form.nome,
+      textoBio: form.textoBio,
+      arte: user.arte,
+      nomeArtistico: user.nomeArtistico,
+      dataNasc: user.dataNasc,
+      nomeLog: form.nomeLog,
+      numLog: form.numLog ? Number(form.numLog) : undefined,
+      cep: form.cep,
+      bairro: form.bairro,
+      complemento: form.complemento,
+      cidade: form.cidade,
+      uf: form.uf,
+    };
+
+    await ArtistaService.edit(userId, payload);
+
+    const contatos = [...contatosWhatsapp, ...contatosInstagram]
+      .filter(c => c.valor.trim());
+
+    for (const contato of contatos) {
+      if (contato.id) {
+        const editPayload: ContatoEditDTO = {
+          valorContato: contato.valor,
+        };
+        await ContatoService.edit(contato.id, editPayload);
+      } else {
+        const savePayload: ContatoSaveDTO = {
+          valorContato: contato.valor,
+          idUsuario: userId,
+          idTipoContato: contato.tipo,
+        };
+
+        await ContatoService.save(savePayload);
+      }
+    }
+
+    const dados = await UsuarioService.getById(userId);
+
+    setUsuario({
+      ...user,
+      nome: dados.nome,
+      textoBio: dados.textoBio,
+      nomeLog: dados.nomeLog,
+      numLog: dados.numLog,
+      cep: dados.cep,
+      bairro: dados.bairro,
+      complemento: dados.complemento,
+      cidade: dados.cidade,
+      uf: dados.uf,
+      contatos: dados.contatos || [],
+    });
+
+    router.navigate("/home/perfil");
+  } catch (error) {
+    console.log("Erro ao salvar perfil:", error);
+  } finally {
+    setLoading(false);
   }
+}
 
   function renderContatos(titulo: string, lista: Contato[], setLista: any, tipo: number, texto: string) {
+    const jaExisteContatoDoTipo = lista.some(c => c.tipo === tipo);
     return (
     <View style={{ marginTop: 16 }}>
       <Text style={style.label}>{titulo}</Text>
@@ -198,11 +211,14 @@ export default function EditPerfil() {
         </View>
       ))}
 
-      <TouchableOpacity
-        style={[style.input,style.botaoAdicionarContato]}
-        onPress={() =>adicionarContato(setLista, tipo)}>
-        <Text style={style.textoAdicionarContato}> + Adicionar </Text>
-      </TouchableOpacity>
+      {!jaExisteContatoDoTipo && (
+        <TouchableOpacity
+          style={[style.input, style.botaoAdicionarContato]}
+          onPress={() => adicionarContato(setLista, tipo)}
+        >
+          <Text style={style.textoAdicionarContato}> + Adicionar </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
