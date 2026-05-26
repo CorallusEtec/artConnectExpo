@@ -1,26 +1,18 @@
 import { ErroValidacao } from "@/services/ErroValidacao";
 import config from './config';
 import { ValidationService } from "./ValidacaoService";
+import { useQuery } from "@/hooks/useQuery";
 
 export interface ArtistaCadastroDTO {
-    nome: string;
-    email: string;
-    senha: string;
-}
-
-export interface TipoContato {
-  id: number;
-}
-
-export interface Contato {
-  valorContato: string;
-  tipoContato: TipoContato;
+  nome: string;
+  email: string;
+  senha: string;
 }
 
 export interface ArtistaEditDTO {
   nome?: string;
   textoBio?: string;
-  contatos?: Contato[];
+  contatos?: any[];
   arte?: { id: number };
   nomeArtistico?: string;
   dataNasc?: string;
@@ -31,85 +23,89 @@ export interface ArtistaEditDTO {
   complemento?: string;
   cidade?: string;
   uf?: string;
+
+  tipoArtista?: string;
+  genero?: string;
+  estilo?: string;
 }
-
 export default class ArtistaService {
-    static async getById(id: number) {
-        const response = await fetch(`${config.apiUrl}/artista/${id}`);
 
-        if(!response.ok) {
-            throw new Error("Erro ao buscar usuario");
-        }
+  static async getById(id: number) {
+    const response = await useQuery({url: `${config.apiUrl}/artista/${id}`});
 
-        return response.json();
+    if (!response.ok) {
+      throw new Error("Erro ao buscar usuario");
     }
 
-    static async save(artista: ArtistaCadastroDTO) {
-        try {
-            const response = await fetch(`${config.apiUrl}/artista/save`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(artista),
-            });
-
-            const text = await response.text();
-
-            if (!response.ok) {
-                throw new Error(text);
-            }
-
-            return text;
-        } catch (error) {
-            console.error("Erro ao salvar artista:", error);
-            throw error;
-        }
-    }
-
-    static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
-  // Processa contatos se existirem na edição
-  let payload = { ...artista };
-  
-  if (artista.contatos && artista.contatos.length > 0) {
-    // Valida se os contatos têm a estrutura correta
-    payload.contatos = artista.contatos.map(contato => {
-      // Se for string ou objeto sem tipoContato, assume tipo 1 (telefone/padrão)
-      if (typeof contato === 'string') {
-        return {
-          valorContato: contato,
-          tipoContato: { id: 1 }
-        };
-      }
-      
-      if (!contato.tipoContato) {
-        return {
-          ...contato,
-          tipoContato: { id: 1 }
-        };
-      }
-      
-      return contato;
-    });
+    return response.json();
   }
 
-  const response = await fetch(`${config.apiUrl}/artista/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(payload),
-  });
+  static async listar(filtros?: { tipoArtista?: string; genero?: string; estilo?: string; nome?: string }) {
+  const params = new URLSearchParams();
+  if (filtros?.nome)        params.append("nome", filtros.nome);
+  if (filtros?.tipoArtista) params.append("tipoArtista", filtros.tipoArtista);
+  if (filtros?.genero)      params.append("genero", filtros.genero);
+  if (filtros?.estilo)      params.append("estilo", filtros.estilo);
 
-  const text = await response.text();
+  const query = params.toString();
+  const url = query
+    ? `${config.apiUrl}/artista/findAll?${query}`
+    : `${config.apiUrl}/artista/findAll`;
+
+  const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(text);
+    throw new Error("Erro ao buscar artistas");
   }
+
+  return response.json();
 }
 
-    static validarCadastro(dados: any): ErroValidacao {
+static async listarTodos() {
+  const response = await useQuery({url:`${config.apiUrl}/artista/findAll`});
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar artistas");
+  }
+
+  return response.json();
+}
+  static async save(artista: ArtistaCadastroDTO) {
+    try {
+      const response = await useQuery({
+        url: `${config.apiUrl}/artista/save`,
+        method: 'POST',
+        body: JSON.stringify(artista),
+      });
+
+      const text = await response.text();
+
+      if (!response.ok) {
+        throw new Error(text);
+      }
+
+      return text;
+    } catch (error) {
+      console.error("Erro ao salvar artista:", error);
+      throw error;
+    }
+  }
+
+  static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
+    const response = await useQuery({
+      url: `${config.apiUrl}/artista/${id}`,
+      method: 'PUT',
+      body: JSON.stringify(artista),
+    });
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(text);
+    }
+  }
+
+  static validarCadastro(dados: any): ErroValidacao {
     const erro = new ErroValidacao();
 
     if (!dados.nome || !dados.email || !dados.senha) {

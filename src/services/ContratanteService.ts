@@ -1,3 +1,4 @@
+import { useQuery } from '@/hooks/useQuery';
 import config from './config';
 import { ErroValidacao } from './ErroValidacao';
 import { ValidationService } from './ValidacaoService';
@@ -14,7 +15,7 @@ interface ContratanteCadastroDTO {
 
 export default class ContratanteService {
     static async getById(id: number) {
-        const response = await fetch(`${config.apiUrl}/contratante/${id}`);
+        const response = await useQuery({url:`${config.apiUrl}/contratante/${id}`});
 
         if(!response.ok) {
             throw new Error("Erro ao buscar usuario");
@@ -25,13 +26,11 @@ export default class ContratanteService {
 
     static async save(contratante: ContratanteCadastroDTO) {
         try {
-            const response = await fetch(`${config.apiUrl}/contratante/save?tipo=${contratante.tipo}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(contratante),
-            });
+          const response = await useQuery({
+            body: JSON.stringify(contratante),
+            method: "POST",
+            url:`${config.apiUrl}/contratante/save?tipo=${contratante.tipo}`
+          });
 
             const text = await response.text();
 

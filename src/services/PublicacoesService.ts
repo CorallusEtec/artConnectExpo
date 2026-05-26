@@ -1,5 +1,7 @@
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
+import { useQuery } from "@/hooks/useQuery";
 
 interface CriarPublicacaoDTO {
     legenda: string;
@@ -8,6 +10,7 @@ interface CriarPublicacaoDTO {
 }
 
 export default class PublicacoesService {
+    // Manter o fetch nativo para o save das publicações
     static async save({legenda, file, autorId}: CriarPublicacaoDTO) {
         try {
             const formData = new FormData();
@@ -35,9 +38,9 @@ export default class PublicacoesService {
         }
     }
 
-    static async listar() {
+    static async listar(): Promise<PublicacaoResponse[]> {
     try {
-      const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
+      const response = await useQuery({url: `${config.apiUrl}/publicacao/findAll`});
 
       if (!response.ok) {
         throw new Error("Erro ao buscar publicações");

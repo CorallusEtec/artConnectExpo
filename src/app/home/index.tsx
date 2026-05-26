@@ -1,31 +1,47 @@
+import { CommentSection } from "@/components/CommentSection";
 import { Post } from "@/components/Post";
-import { Action } from "@/components/Post/Action";
+import { Reacao } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import PublicacoesService from "@/services/PublicacoesService";
 import { gStyles } from "@/style/gStyle";
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { router } from "expo-router";
 import { ActivityIndicator, ScrollView, Image, TouchableOpacity, View } from "react-native";
+=======
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
+>>>>>>> 6491d9375150eef5cbf7e0cd10fd67d3323423d8
 import { style } from "./style";
+import { router } from "expo-router";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState([]);
-
-  const [publicacoes, setPublicacoes] = useState([]);
+  const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [load, setLoad] = useState(true);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [postId, setPostId] = useState<number>();
 
-  useEffect(() => {
+ useEffect(() => {
     async function carregar() {
-      try{
+      try {
         const data = await PublicacoesService.listar();
         setPublicacoes(data);
       } catch (Erro) {
-        console.log(Erro);
+        console.error(Erro); 
+      } finally {
+        setLoad(false); 
       }
     }
-    setLoad(false);
+
     carregar();
   }, []);
 
@@ -38,19 +54,24 @@ export default function Home() {
           style={style.banner}
           source={require("@/assets/img/banner.png")}
         />
-        <TouchableOpacity>
-          <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 16 }}>
+          <TouchableOpacity>
+            <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={style.container}>
-
         <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-          {publicacoes.map((item: any) => (
+          {publicacoes.map((item) => (
             <Post.root key={item.id}>
               <Post.header
                 nomePerfil={item.autor?.nome ?? "Usuário"}
+<<<<<<< HEAD
                 data={new Date(item.dataPublicacao)}
                 onProfile={() => router.push(`/home/perfil/${item.autor?.id}`as any)}
+=======
+                dataPublicacao={new Date(item.dataPublicacao)}
+>>>>>>> 6491d9375150eef5cbf7e0cd10fd67d3323423d8
               >
                 <Post.headerActions>
                   <TextButton title="Seguir" theme="secondary" />
@@ -61,28 +82,38 @@ export default function Home() {
               {item.urlMidia && <Post.image url={item.urlMidia} />}
 
               <Post.actions>
-                <Action insight={0}>
-                  <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
-                </Action>
+                <Reacao insight={0}>
+                  <MaterialCommunityIcons
+                    name="thumb-up-outline"
+                    size={24}
+                    color={gStyles.cinza[600]}
+                  />
+                </Reacao>
 
-                <Action insight={0}>
-                  <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
-                </Action>
+                <Reacao
+                  insight={item.totalComentarios}
+                  onPress={() => {
+                    setModalStatus(true);
+                    setPostId(item.id as number);
+                  }}
+                >
+                  <Feather
+                    name="message-circle"
+                    size={24}
+                    color={gStyles.cinza[600]}
+                  />
+                </Reacao>
               </Post.actions>
             </Post.root>
           ))}
+
+          <CommentSection
+            setModalStatus={setModalStatus}
+            postId={postId}
+            visible={modalStatus}
+          />
         </ScrollView>
-        
       </View>
     </>
   );
 }
-
-/**
- * 
- * 
- * 
- * 
- * 
- * 
- */
