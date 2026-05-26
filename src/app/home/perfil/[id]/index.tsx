@@ -9,7 +9,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View, Linking } from "react-native";
 import { style } from "./style";
 
 interface Contato {
@@ -61,6 +61,15 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
     preencherCampos();
     carregar();
     },[id]);
+
+    const abrirWhatsapp = (numero: string) => {
+      const url = `https://wa.me/${numero}`;
+      Linking.openURL(url);
+    }
+    const abrirInstagram = async (nome: string) => {
+      const url = `https://instagram.com/${nome}`;
+      Linking.openURL(url)
+    };
 
   return (
     <>
@@ -120,9 +129,11 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
                 <FontAwesome name="whatsapp" size={26} color="white" />
 
                 {contatosWhatsapp.map((contato: any) => (
-                  <Text style={style.contatoText} key={contato.idContato}>
-                    {contato.valorContato}
-                  </Text>
+                  <Pressable onPress={() => abrirWhatsapp(contato.valorContato)}>
+                    <Text style={style.contatoText} key={contato.idContato}>
+                      {contato.valorContato}
+                    </Text>
+                  </Pressable>
                 ))}
               </View>
             )}
@@ -132,9 +143,11 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
                 <FontAwesome name="instagram" size={26} color="white" />
 
                 {contatosInstagram.map((contato: any) => (
-                  <Text style={style.contatoText} key={contato.idContato}>
-                    {contato.valorContato}
-                  </Text>
+                  <Pressable onPress={() => abrirInstagram(contato.valorContato)}>
+                    <Text style={style.contatoText} key={contato.idContato}>
+                      {contato.valorContato}
+                    </Text>
+                  </Pressable>
                 ))}
               </View>
             )}
