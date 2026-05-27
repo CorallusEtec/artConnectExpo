@@ -1,6 +1,7 @@
 import { ComentarioResponse } from "@/models/response/ComentarioResponse";
 import { ComentarioRequest } from "@/models/request/ComentarioRequest";
 import config from "./config";
+import { useQuery } from "@/hooks/useQuery";
 
 export class ComentarioService {
     static domain = `${config.apiUrl}/comentario`
@@ -10,7 +11,9 @@ export class ComentarioService {
             if(typeof postId == "undefined") {
                 return null;
             } 
-                const data = await fetch(`${this.domain}/findByPost/${postId}`);
+                const data = await useQuery({
+                    url: `${this.domain}/findByPost/${postId}`
+                });
                 return data.json();
 
 
@@ -21,11 +24,9 @@ export class ComentarioService {
 
     static async comment(comentario: ComentarioRequest): Promise<void> {
         try {
-            const data = await fetch(`${this.domain}/comment`, {
+            await useQuery({
+                url:`${this.domain}/comment`,
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(comentario),
             });
 

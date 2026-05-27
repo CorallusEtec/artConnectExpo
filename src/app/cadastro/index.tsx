@@ -11,6 +11,7 @@ import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { style } from "./style";
+import { AuthService } from "@/services/AuthService";
 
 export default function Cadastro() {
     const [erro, setErro] = useState("");
@@ -42,10 +43,11 @@ export default function Cadastro() {
             setErro(validacao.mensagem);
             return;
         }
-        await ArtistaService.save({
-            nome,
+        await AuthService.register({
             email,
+            nome,
             senha,
+            tipoConta: "ARTISTA"
         });
         router.navigate("/login");
     } catch (err) {

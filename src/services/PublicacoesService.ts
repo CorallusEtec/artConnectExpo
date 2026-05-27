@@ -9,6 +9,7 @@ interface CriarPublicacaoDTO {
 }
 
 export default class PublicacoesService {
+  
   static async save({
     legenda,
     file,
@@ -66,8 +67,6 @@ export default class PublicacoesService {
     params?: any
   ): Promise<PublicacaoResponse[]> {
     try {
-      console.log("PARAMS RECEBIDOS:", params);
-
       const queryParams =
         new URLSearchParams();
 
@@ -103,8 +102,6 @@ export default class PublicacoesService {
         config.apiUrl
       }/publicacao/findAll?${queryParams.toString()}`;
 
-      console.log("URL FINAL:", url);
-
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -114,11 +111,6 @@ export default class PublicacoesService {
       }
 
       const data = await response.json();
-
-      console.log(
-        "RESPOSTA PUBLICAÇÕES:",
-        data
-      );
 
       return data;
     } catch (error) {
