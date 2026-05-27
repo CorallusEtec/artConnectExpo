@@ -1,14 +1,14 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
 import { style } from "@/components/ContatoInput/style";
 import { gStyles } from "@/style/gStyle";
+import Feather from "@expo/vector-icons/Feather";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
-import { Contato, ContatoInputProps } from "./types";
 import {
   adicionarContato,
   atualizarContato,
   removerContato,
 } from "./Actions";
+import { ContatoInputProps } from "./types";
 
 export default function ContatoInput({
   titulo,
@@ -19,7 +19,7 @@ export default function ContatoInput({
   maskFn,
   onMaskChange,
 }: ContatoInputProps) {
-  const placeholderColor = gStyles.cinza[500];
+  const temContato = lista.length > 0;
 
   return (
     <View style={{ marginTop: 16 }}>
@@ -30,9 +30,10 @@ export default function ContatoInput({
           <TextInput
             style={[style.input, style.contatoInput]}
             placeholder={placeholder}
-            placeholderTextColor={placeholderColor}
+            placeholderTextColor={gStyles.cinza[500]}
             keyboardType={maskFn ? "phone-pad" : "default"}
             value={maskFn ? maskFn(contato.valor) : contato.valor}
+            maxLength={15}
             onChangeText={(text) =>
               atualizarContato(
                 setLista,
@@ -50,12 +51,22 @@ export default function ContatoInput({
         </View>
       ))}
 
-      <TouchableOpacity
-        style={[style.input, style.botaoAdicionarContato]}
-        onPress={() => adicionarContato(setLista, tipo)}
-      >
-        <Text style={style.textoAdicionarContato}> + Adicionar </Text>
-      </TouchableOpacity>
+      {!temContato && (
+        <TouchableOpacity
+          style={[
+            style.input,
+            style.botaoAdicionarContato,
+          ]}
+          onPress={() =>
+            adicionarContato(setLista, tipo)
+          }
+        >
+          <Text style={style.textoAdicionarContato}>
+            + Adicionar
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
+
