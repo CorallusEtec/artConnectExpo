@@ -569,13 +569,33 @@ export default function Busca() {
                 Filtros Avançados
               </Text>
 
-              <TouchableOpacity
-                onPress={limparTodosFiltros}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 16,
+                }}
               >
-                <Text style={style.textoLimpar}>
-                  Limpar filtros
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={limparTodosFiltros}
+                >
+                  <Text style={style.textoLimpar}>
+                    Limpar filtros
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    setModalFiltroVisivel(false)
+                  }
+                >
+                  <Feather
+                    name="x"
+                    size={22}
+                    color={gStyles.cinza[500]}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <ScrollView
