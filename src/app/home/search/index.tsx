@@ -364,38 +364,86 @@ export default function Busca() {
             {/* RESULTADOS USUÁRIOS */}
             {pesquisaRealizada &&
               escopo === "artista" &&
-              usuarios.map((usuario) => (
-                <View
-                  key={usuario.id}
-                  style={style.cardResultado}
-                >
-                  <Text style={style.tituloCard}>
-                    {usuario.nomeArtistico ||
-                      usuario.nome}
-                  </Text>
+              usuarios.map((usuario) => {
+                console.log(usuario);
 
-                  {usuario.cidade && (
-                    <Text
-                      style={style.subtituloCard}
-                    >
-                      {usuario.cidade} -{" "}
-                      {usuario.uf}
-                    </Text>
-                  )}
-
-                  <Text
-                    style={[
-                      style.subtituloCard,
-                      {
-                        color: "#113093",
-                        fontWeight: "600",
-                      },
-                    ]}
+                return (
+                  <View
+                    key={usuario.id}
+                    style={style.cardResultado}
                   >
-                    {usuario.tipoConta}
-                  </Text>
-                </View>
-              ))}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
+                    >
+                      {/* ÍCONE PERFIL */}
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 25,
+                          backgroundColor: "#E5E7EB",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Feather
+                          name="user"
+                          size={24}
+                          color="#6B7280"
+                        />
+                      </View>
+
+                      {/* INFOS */}
+                      <View style={{ flex: 1 }}>
+                        <Text style={style.tituloCard}>
+                          {usuario.nomeLog
+                            ? `${usuario.nomeLog} (${usuario.nome})`
+                            : usuario.nome}
+                        </Text>
+
+                        {(usuario.cidade || usuario.uf) && (
+                          <Text style={style.subtituloCard}>
+                            {[usuario.cidade, usuario.uf]
+                              .filter(Boolean)
+                              .join(" - ")}
+                          </Text>
+                        )}
+
+                        {!!usuario.textoBio && (
+                          <Text
+                            style={[
+                              style.subtituloCard,
+                              {
+                                marginTop: 2,
+                              },
+                            ]}
+                          >
+                            {usuario.textoBio}
+                          </Text>
+                        )}
+
+                        <Text
+                          style={[
+                            style.subtituloCard,
+                            {
+                              color: "#113093",
+                              fontWeight: "600",
+                              marginTop: 4,
+                            },
+                          ]}
+                        >
+                          {usuario.tipoConta}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })
+            }
 
             {/* NENHUM USUÁRIO */}
             {pesquisaRealizada &&
@@ -621,8 +669,8 @@ export default function Busca() {
                           style.botaoTipo,
 
                           filtroTipoUsuario ===
-                            "ARTISTA" &&
-                            style.botaoTipoAtivo,
+                          "ARTISTA" &&
+                          style.botaoTipoAtivo,
                         ]}
                         onPress={() =>
                           setFiltroTipoUsuario(
@@ -635,9 +683,9 @@ export default function Busca() {
                             style.textoBotaoTipo,
 
                             filtroTipoUsuario ===
-                              "ARTISTA" &&
-                              style
-                                .textoBotaoTipoAtivo,
+                            "ARTISTA" &&
+                            style
+                              .textoBotaoTipoAtivo,
                           ]}
                         >
                           Artista
@@ -649,8 +697,8 @@ export default function Busca() {
                           style.botaoTipo,
 
                           filtroTipoUsuario ===
-                            "CONTRATANTE" &&
-                            style.botaoTipoAtivo,
+                          "CONTRATANTE" &&
+                          style.botaoTipoAtivo,
                         ]}
                         onPress={() =>
                           setFiltroTipoUsuario(
@@ -663,9 +711,9 @@ export default function Busca() {
                             style.textoBotaoTipo,
 
                             filtroTipoUsuario ===
-                              "CONTRATANTE" &&
-                              style
-                                .textoBotaoTipoAtivo,
+                            "CONTRATANTE" &&
+                            style
+                              .textoBotaoTipoAtivo,
                           ]}
                         >
                           Contratante
