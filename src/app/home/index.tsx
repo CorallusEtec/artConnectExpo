@@ -15,30 +15,78 @@ import {
   View,
 } from "react-native";
 import { style } from "./style";
-import { router } from "expo-router";
+import { useAuthStore } from "@/store";
+import ReacaoService from "@/services/ReacaoService";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState([]);
+  const usuario = useAuthStore((s) => s.usuario);
   const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [load, setLoad] = useState(true);
   const [modalStatus, setModalStatus] = useState(false);
   const [postId, setPostId] = useState<number>();
+  const [minhasReacoes, setMinhasReacoes] = useState<Record<number, string | null>>({});
 
- useEffect(() => {
-    async function carregar() {
-      try {
-        const data = await PublicacoesService.listar();
-        setPublicacoes(data);
-      } catch (Erro) {
-        console.error(Erro); 
-      } finally {
-        setLoad(false); 
+async function reagir(postId: number) {
+  if (!usuario) return;
+
+  const jaReagiu = minhasReacoes[postId] === "LIKE";
+
+  setMinhasReacoes(prev => ({
+    ...prev,
+    [postId]: jaReagiu ? null : "LIKE"
+  }));
+
+  setPublicacoes(prev =>
+    prev.map(p =>
+      p.id !== postId ? p : {
+        ...p,
+        reacoes: p.reacoes?.map(r =>
+          r.tipoReacao.nomeTipo !== "LIKE" ? r : {
+            ...r,
+            totalReacoes: r.totalReacoes + (jaReagiu ? -1 : 1)
+          }
+        )
       }
-    }
+    )
+  );
 
-    carregar();
-  }, []);
+  try {
+    await ReacaoService.reagirPost(postId, usuario.id, "LIKE");
+  } catch (e) {
+    console.log(e);
+    const data = await PublicacoesService.listar();
+    setPublicacoes(data);
+  }
+}
+
+useEffect(() => {
+  async function carregar() {
+    try {
+      const data = await PublicacoesService.listar();
+      setPublicacoes(data);
+
+      if (!usuario) return;
+
+      const reacoes = await Promise.all(
+        data.map(p => ReacaoService.getReacaoPost(p.id as number, usuario.id))
+      );
+
+      const mapa: Record<number, string | null> = {};
+      reacoes.forEach((r, i) => {
+        mapa[data[i].id as number] = r.empty ? null : r.tipoReacao.nomeTipo;
+      });
+      setMinhasReacoes(mapa);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoad(false);
+    }
+  }
+
+  carregar();
+}, []);
 
   if (load) return <ActivityIndicator size={"large"} />;
 
@@ -72,11 +120,15 @@ export default function Home() {
               {item.urlMidia && <Post.image url={item.urlMidia} />}
 
               <Post.actions>
-                <Reacao insight={0}>
+                <Reacao
+                  insight={
+                    item.reacoes?.find(r => r.tipoReacao.nomeTipo === "LIKE")?.totalReacoes ?? 0
+                  }
+                  onPress={() => reagir(item.id as number)}>
                   <MaterialCommunityIcons
-                    name="thumb-up-outline"
+                    name={minhasReacoes[item.id as number] === "LIKE" ? "thumb-up" : "thumb-up-outline"}
                     size={24}
-                    color={gStyles.cinza[600]}
+                    color={minhasReacoes[item.id as number] === "LIKE" ? gStyles.azul[500] : gStyles.cinza[600]}
                   />
                 </Reacao>
 
