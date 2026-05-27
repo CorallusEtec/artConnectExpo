@@ -1,6 +1,7 @@
 import { ErroValidacao } from "@/services/ErroValidacao";
 import config from './config';
 import { ValidationService } from "./ValidacaoService";
+import { useQuery } from "@/hooks/useQuery";
 
 export interface ArtistaCadastroDTO {
   nome: string;
@@ -30,7 +31,7 @@ export interface ArtistaEditDTO {
 export default class ArtistaService {
 
   static async getById(id: number) {
-    const response = await fetch(`${config.apiUrl}/artista/${id}`);
+    const response = await useQuery({url: `${config.apiUrl}/artista/${id}`});
 
     if (!response.ok) {
       throw new Error("Erro ao buscar usuario");
@@ -61,9 +62,7 @@ export default class ArtistaService {
 }
 
 static async listarTodos() {
-  const response = await fetch(
-    `${config.apiUrl}/artista/findAll`
-  );
+  const response = await useQuery({url:`${config.apiUrl}/artista/findAll`});
 
   if (!response.ok) {
     throw new Error("Erro ao buscar artistas");
@@ -73,11 +72,9 @@ static async listarTodos() {
 }
   static async save(artista: ArtistaCadastroDTO) {
     try {
-      const response = await fetch(`${config.apiUrl}/artista/save`, {
+      const response = await useQuery({
+        url: `${config.apiUrl}/artista/save`,
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify(artista),
       });
 
@@ -95,12 +92,9 @@ static async listarTodos() {
   }
 
   static async edit(id: number, artista: ArtistaEditDTO): Promise<void> {
-    const response = await fetch(`${config.apiUrl}/artista/${id}`, {
+    const response = await useQuery({
+      url: `${config.apiUrl}/artista/${id}`,
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
       body: JSON.stringify(artista),
     });
 
