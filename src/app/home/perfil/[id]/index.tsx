@@ -1,56 +1,81 @@
-import { Post } from "@/components/Post";
-import { Reacao as Action } from "@/components/Reacao";
+import { Post } from '@/components/Post';
+import { PostActions } from '@/components/Post/PostActions';
 import { TextButton } from "@/components/TextButton";
-import PublicacoesService from "@/services/PublicacoesService";
-import { useAuthStore } from "@/store";
+import PublicacoesService from '@/services/PublicacoesService';
+import UsuarioService from '@/services/UsuarioService';
 import { gStyles } from "@/style/gStyle";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
-import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    Pressable,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View, Linking } from "react-native";
 import { style } from "./style";
 
+interface Contato {
+  idContato: number;
+  valorContato: string;
+  tipoContato: {
+    idTipoContato: number;
+  };
+}
+interface Usuario {
+  nome: string;
+  contatos?: Contato[];
+}
+
 export default function Perfil() {
-  const usuario = useAuthStore((s) => s.usuario);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [publicacoes, setPublicacoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const {id} = useLocalSearchParams();
+
+  function mapearContatos(contatos: Contato[] = [], tipo: number) {
+    return contatos.filter(
+      contato => contato.tipoContato?.idTipoContato === tipo
+    );
+  }
+
+const contatosWhatsapp = mapearContatos(usuario?.contatos, 1);
+const contatosInstagram = mapearContatos(usuario?.contatos, 2);
+
   useEffect(() => {
+    async function preencherCampos()  {
+      const dados = await UsuarioService.getById(Number(id));
+      setUsuario(dados);
+    }
+
     async function carregar() {
       try {
         const data = await PublicacoesService.listar();
-        if (usuario) {
-          const meus = (data ?? []).filter(
-            (p: any) => p.autor?.id === (usuario as any).id,
-          );
+          const meus = (data ?? []).filter((p: any) => p.autor?.id === Number(id));
           setPublicacoes(meus);
-        } else {
-          setPublicacoes([]);
-        }
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
-
+    
+    preencherCampos();
     carregar();
-  }, [usuario]);
+    },[id]);
+
+    const abrirWhatsapp = (numero: string) => {
+      const url = `https://wa.me/${numero}`;
+      Linking.openURL(url);
+    }
+    const abrirInstagram = async (nome: string) => {
+      const url = `https://instagram.com/${nome}`;
+      Linking.openURL(url)
+    };
+
   return (
     <>
       <View style={style.navbarMom}>
         <View style={style.navbarSon1}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={router.back}>
             <FontAwesome5
               name="arrow-left"
               color={gStyles.cinza[100]}
@@ -97,37 +122,40 @@ export default function Perfil() {
             </Pressable>
           </View>
 
-          <View style={style.bioContainer}>
-            <Text style={style.bioText}>
-              {usuario?.textoBio ?? "Sem biografia."}
-            </Text>
+          <View style={style.contatoContainer}>
+
+            {contatosWhatsapp.length > 0 && (
+              <View style={style.contatoWrapper}>
+                <FontAwesome name="whatsapp" size={26} color="white" />
+
+                {contatosWhatsapp.map((contato: any) => (
+                  <Pressable onPress={() => abrirWhatsapp(contato.valorContato)}>
+                    <Text style={style.contatoText} key={contato.idContato}>
+                      {contato.valorContato}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+
+            {contatosInstagram.length > 0 && (
+              <View style={style.contatoWrapper}>
+                <FontAwesome name="instagram" size={26} color="white" />
+
+                {contatosInstagram.map((contato: any) => (
+                  <Pressable onPress={() => abrirInstagram(contato.valorContato)}>
+                    <Text style={style.contatoText} key={contato.idContato}>
+                      {contato.valorContato}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
           </View>
         </View>
 
-        <View style={style.botaoEdit}>
-          <TextButton
-            onPress={() => router.navigate("/home/perfil/editar")}
-            style={{
-              width: "30%",
-              backgroundColor: gStyles.azul[500],
-              borderWidth: 3,
-              borderColor: "white",
-            }}
-            title="Editar perfil"
-          />
-        </View>
-
-        <View style={style.icons}>
-          <Pressable>
-            <Feather name="camera" color={gStyles.cinza[600]} size={32.5} />
-          </Pressable>
-          <Pressable>
-            <Feather name="bookmark" color={gStyles.cinza[600]} size={35} />
-          </Pressable>
-        </View>
-
         <View style={style.posts}>
-          {loading ? (
+           {loading ? (
             <ActivityIndicator />
           ) : (
             <FlatList
@@ -136,7 +164,7 @@ export default function Perfil() {
               renderItem={({ item }) => (
                 <Post.root>
                   <Post.header
-                    nomePerfil={item.autor?.nome ?? "Usuário"}
+                    nomePerfil={item.autor?.nome ?? 'Usuário'}
                     dataPublicacao={new Date(item.dataPublicacao)}
                   >
                     <Post.headerActions>
@@ -148,26 +176,18 @@ export default function Perfil() {
                   {item.urlMidia && <Post.image url={item.urlMidia} />}
 
                   <Post.actions>
-                    <Action insight={0}>
-                      <FontAwesome
-                        name="heart-o"
-                        size={24}
-                        color={gStyles.vermelho[400]}
-                      />
-                    </Action>
+                    <PostActions>
+                      <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
+                    </PostActions>
 
-                    <Action insight={0}>
-                      <Feather
-                        name="message-circle"
-                        size={24}
-                        color={gStyles.cinza[600]}
-                      />
-                    </Action>
+                    <PostActions>
+                      <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
+                    </PostActions>
                   </Post.actions>
                 </Post.root>
               )}
             />
-          )}
+          )} 
         </View>
       </View>
     </>

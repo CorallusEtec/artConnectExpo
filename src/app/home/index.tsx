@@ -7,15 +7,9 @@ import PublicacoesService from "@/services/PublicacoesService";
 import { gStyles } from "@/style/gStyle";
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { style } from "./style";
 import { router } from "expo-router";
+import { ActivityIndicator, ScrollView, Image, TouchableOpacity, View } from "react-native";
+import { style } from "./style";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
