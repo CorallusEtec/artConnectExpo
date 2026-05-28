@@ -1,12 +1,11 @@
-import { ActivityIndicator, Image, Modal, ModalProps, Pressable, Text, TouchableOpacity, View } from "react-native";
-import { style } from "./style";
-import { Ionicons } from "@expo/vector-icons";
-import { gStyles } from "@/style/gStyle";
-import { Suspense, useEffect, useState } from "react";
-import { CommentList } from "./CommentList";
 import { ComentarioService } from "@/services/ComentarioService";
+import { gStyles } from "@/style/gStyle";
+import { Ionicons } from "@expo/vector-icons";
+import { Suspense, useEffect, useState } from "react";
+import { ActivityIndicator, Image, Modal, ModalProps, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { CommentInput } from "./CommentInput";
-import { ComentarioResponse } from "@/models/response/ComentarioResponse";
+import { CommentList } from "./CommentList";
+import { style } from "./style";
 
 type CommentsProps = ModalProps & {
     setModalStatus: (status: boolean) => void,
@@ -63,7 +62,7 @@ export function CommentSection({ ...props }: CommentsProps) {
 
 
                     <Suspense fallback={<ActivityIndicator size={"large"} />}>
-                        <CommentList promise={commentsPromise} />
+                        <CommentList promise={commentsPromise} attComments={attComments} />
                     </Suspense>
                 </View>
             </View>

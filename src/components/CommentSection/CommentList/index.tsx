@@ -1,17 +1,27 @@
-import { ComentarioResponse } from "@/models/response/ComentarioResponse";
-import { use } from "react";
-import { FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { Comment } from "@/components/Comment";
-import { MaterialIcons, Octicons } from "@expo/vector-icons";
+import { ComentarioResponse } from "@/models/response/ComentarioResponse";
+import ReacaoService from "@/services/ReacaoService";
+import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
+import { Octicons } from "@expo/vector-icons";
+import { use } from "react";
+import { FlatList, TouchableOpacity } from "react-native";
 
 type CommentListProps = {
     promise: Promise<ComentarioResponse[] | null>
+    attComments: () => void;
 }
 
 export function CommentList({...props}:CommentListProps) {
     
     const comments = use(props.promise);
+    const usuario = useAuthStore((s) => s.usuario);
+
+    async function reagir(commentId: number, tipo: "LIKE" | "DISLIKE") {
+        if (!usuario) return;
+        await ReacaoService.reagirComentario(commentId, usuario.id, tipo);
+        props.attComments();
+    }
     
     return (
         <FlatList 
@@ -28,7 +38,10 @@ export function CommentList({...props}:CommentListProps) {
                         </TouchableOpacity>
                     </Comment.actions>
                 </Comment.header>
-                <Comment.content />
+                <Comment.content 
+                    onLike={() => reagir(item.id, "LIKE")} 
+                    onDislike={() => reagir(item.id, "DISLIKE")} 
+                />
             </Comment.root>
         )}
 

@@ -15,4 +15,8 @@ export interface ComentarioResponse {
         nome: string
     },
     idPublicacao: number,
+    reacoes: {
+        usuario: { id: number },
+        tipoReacao: { nomeTipo: string }
+    }[]
 }
