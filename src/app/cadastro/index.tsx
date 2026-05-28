@@ -71,7 +71,6 @@ export default function Cadastro() {
             />
             <Pressable
             onPress={() => router.navigate("/home")} 
-            //mudar rota para login quando tiver a tela
             style={{position: 'absolute', backgroundColor: 'white', borderRadius: 25, top: 10, left: 10}}>
                 <FontAwesome6 name="circle-arrow-left" 
                     size={35} 

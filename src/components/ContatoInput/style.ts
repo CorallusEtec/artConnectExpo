@@ -1,48 +1,42 @@
-import { gStyles } from '@/style/gStyle';
-import { StyleSheet } from 'react-native';
+import { gStyles } from "@/style/gStyle";
+import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    gap: 12,
-  },
-
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: gStyles.azul[200],
   },
 
   linhaAvatar: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 8,
   },
 
   avatarContainer: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 92,
+    height: 92,
+    borderRadius: 46,
     backgroundColor: gStyles.cinza[100],
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 6,
-  },
-
-  iniciaisAvatar: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: gStyles.cinza[600],
+    overflow: "hidden",
   },
 
   editarAvatar: {
-    position: 'absolute',
+    position: "absolute",
     right: 40,
     top: 60,
     backgroundColor: gStyles.azul[200],
     padding: 8,
     borderRadius: 20,
+  },
+
+  headerProfile: {
+    width: 92,
+    height: 92,
+    borderRadius: 46,
   },
 
   label: {
@@ -53,18 +47,18 @@ export const style = StyleSheet.create({
 
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 10,
     padding: 12,
   },
 
   textarea: {
     minHeight: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
 
   linha: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 10,
   },
 
@@ -72,24 +66,18 @@ export const style = StyleSheet.create({
     backgroundColor: gStyles.azul[200],
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 14,
   },
 
   textoSalvar: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-
-  headerProfile: {
-    height: 92,
-    width: 92,
-    borderRadius: "100%",
+    color: "#fff",
+    fontWeight: "bold",
   },
 
   contatoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
 
@@ -99,13 +87,15 @@ export const style = StyleSheet.create({
   },
 
   botaoAdicionarContato: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: gStyles.azul[200],
+    padding: 12,
+    borderRadius: 10,
   },
 
   textoAdicionarContato: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
