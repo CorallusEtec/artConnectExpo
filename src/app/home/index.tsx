@@ -4,6 +4,8 @@ import { Reacao } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import PublicacoesService from "@/services/PublicacoesService";
+import ReacaoService from "@/services/ReacaoService";
+import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -15,8 +17,6 @@ import {
   View,
 } from "react-native";
 import { style } from "./style";
-import { useAuthStore } from "@/store";
-import ReacaoService from "@/services/ReacaoService";
 
 export default function Home() {
   const [legenda, setLegenda] = useState("");
@@ -28,32 +28,43 @@ export default function Home() {
   const [postId, setPostId] = useState<number>();
   const [minhasReacoes, setMinhasReacoes] = useState<Record<number, string | null>>({});
 
-async function reagir(postId: number) {
+async function reagir(postId: number, tipo: "LIKE" | "DISLIKE") {
   if (!usuario) return;
 
-  const jaReagiu = minhasReacoes[postId] === "LIKE";
+  const reacaoAtual = minhasReacoes[postId];
+  const jaReagiu = reacaoAtual === tipo;
 
   setMinhasReacoes(prev => ({
     ...prev,
-    [postId]: jaReagiu ? null : "LIKE"
+    [postId]: jaReagiu ? null : tipo
   }));
 
   setPublicacoes(prev =>
     prev.map(p =>
       p.id !== postId ? p : {
         ...p,
-        reacoes: p.reacoes?.map(r =>
-          r.tipoReacao.nomeTipo !== "LIKE" ? r : {
-            ...r,
-            totalReacoes: r.totalReacoes + (jaReagiu ? -1 : 1)
+        reacoes: p.reacoes?.map(r => {
+          const eOTipoAtual = r.tipoReacao.nomeTipo === tipo;
+          const eOTipoAnterior = r.tipoReacao.nomeTipo === reacaoAtual;
+
+          if (eOTipoAtual) {
+            // incrementa ou tira o tipo
+            return { ...r, totalReacoes: r.totalReacoes + (jaReagiu ? -1 : 1) };
           }
-        )
+
+          if (eOTipoAnterior && reacaoAtual !== null) {
+            // se tinha outro tipo, tira
+            return { ...r, totalReacoes: r.totalReacoes - 1 };
+          }
+
+          return r;
+        })
       }
     )
   );
 
   try {
-    await ReacaoService.reagirPost(postId, usuario.id, "LIKE");
+    await ReacaoService.reagirPost(postId, usuario.id, tipo);
   } catch (e) {
     console.log(e);
     const data = await PublicacoesService.listar();
@@ -124,11 +135,22 @@ useEffect(() => {
                   insight={
                     item.reacoes?.find(r => r.tipoReacao.nomeTipo === "LIKE")?.totalReacoes ?? 0
                   }
-                  onPress={() => reagir(item.id as number)}>
+                  onPress={() => reagir(item.id as number, "LIKE")}>
                   <MaterialCommunityIcons
                     name={minhasReacoes[item.id as number] === "LIKE" ? "thumb-up" : "thumb-up-outline"}
                     size={24}
                     color={minhasReacoes[item.id as number] === "LIKE" ? gStyles.azul[500] : gStyles.cinza[600]}
+                  />
+                </Reacao>
+                <Reacao
+                  insight={
+                    item.reacoes?.find(r => r.tipoReacao.nomeTipo === "DISLIKE")?.totalReacoes ?? 0
+                  }
+                  onPress={() => reagir(item.id as number, "DISLIKE")}>
+                  <MaterialCommunityIcons
+                    name={minhasReacoes[item.id as number] === "DISLIKE" ? "thumb-down" : "thumb-down-outline"}
+                    size={24}
+                    color={minhasReacoes[item.id as number] === "DISLIKE" ? gStyles.vermelho[500] : gStyles.cinza[500]}
                   />
                 </Reacao>
 
