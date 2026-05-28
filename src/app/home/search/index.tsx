@@ -4,9 +4,9 @@ import { Reacao } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import PublicacoesService from "@/services/PublicacoesService";
-import ArtistaService from "@/services/ArtistaService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
+
 import {
   AntDesign,
   Feather,
@@ -34,55 +34,105 @@ export default function Busca() {
   // =========================
   // ESTADOS GERAIS
   // =========================
-  const [escopo, setEscopo] = useState<TipoEscopo>("publicacao");
+  const [escopo, setEscopo] =
+    useState<TipoEscopo>("publicacao");
 
-  const [pesquisaPrincipal, setPesquisaPrincipal] = useState("");
+  const [pesquisaPrincipal, setPesquisaPrincipal] =
+    useState("");
 
   const [load, setLoad] = useState(false);
 
-  const [modalFiltroVisivel, setModalFiltroVisivel] = useState(false);
+  const [
+    modalFiltroVisivel,
+    setModalFiltroVisivel,
+  ] = useState(false);
 
-  const [pesquisaRealizada, setPesquisaRealizada] = useState(false);
+  const [pesquisaRealizada, setPesquisaRealizada] =
+    useState(false);
 
-  // =========================
+ 
   // RESULTADOS
-  // =========================
+  
   const [publicacoes, setPublicacoes] = useState<
     PublicacaoResponse[]
   >([]);
 
-  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuarios, setUsuarios] = useState<any[]>(
+    []
+  );
 
   // =========================
   // FILTROS USUÁRIOS
   // =========================
-  const [filtroNome, setFiltroNome] = useState("");
+  const [filtroNome, setFiltroNome] =
+    useState("");
 
-  const [filtroCidade, setFiltroCidade] = useState("");
+  const [filtroCidade, setFiltroCidade] =
+    useState("");
 
-  const [filtroEstado, setFiltroEstado] = useState("");
+  const [filtroEstado, setFiltroEstado] =
+    useState("");
 
-  const [filtroTipoUsuario, setFiltroTipoUsuario] = useState<
+  const [
+    filtroTipoUsuario,
+    setFiltroTipoUsuario,
+  ] = useState<
     "ARTISTA" | "CONTRATANTE" | ""
   >("");
 
   // =========================
   // FILTROS PUBLICAÇÃO
   // =========================
-  const [filtroLegenda, setFiltroLegenda] = useState("");
+  const [filtroLegenda, setFiltroLegenda] =
+    useState("");
 
-  const [filtroNomeAutor, setFiltroNomeAutor] = useState("");
+  const [
+    filtroNomeAutor,
+    setFiltroNomeAutor,
+  ] = useState("");
 
-  const [filtroDataInicio, setFiltroDataInicio] = useState("");
+  const [
+    filtroDataInicio,
+    setFiltroDataInicio,
+  ] = useState("");
 
-  const [filtroDataFim, setFiltroDataFim] = useState("");
+  const [filtroDataFim, setFiltroDataFim] =
+    useState("");
 
   // =========================
   // MODAL COMENTÁRIOS
   // =========================
-  const [modalStatus, setModalStatus] = useState(false);
+  const [modalStatus, setModalStatus] =
+    useState(false);
 
-  const [postId, setPostId] = useState<number>();
+  const [postId, setPostId] =
+    useState<number>();
+
+  // =========================
+  // FORMATAR DATA
+  // =========================
+  const formatarData = (texto: string) => {
+    const numeros = texto.replace(/\D/g, "");
+
+    if (numeros.length <= 2) {
+      return numeros;
+    }
+
+    if (numeros.length <= 4) {
+      return `${numeros.slice(
+        0,
+        2
+      )}/${numeros.slice(2)}`;
+    }
+
+    return `${numeros.slice(
+      0,
+      2
+    )}/${numeros.slice(
+      2,
+      4
+    )}/${numeros.slice(4, 8)}`;
+  };
 
   // =========================
   // BUSCA
@@ -93,23 +143,27 @@ export default function Busca() {
     setPesquisaRealizada(true);
 
     try {
-      // ====================================
-      // BUSCA DE USUÁRIOS
-      // ====================================
+   
       if (escopo === "artista") {
         const filtrosUsuario = {
-          nome: filtroNome || pesquisaPrincipal || undefined,
+          nome:
+            filtroNome ||
+            pesquisaPrincipal ||
+            undefined,
 
-          tipoConta: filtroTipoUsuario || undefined,
+          tipoConta:
+            filtroTipoUsuario || undefined,
 
-          cidade: filtroCidade || undefined,
+          cidade:
+            filtroCidade || undefined,
 
           uf: filtroEstado || undefined,
         };
 
-        const response = await UsuarioService.listar(
-          filtrosUsuario
-        );
+        const response =
+          await UsuarioService.listar(
+            filtrosUsuario
+          );
 
         setUsuarios(response);
       }
@@ -120,16 +174,29 @@ export default function Busca() {
       else {
         const filtrosPublicacao = {
           legenda:
-            filtroLegenda || pesquisaPrincipal || undefined,
+            filtroLegenda ||
+            pesquisaPrincipal ||
+            undefined,
 
-          nomeAutor: filtroNomeAutor || undefined,
+          nomeAutor:
+            filtroNomeAutor || undefined,
 
           dataInicio: filtroDataInicio
-            ? new Date(filtroDataInicio).toISOString()
+            ? new Date(
+              filtroDataInicio
+                .split("/")
+                .reverse()
+                .join("-")
+            ).toISOString()
             : undefined,
 
           dataFim: filtroDataFim
-            ? new Date(filtroDataFim).toISOString()
+            ? new Date(
+              filtroDataFim
+                .split("/")
+                .reverse()
+                .join("-")
+            ).toISOString()
             : undefined,
         };
 
@@ -141,41 +208,29 @@ export default function Busca() {
         setPublicacoes(response);
       }
     } catch (erro) {
-      console.error("Erro ao realizar busca:", erro);
+      console.error(
+        "Erro ao realizar busca:",
+        erro
+      );
     } finally {
       setLoad(false);
     }
   };
 
-  // =========================
-  // LIMPAR FILTROS
-  // =========================
   const limparTodosFiltros = () => {
     setFiltroNome("");
-
     setFiltroCidade("");
-
     setFiltroEstado("");
-
     setFiltroTipoUsuario("");
-
     setFiltroLegenda("");
-
     setFiltroNomeAutor("");
-
     setFiltroDataInicio("");
-
     setFiltroDataFim("");
-
     setPesquisaPrincipal("");
-
     setPesquisaRealizada(false);
-
     setUsuarios([]);
-
     setPublicacoes([]);
   };
-
   return (
     <>
       {/* NAVBAR */}
@@ -184,7 +239,6 @@ export default function Busca() {
           style={style.banner}
           source={require("@/assets/img/banner.png")}
         />
-
         <View
           style={{
             flexDirection: "row",
@@ -200,7 +254,6 @@ export default function Busca() {
           </TouchableOpacity>
         </View>
       </View>
-
       {/* CONTAINER */}
       <View style={style.container}>
         {/* PESQUISA */}
@@ -213,10 +266,13 @@ export default function Busca() {
                 : "Buscar publicação..."
             }
             value={pesquisaPrincipal}
-            onChangeText={setPesquisaPrincipal}
-            placeholderTextColor={gStyles.cinza[400]}
+            onChangeText={
+              setPesquisaPrincipal
+            }
+            placeholderTextColor={
+              gStyles.cinza[400]
+            }
           />
-
           <TouchableOpacity
             style={style.botaoFiltro}
             onPress={() =>
@@ -248,11 +304,14 @@ export default function Busca() {
                 borderRadius: 8,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: gStyles.cinza[100],
+                backgroundColor:
+                  gStyles.cinza[100],
               },
 
-              escopo === "publicacao" && {
-                backgroundColor: "#113093",
+              escopo ===
+              "publicacao" && {
+                backgroundColor:
+                  "#113093",
               },
             ]}
             onPress={() => {
@@ -264,7 +323,8 @@ export default function Busca() {
             <Text
               style={{
                 color:
-                  escopo === "publicacao"
+                  escopo ===
+                    "publicacao"
                     ? "#FFF"
                     : gStyles.cinza[500],
 
@@ -284,11 +344,13 @@ export default function Busca() {
                 borderRadius: 8,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: gStyles.cinza[100],
+                backgroundColor:
+                  gStyles.cinza[100],
               },
 
               escopo === "artista" && {
-                backgroundColor: "#113093",
+                backgroundColor:
+                  "#113093",
               },
             ]}
             onPress={() => {
@@ -317,7 +379,9 @@ export default function Busca() {
           style={style.botaoBuscarPrincipal}
           onPress={executarBusca}
         >
-          <Text style={style.textoBotaoBuscar}>
+          <Text
+            style={style.textoBotaoBuscar}
+          >
             Buscar
           </Text>
         </TouchableOpacity>
@@ -351,12 +415,14 @@ export default function Busca() {
 
                 <Text
                   style={{
-                    color: gStyles.cinza[400],
+                    color:
+                      gStyles.cinza[400],
                     marginTop: 8,
                     fontSize: 14,
                   }}
                 >
-                  Digite algo ou use os filtros
+                  Digite algo ou use os
+                  filtros
                 </Text>
               </View>
             )}
@@ -365,17 +431,18 @@ export default function Busca() {
             {pesquisaRealizada &&
               escopo === "artista" &&
               usuarios.map((usuario) => {
-                console.log(usuario);
-
                 return (
                   <View
                     key={usuario.id}
-                    style={style.cardResultado}
+                    style={
+                      style.cardResultado
+                    }
                   >
                     <View
                       style={{
                         flexDirection: "row",
-                        alignItems: "center",
+                        alignItems:
+                          "center",
                         gap: 12,
                       }}
                     >
@@ -385,9 +452,12 @@ export default function Busca() {
                           width: 50,
                           height: 50,
                           borderRadius: 25,
-                          backgroundColor: "#E5E7EB",
-                          justifyContent: "center",
-                          alignItems: "center",
+                          backgroundColor:
+                            "#E5E7EB",
+                          justifyContent:
+                            "center",
+                          alignItems:
+                            "center",
                         }}
                       >
                         <Feather
@@ -398,20 +468,34 @@ export default function Busca() {
                       </View>
 
                       {/* INFOS */}
-                      <View style={{ flex: 1 }}>
-                        <Text style={style.tituloCard}>
+                      <View
+                        style={{ flex: 1 }}
+                      >
+                        <Text
+                          style={
+                            style.tituloCard
+                          }
+                        >
                           {usuario.nomeLog
                             ? `${usuario.nome}`
                             : usuario.nome}
                         </Text>
 
-                        {(usuario.cidade || usuario.uf) && (
-                          <Text style={style.subtituloCard}>
-                            {[usuario.cidade, usuario.uf]
-                              .filter(Boolean)
-                              .join(" - ")}
-                          </Text>
-                        )}
+                        {(usuario.cidade ||
+                          usuario.uf) && (
+                            <Text
+                              style={
+                                style.subtituloCard
+                              }
+                            >
+                              {[
+                                usuario.cidade,
+                                usuario.uf,
+                              ]
+                                .filter(Boolean)
+                                .join(" - ")}
+                            </Text>
+                          )}
 
                         {!!usuario.textoBio && (
                           <Text
@@ -422,7 +506,9 @@ export default function Busca() {
                               },
                             ]}
                           >
-                            {usuario.textoBio}
+                            {
+                              usuario.textoBio
+                            }
                           </Text>
                         )}
 
@@ -430,41 +516,61 @@ export default function Busca() {
                           style={[
                             style.subtituloCard,
                             {
-                              color: "#113093",
-                              fontWeight: "600",
+                              color:
+                                "#113093",
+                              fontWeight:
+                                "600",
                               marginTop: 4,
                             },
                           ]}
                         >
-                          {usuario.tipoConta}
+                          {usuario.tipoConta
+                            ?.replace(
+                              "_CPF",
+                              ""
+                            )
+                            ?.replace(
+                              "_CNPJ",
+                              ""
+                            )
+                            ?.replace(
+                              "_",
+                              " "
+                            )}
                         </Text>
                       </View>
                     </View>
                   </View>
                 );
-              })
-            }
+              })}
 
             {/* NENHUM USUÁRIO */}
             {pesquisaRealizada &&
               escopo === "artista" &&
-              usuarios.length === 0 && (
+              usuarios.length ===
+              0 && (
                 <Text
                   style={{
-                    textAlign: "center",
-                    color: gStyles.cinza[400],
+                    textAlign:
+                      "center",
+                    color:
+                      gStyles.cinza[400],
                     marginTop: 16,
                   }}
                 >
-                  Nenhum usuário encontrado.
+                  Nenhum usuário
+                  encontrado.
                 </Text>
               )}
 
             {/* RESULTADOS PUBLICAÇÕES */}
             {pesquisaRealizada &&
-              escopo === "publicacao" &&
+              escopo ===
+              "publicacao" &&
               publicacoes.map((item) => (
-                <Post.root key={item.id}>
+                <Post.root
+                  key={item.id}
+                >
                   <Post.header
                     nomePerfil={
                       item.autor?.nome ??
@@ -498,7 +604,8 @@ export default function Busca() {
                         name="thumb-up-outline"
                         size={24}
                         color={
-                          gStyles.cinza[600]
+                          gStyles
+                            .cinza[600]
                         }
                       />
                     </Reacao>
@@ -508,7 +615,9 @@ export default function Busca() {
                         item.totalComentarios
                       }
                       onPress={() => {
-                        setModalStatus(true);
+                        setModalStatus(
+                          true
+                        );
 
                         setPostId(
                           item.id as number
@@ -519,7 +628,8 @@ export default function Busca() {
                         name="message-circle"
                         size={24}
                         color={
-                          gStyles.cinza[600]
+                          gStyles
+                            .cinza[600]
                         }
                       />
                     </Reacao>
@@ -529,22 +639,29 @@ export default function Busca() {
 
             {/* NENHUMA PUBLICAÇÃO */}
             {pesquisaRealizada &&
-              escopo === "publicacao" &&
-              publicacoes.length === 0 && (
+              escopo ===
+              "publicacao" &&
+              publicacoes.length ===
+              0 && (
                 <Text
                   style={{
-                    textAlign: "center",
-                    color: gStyles.cinza[400],
+                    textAlign:
+                      "center",
+                    color:
+                      gStyles.cinza[400],
                     marginTop: 16,
                   }}
                 >
-                  Nenhuma publicação encontrada.
+                  Nenhuma publicação
+                  encontrada.
                 </Text>
               )}
 
             {/* MODAL COMENTÁRIOS */}
             <CommentSection
-              setModalStatus={setModalStatus}
+              setModalStatus={
+                setModalStatus
+              }
               postId={postId}
               visible={modalStatus}
             />
@@ -569,13 +686,43 @@ export default function Busca() {
                 Filtros Avançados
               </Text>
 
-              <TouchableOpacity
-                onPress={limparTodosFiltros}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 16,
+                }}
               >
-                <Text style={style.textoLimpar}>
-                  Limpar filtros
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={
+                    limparTodosFiltros
+                  }
+                >
+                  <Text
+                    style={
+                      style.textoLimpar
+                    }
+                  >
+                    Limpar filtros
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    setModalFiltroVisivel(
+                      false
+                    )
+                  }
+                >
+                  <Feather
+                    name="x"
+                    size={22}
+                    color={
+                      gStyles.cinza[500]
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <ScrollView
@@ -586,75 +733,88 @@ export default function Busca() {
               {/* FILTROS USUÁRIO */}
               {escopo === "artista" && (
                 <View style={{ gap: 12 }}>
-                  {/* NOME */}
                   <View>
                     <Text
-                      style={style.labelFiltro}
+                      style={
+                        style.labelFiltro
+                      }
                     >
                       Nome
                     </Text>
 
                     <TextInput
-                      style={style.modalInput}
+                      style={
+                        style.modalInput
+                      }
                       value={filtroNome}
                       onChangeText={
                         setFiltroNome
                       }
                       placeholder="Ex: Samuel"
                       placeholderTextColor={
-                        gStyles.cinza[400]
+                        gStyles
+                          .cinza[400]
                       }
                     />
                   </View>
 
-                  {/* CIDADE */}
                   <View>
                     <Text
-                      style={style.labelFiltro}
+                      style={
+                        style.labelFiltro
+                      }
                     >
                       Cidade
                     </Text>
 
                     <TextInput
-                      style={style.modalInput}
+                      style={
+                        style.modalInput
+                      }
                       value={filtroCidade}
                       onChangeText={
                         setFiltroCidade
                       }
                       placeholder="Ex: São Paulo"
                       placeholderTextColor={
-                        gStyles.cinza[400]
+                        gStyles
+                          .cinza[400]
                       }
                     />
                   </View>
 
-                  {/* UF */}
                   <View>
                     <Text
-                      style={style.labelFiltro}
+                      style={
+                        style.labelFiltro
+                      }
                     >
                       UF
                     </Text>
 
                     <TextInput
-                      style={style.modalInput}
+                      style={
+                        style.modalInput
+                      }
                       value={filtroEstado}
                       onChangeText={
                         setFiltroEstado
                       }
                       placeholder="Ex: SP"
                       placeholderTextColor={
-                        gStyles.cinza[400]
+                        gStyles
+                          .cinza[400]
                       }
                       maxLength={2}
                       autoCapitalize="characters"
                     />
                   </View>
 
-                  {/* TIPO */}
                   <View>
                     <Text
-                      style={style.labelFiltro}
+                      style={
+                        style.labelFiltro
+                      }
                     >
                       Tipo de Conta
                     </Text>
@@ -725,106 +885,143 @@ export default function Busca() {
               )}
 
               {/* FILTROS PUBLICAÇÃO */}
-              {escopo === "publicacao" && (
-                <View style={{ gap: 12 }}>
-                  {/* LEGENDA */}
-                  <View>
-                    <Text
-                      style={style.labelFiltro}
-                    >
-                      Legenda
-                    </Text>
+              {escopo ===
+                "publicacao" && (
+                  <View style={{ gap: 12 }}>
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Legenda
+                      </Text>
 
-                    <TextInput
-                      style={style.modalInput}
-                      value={filtroLegenda}
-                      onChangeText={
-                        setFiltroLegenda
-                      }
-                      placeholder="Palavra-chave..."
-                      placeholderTextColor={
-                        gStyles.cinza[400]
-                      }
-                    />
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroLegenda}
+                        onChangeText={
+                          setFiltroLegenda
+                        }
+                        placeholder="Palavra-chave..."
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                      />
+                    </View>
+
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Nome do Autor
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroNomeAutor}
+                        onChangeText={
+                          setFiltroNomeAutor
+                        }
+                        placeholder="Ex: André"
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                      />
+                    </View>
+
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Data Início
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroDataInicio}
+                        onChangeText={(
+                          text
+                        ) =>
+                          setFiltroDataInicio(
+                            formatarData(
+                              text
+                            )
+                          )
+                        }
+                        placeholder="25/05/2026"
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                        keyboardType="numeric"
+                        maxLength={10}
+                      />
+                    </View>
+
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Data Fim
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroDataFim}
+                        onChangeText={(
+                          text
+                        ) =>
+                          setFiltroDataFim(
+                            formatarData(
+                              text
+                            )
+                          )
+                        }
+                        placeholder="30/05/2026"
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                        keyboardType="numeric"
+                        maxLength={10}
+                      />
+                    </View>
                   </View>
-
-                  {/* AUTOR */}
-                  <View>
-                    <Text
-                      style={style.labelFiltro}
-                    >
-                      Nome do Autor
-                    </Text>
-
-                    <TextInput
-                      style={style.modalInput}
-                      value={filtroNomeAutor}
-                      onChangeText={
-                        setFiltroNomeAutor
-                      }
-                      placeholder="Ex: André"
-                      placeholderTextColor={
-                        gStyles.cinza[400]
-                      }
-                    />
-                  </View>
-
-                  {/* DATA INICIO */}
-                  <View>
-                    <Text
-                      style={style.labelFiltro}
-                    >
-                      Data Início
-                    </Text>
-
-                    <TextInput
-                      style={style.modalInput}
-                      value={filtroDataInicio}
-                      onChangeText={
-                        setFiltroDataInicio
-                      }
-                      placeholder="2026-05-25"
-                      placeholderTextColor={
-                        gStyles.cinza[400]
-                      }
-                    />
-                  </View>
-
-                  {/* DATA FIM */}
-                  <View>
-                    <Text
-                      style={style.labelFiltro}
-                    >
-                      Data Fim
-                    </Text>
-
-                    <TextInput
-                      style={style.modalInput}
-                      value={filtroDataFim}
-                      onChangeText={
-                        setFiltroDataFim
-                      }
-                      placeholder="2026-05-30"
-                      placeholderTextColor={
-                        gStyles.cinza[400]
-                      }
-                    />
-                  </View>
-                </View>
-              )}
+                )}
             </ScrollView>
 
             {/* BOTÃO APLICAR */}
             <TouchableOpacity
               style={style.botaoAplicar}
               onPress={() => {
-                setModalFiltroVisivel(false);
+                setModalFiltroVisivel(
+                  false
+                );
 
                 executarBusca();
               }}
             >
               <Text
-                style={style.textoBotaoAplicar}
+                style={
+                  style.textoBotaoAplicar
+                }
               >
                 Aplicar filtros
               </Text>
