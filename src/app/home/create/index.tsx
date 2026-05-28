@@ -8,12 +8,13 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 
 export default function create() {
   const [erro, setErro] = useState("");
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState<any>(null);
-  const usuario = useAuthStore((state) => state.usuario);
 
   async function escolherImagem() {
   const result = await ImagePicker.launchImageLibraryAsync({
@@ -30,16 +31,18 @@ export default function create() {
 }
 
   async function handlePublicar() {
-
-    if (!usuario) {
+    const token = await AsyncStorage.getItem("@artconnect:token");
+    if(!token) {
       router.navigate("/login");
       return;
-    }
+    } 
+
+    const tokenParse: AuthLoginResponse = JSON.parse(token);
 
     const res = {
-      legenda, 
+      legenda: legenda, 
       file: midia,
-      autorId: usuario.id,
+      autorId: tokenParse.id,
     };
 
     const validacao = PublicacaoService.validarCriacao(res);

@@ -5,7 +5,7 @@ import { routingQueue } from "expo-router/build/global-state/routing";
 export interface useQueryProps {
     url: string,
     method?: "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH" | "HEAD",
-    body?: string
+    body?: BodyInit
 }
 
 export async function useQuery({method="GET", ...props}: useQueryProps): Promise<Response> {
@@ -15,6 +15,7 @@ export async function useQuery({method="GET", ...props}: useQueryProps): Promise
     
     
     const dataToken = await AsyncStorage.getItem("@artconnect:token");
+    
     let token!: AuthLoginResponse;
     
     if(dataToken) {

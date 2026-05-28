@@ -42,7 +42,6 @@ export const style = StyleSheet.create({
   },
 
   nomeProfile: {
-    width: 150,
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
@@ -50,7 +49,6 @@ export const style = StyleSheet.create({
   },
 
   profile: {
-    width: 300,
     height: 25,
     flexDirection: "row",
   },

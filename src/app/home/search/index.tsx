@@ -1,352 +1,1026 @@
-import ArtistaService from "@/services/ArtistaService";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { CommentSection } from "@/components/CommentSection";
+import { Post } from "@/components/Post";
+import { Reacao } from "@/components/Reacao";
+import { TextButton } from "@/components/TextButton";
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
+import PublicacoesService from "@/services/PublicacoesService";
+import UsuarioService from "@/services/UsuarioService";
+import { gStyles } from "@/style/gStyle";
+
 import {
-  FlatList,
-  Keyboard,
-  Modal,
+  AntDesign,
+  Feather,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+
+import { useState } from "react";
+
+import {
+  ActivityIndicator,
+  Image,
   ScrollView,
-  Text,
-  TextInput,
   TouchableOpacity,
   View,
+  Text,
+  TextInput,
+  Modal,
 } from "react-native";
 
-import { styles } from "./style";
+import { style } from "./style";
 
-function ChipRow({
-  label,
-  items,
-  selecionado,
-  corAtiva,
-  onPress,
-}: any) {
-  if (!items || !items.length) return null;
+type TipoEscopo = "artista" | "publicacao";
 
-  return (
-    <View style={styles.filterSection}>
-      <Text style={styles.filterLabel}>{label}</Text>
+export default function Busca() {
+  // =========================
+  // ESTADOS GERAIS
+  // =========================
+  const [escopo, setEscopo] =
+    useState<TipoEscopo>("publicacao");
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.chipRow}>
-          {items.map((item: string) => {
-            const ativo = selecionado === item;
+  const [pesquisaPrincipal, setPesquisaPrincipal] =
+    useState("");
 
-            return (
-              <TouchableOpacity
-                key={item}
-                onPress={() => onPress(ativo ? "" : item)}
-                style={[
-                  styles.chip,
-                  ativo && {
-                    backgroundColor: corAtiva.bg,
-                    borderColor: corAtiva.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    ativo && {
-                      color: corAtiva.text,
-                      fontWeight: "600",
-                    },
-                  ]}
-                >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </ScrollView>
-    </View>
+  const [load, setLoad] = useState(false);
+
+  const [
+    modalFiltroVisivel,
+    setModalFiltroVisivel,
+  ] = useState(false);
+
+  const [pesquisaRealizada, setPesquisaRealizada] =
+    useState(false);
+
+ 
+  // RESULTADOS
+  
+  const [publicacoes, setPublicacoes] = useState<
+    PublicacaoResponse[]
+  >([]);
+
+  const [usuarios, setUsuarios] = useState<any[]>(
+    []
   );
-}
 
-export default function Search() {
-  const [dadosFiltros, setDadosFiltros] = useState<any[]>([]);
-  const [resultados, setResultados] = useState<any[]>([]);
+  // =========================
+  // FILTROS USUÁRIOS
+  // =========================
+  const [filtroNome, setFiltroNome] =
+    useState("");
 
-  const [pesquisa, setPesquisa] = useState("");
+  const [filtroCidade, setFiltroCidade] =
+    useState("");
 
-  const [tipoSel, setTipoSel] = useState("");
-  const [generoSel, setGeneroSel] = useState("");
-  const [estiloSel, setEstiloSel] = useState("");
+  const [filtroEstado, setFiltroEstado] =
+    useState("");
 
-  const [buscaRealizada, setBuscaRealizada] = useState(false);
-  const [modalVisivel, setModalVisivel] = useState(false);
+  const [
+    filtroTipoUsuario,
+    setFiltroTipoUsuario,
+  ] = useState<
+    "ARTISTA" | "CONTRATANTE" | ""
+  >("");
 
-  useEffect(() => {
-    carregarOpcoesDosChips();
-  }, []);
+  // =========================
+  // FILTROS PUBLICAÇÃO
+  // =========================
+  const [filtroLegenda, setFiltroLegenda] =
+    useState("");
 
-  async function carregarOpcoesDosChips() {
+  const [
+    filtroNomeAutor,
+    setFiltroNomeAutor,
+  ] = useState("");
+
+  const [
+    filtroDataInicio,
+    setFiltroDataInicio,
+  ] = useState("");
+
+  const [filtroDataFim, setFiltroDataFim] =
+    useState("");
+
+  // =========================
+  // MODAL COMENTÁRIOS
+  // =========================
+  const [modalStatus, setModalStatus] =
+    useState(false);
+
+  const [postId, setPostId] =
+    useState<number>();
+
+  // =========================
+  // FORMATAR DATA
+  // =========================
+  const formatarData = (texto: string) => {
+    const numeros = texto.replace(/\D/g, "");
+
+    if (numeros.length <= 2) {
+      return numeros;
+    }
+
+    if (numeros.length <= 4) {
+      return `${numeros.slice(
+        0,
+        2
+      )}/${numeros.slice(2)}`;
+    }
+
+    return `${numeros.slice(
+      0,
+      2
+    )}/${numeros.slice(
+      2,
+      4
+    )}/${numeros.slice(4, 8)}`;
+  };
+
+  // =========================
+  // BUSCA
+  // =========================
+  const executarBusca = async () => {
+    setLoad(true);
+
+    setPesquisaRealizada(true);
+
     try {
-      const data = await ArtistaService.listarTodos();
+   
+      if (escopo === "artista") {
+        const filtrosUsuario = {
+          nome:
+            filtroNome ||
+            pesquisaPrincipal ||
+            undefined,
 
-      if (Array.isArray(data)) {
-        setDadosFiltros(data);
-        return;
+          tipoConta:
+            filtroTipoUsuario || undefined,
+
+          cidade:
+            filtroCidade || undefined,
+
+          uf: filtroEstado || undefined,
+        };
+
+        const response =
+          await UsuarioService.listar(
+            filtrosUsuario
+          );
+
+        setUsuarios(response);
       }
 
-      if (data && Array.isArray(data.content)) {
-        setDadosFiltros(data.content);
-        return;
+      // ====================================
+      // BUSCA DE PUBLICAÇÕES
+      // ====================================
+      else {
+        const filtrosPublicacao = {
+          legenda:
+            filtroLegenda ||
+            pesquisaPrincipal ||
+            undefined,
+
+          nomeAutor:
+            filtroNomeAutor || undefined,
+
+          dataInicio: filtroDataInicio
+            ? new Date(
+              filtroDataInicio
+                .split("/")
+                .reverse()
+                .join("-")
+            ).toISOString()
+            : undefined,
+
+          dataFim: filtroDataFim
+            ? new Date(
+              filtroDataFim
+                .split("/")
+                .reverse()
+                .join("-")
+            ).toISOString()
+            : undefined,
+        };
+
+        const response =
+          await PublicacoesService.listar(
+            filtrosPublicacao
+          );
+
+        setPublicacoes(response);
       }
-
-      setDadosFiltros([]);
-    } catch (error) {
-      console.log(error);
-      setDadosFiltros([]);
+    } catch (erro) {
+      console.error(
+        "Erro ao realizar busca:",
+        erro
+      );
+    } finally {
+      setLoad(false);
     }
-  }
+  };
 
-  async function buscar() {
-    Keyboard.dismiss();
-
-    const textoPesquisa = pesquisa.trim();
-
-    const semPesquisa =
-      !textoPesquisa &&
-      !tipoSel &&
-      !generoSel &&
-      !estiloSel;
-
-    if (semPesquisa) {
-      setResultados([]);
-      setBuscaRealizada(false);
-      return;
-    }
-
-    if (
-      textoPesquisa &&
-      textoPesquisa.length < 2
-    ) {
-      setResultados([]);
-      setBuscaRealizada(false);
-      return;
-    }
-
-    try {
-      const filtros = {
-        nome: textoPesquisa || undefined,
-        tipoArtista: tipoSel || undefined,
-        genero: generoSel || undefined,
-        estilo: estiloSel || undefined,
-      };
-
-      const data = await ArtistaService.listar(filtros);
-
-      if (Array.isArray(data)) {
-        setResultados(data);
-      } else if (
-        data &&
-        Array.isArray(data.content)
-      ) {
-        setResultados(data.content);
-      } else {
-        setResultados([]);
-      }
-
-      setBuscaRealizada(true);
-    } catch (error) {
-      console.log(error);
-      setResultados([]);
-      setBuscaRealizada(true);
-    }
-  }
-
-  useEffect(() => {
-    const textoPesquisa = pesquisa.trim();
-
-    const semPesquisa =
-      !textoPesquisa &&
-      !tipoSel &&
-      !generoSel &&
-      !estiloSel;
-
-    if (semPesquisa) {
-      setBuscaRealizada(false);
-      setResultados([]);
-    }
-  }, [pesquisa, tipoSel, generoSel, estiloSel]);
-
-  const listaSegura = Array.isArray(dadosFiltros)
-    ? dadosFiltros
-    : [];
-
-  const tipos = [
-    ...new Set(
-      listaSegura
-        .map((a: any) => a?.tipoArtista)
-        .filter(Boolean)
-    ),
-  ] as string[];
-
-  const generos = [
-    ...new Set(
-      listaSegura
-        .map((a: any) => a?.genero)
-        .filter(Boolean)
-    ),
-  ] as string[];
-
-  const estilos = [
-    ...new Set(
-      listaSegura
-        .filter(
-          (a: any) =>
-            !generoSel || a?.genero === generoSel
-        )
-        .map((a: any) => a?.estilo)
-        .filter(Boolean)
-    ),
-  ] as string[];
-
-  const totalFiltrosAtivos = [
-    tipoSel,
-    generoSel,
-    estiloSel,
-  ].filter(Boolean).length;
-
-  function limparFiltros() {
-    setTipoSel("");
-    setGeneroSel("");
-    setEstiloSel("");
-  }
-
+  const limparTodosFiltros = () => {
+    setFiltroNome("");
+    setFiltroCidade("");
+    setFiltroEstado("");
+    setFiltroTipoUsuario("");
+    setFiltroLegenda("");
+    setFiltroNomeAutor("");
+    setFiltroDataInicio("");
+    setFiltroDataFim("");
+    setPesquisaPrincipal("");
+    setPesquisaRealizada(false);
+    setUsuarios([]);
+    setPublicacoes([]);
+  };
   return (
-    <View style={styles.container}>
-      <View style={styles.searchBarRow}>
-        <TextInput
-          placeholder="Buscar artista..."
-          value={pesquisa}
-          onChangeText={setPesquisa}
-          style={styles.inputSearch}
-          returnKeyType="search"
-          onSubmitEditing={buscar}
+    <>
+      {/* NAVBAR */}
+      <View style={style.navbar}>
+        <Image
+          style={style.banner}
+          source={require("@/assets/img/banner.png")}
         />
-
-        <TouchableOpacity
-          style={[
-            styles.botaoFiltro,
-            totalFiltrosAtivos > 0
-              ? styles.botaoFiltroAtivo
-              : styles.botaoFiltroInativo,
-          ]}
-          onPress={() => setModalVisivel(true)}
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 16,
+          }}
         >
-          <View style={styles.iconFunilContainer}>
-            <View style={styles.iconFunilLinhaGrande} />
-            <View style={styles.iconFunilLinhaMedia} />
-            <View style={styles.iconFunilLinhaPequena} />
-          </View>
+          <TouchableOpacity>
+            <AntDesign
+              name="message"
+              color={gStyles.cinza[600]}
+              size={22}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/* CONTAINER */}
+      <View style={style.container}>
+        {/* PESQUISA */}
+        <View style={style.searchRow}>
+          <TextInput
+            style={style.inputPesquisa}
+            placeholder={
+              escopo === "artista"
+                ? "Buscar usuário..."
+                : "Buscar publicação..."
+            }
+            value={pesquisaPrincipal}
+            onChangeText={
+              setPesquisaPrincipal
+            }
+            placeholderTextColor={
+              gStyles.cinza[400]
+            }
+          />
+          <TouchableOpacity
+            style={style.botaoFiltro}
+            onPress={() =>
+              setModalFiltroVisivel(true)
+            }
+          >
+            <Feather
+              name="sliders"
+              size={20}
+              color={gStyles.cinza[600]}
+            />
+          </TouchableOpacity>
+        </View>
 
-          {totalFiltrosAtivos > 0 && (
-            <View style={styles.badgeFiltro}>
-              <Text style={styles.badgeFiltroTexto}>
-                {totalFiltrosAtivos}
-              </Text>
-            </View>
-          )}
+        {/* ABAS */}
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 8,
+            marginVertical: 4,
+          }}
+        >
+          {/* PUBLICAÇÃO */}
+          <TouchableOpacity
+            style={[
+              {
+                flex: 1,
+                height: 40,
+                borderRadius: 8,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor:
+                  gStyles.cinza[100],
+              },
+
+              escopo ===
+              "publicacao" && {
+                backgroundColor:
+                  "#113093",
+              },
+            ]}
+            onPress={() => {
+              setEscopo("publicacao");
+
+              setPesquisaRealizada(false);
+            }}
+          >
+            <Text
+              style={{
+                color:
+                  escopo ===
+                    "publicacao"
+                    ? "#FFF"
+                    : gStyles.cinza[500],
+
+                fontWeight: "600",
+              }}
+            >
+              Publicações
+            </Text>
+          </TouchableOpacity>
+
+          {/* USUÁRIOS */}
+          <TouchableOpacity
+            style={[
+              {
+                flex: 1,
+                height: 40,
+                borderRadius: 8,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor:
+                  gStyles.cinza[100],
+              },
+
+              escopo === "artista" && {
+                backgroundColor:
+                  "#113093",
+              },
+            ]}
+            onPress={() => {
+              setEscopo("artista");
+
+              setPesquisaRealizada(false);
+            }}
+          >
+            <Text
+              style={{
+                color:
+                  escopo === "artista"
+                    ? "#FFF"
+                    : gStyles.cinza[500],
+
+                fontWeight: "600",
+              }}
+            >
+              Usuários
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* BOTÃO BUSCAR */}
+        <TouchableOpacity
+          style={style.botaoBuscarPrincipal}
+          onPress={executarBusca}
+        >
+          <Text
+            style={style.textoBotaoBuscar}
+          >
+            Buscar
+          </Text>
         </TouchableOpacity>
+
+        {/* RESULTADOS */}
+        {load ? (
+          <ActivityIndicator
+            size="large"
+            color="#113093"
+            style={{ marginTop: 24 }}
+          />
+        ) : (
+          <ScrollView
+            contentContainerStyle={{
+              paddingBottom: 24,
+            }}
+          >
+            {/* SEM PESQUISA */}
+            {!pesquisaRealizada && (
+              <View
+                style={{
+                  alignItems: "center",
+                  marginTop: 40,
+                }}
+              >
+                <Feather
+                  name="search"
+                  size={40}
+                  color={gStyles.cinza[300]}
+                />
+
+                <Text
+                  style={{
+                    color:
+                      gStyles.cinza[400],
+                    marginTop: 8,
+                    fontSize: 14,
+                  }}
+                >
+                  Digite algo ou use os
+                  filtros
+                </Text>
+              </View>
+            )}
+
+            {/* RESULTADOS USUÁRIOS */}
+            {pesquisaRealizada &&
+              escopo === "artista" &&
+              usuarios.map((usuario) => {
+                return (
+                  <View
+                    key={usuario.id}
+                    style={
+                      style.cardResultado
+                    }
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems:
+                          "center",
+                        gap: 12,
+                      }}
+                    >
+                      {/* ÍCONE PERFIL */}
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 25,
+                          backgroundColor:
+                            "#E5E7EB",
+                          justifyContent:
+                            "center",
+                          alignItems:
+                            "center",
+                        }}
+                      >
+                        <Feather
+                          name="user"
+                          size={24}
+                          color="#6B7280"
+                        />
+                      </View>
+
+                      {/* INFOS */}
+                      <View
+                        style={{ flex: 1 }}
+                      >
+                        <Text
+                          style={
+                            style.tituloCard
+                          }
+                        >
+                          {usuario.nomeLog
+                            ? `${usuario.nome}`
+                            : usuario.nome}
+                        </Text>
+
+                        {(usuario.cidade ||
+                          usuario.uf) && (
+                            <Text
+                              style={
+                                style.subtituloCard
+                              }
+                            >
+                              {[
+                                usuario.cidade,
+                                usuario.uf,
+                              ]
+                                .filter(Boolean)
+                                .join(" - ")}
+                            </Text>
+                          )}
+
+                        {!!usuario.textoBio && (
+                          <Text
+                            style={[
+                              style.subtituloCard,
+                              {
+                                marginTop: 2,
+                              },
+                            ]}
+                          >
+                            {
+                              usuario.textoBio
+                            }
+                          </Text>
+                        )}
+
+                        <Text
+                          style={[
+                            style.subtituloCard,
+                            {
+                              color:
+                                "#113093",
+                              fontWeight:
+                                "600",
+                              marginTop: 4,
+                            },
+                          ]}
+                        >
+                          {usuario.tipoConta
+                            ?.replace(
+                              "_CPF",
+                              ""
+                            )
+                            ?.replace(
+                              "_CNPJ",
+                              ""
+                            )
+                            ?.replace(
+                              "_",
+                              " "
+                            )}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })}
+
+            {/* NENHUM USUÁRIO */}
+            {pesquisaRealizada &&
+              escopo === "artista" &&
+              usuarios.length ===
+              0 && (
+                <Text
+                  style={{
+                    textAlign:
+                      "center",
+                    color:
+                      gStyles.cinza[400],
+                    marginTop: 16,
+                  }}
+                >
+                  Nenhum usuário
+                  encontrado.
+                </Text>
+              )}
+
+            {/* RESULTADOS PUBLICAÇÕES */}
+            {pesquisaRealizada &&
+              escopo ===
+              "publicacao" &&
+              publicacoes.map((item) => (
+                <Post.root
+                  key={item.id}
+                >
+                  <Post.header
+                    nomePerfil={
+                      item.autor?.nome ??
+                      "Usuário"
+                    }
+                    dataPublicacao={new Date(
+                      item.dataPublicacao
+                    )}
+                  >
+                    <Post.headerActions>
+                      <TextButton
+                        title="Seguir"
+                        theme="secondary"
+                      />
+                    </Post.headerActions>
+                  </Post.header>
+
+                  <Post.legend
+                    data={item.legenda}
+                  />
+
+                  {item.urlMidia && (
+                    <Post.image
+                      url={item.urlMidia}
+                    />
+                  )}
+
+                  <Post.actions>
+                    <Reacao insight={0}>
+                      <MaterialCommunityIcons
+                        name="thumb-up-outline"
+                        size={24}
+                        color={
+                          gStyles
+                            .cinza[600]
+                        }
+                      />
+                    </Reacao>
+
+                    <Reacao
+                      insight={
+                        item.totalComentarios
+                      }
+                      onPress={() => {
+                        setModalStatus(
+                          true
+                        );
+
+                        setPostId(
+                          item.id as number
+                        );
+                      }}
+                    >
+                      <Feather
+                        name="message-circle"
+                        size={24}
+                        color={
+                          gStyles
+                            .cinza[600]
+                        }
+                      />
+                    </Reacao>
+                  </Post.actions>
+                </Post.root>
+              ))}
+
+            {/* NENHUMA PUBLICAÇÃO */}
+            {pesquisaRealizada &&
+              escopo ===
+              "publicacao" &&
+              publicacoes.length ===
+              0 && (
+                <Text
+                  style={{
+                    textAlign:
+                      "center",
+                    color:
+                      gStyles.cinza[400],
+                    marginTop: 16,
+                  }}
+                >
+                  Nenhuma publicação
+                  encontrada.
+                </Text>
+              )}
+
+            {/* MODAL COMENTÁRIOS */}
+            <CommentSection
+              setModalStatus={
+                setModalStatus
+              }
+              postId={postId}
+              visible={modalStatus}
+            />
+          </ScrollView>
+        )}
       </View>
 
-      <TouchableOpacity
-        style={styles.botaoBuscar}
-        onPress={buscar}
-      >
-        <Text style={styles.textoBotao}>
-          Buscar
-        </Text>
-      </TouchableOpacity>
-
+      {/* MODAL FILTROS */}
       <Modal
         animationType="slide"
-        transparent
-        visible={modalVisivel}
+        transparent={true}
+        visible={modalFiltroVisivel}
         onRequestClose={() =>
-          setModalVisivel(false)
+          setModalFiltroVisivel(false)
         }
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitulo}>
+        <View style={style.modalOverlay}>
+          <View style={style.modalConteudo}>
+            {/* HEADER */}
+            <View style={style.modalHeader}>
+              <Text style={style.modalTitulo}>
                 Filtros Avançados
               </Text>
 
-              <TouchableOpacity
-                onPress={limparFiltros}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 16,
+                }}
               >
-                <Text
-                  style={styles.botaoLimparFiltros}
+                <TouchableOpacity
+                  onPress={
+                    limparTodosFiltros
+                  }
                 >
-                  Limpar filtros
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={
+                      style.textoLimpar
+                    }
+                  >
+                    Limpar filtros
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    setModalFiltroVisivel(
+                      false
+                    )
+                  }
+                >
+                  <Feather
+                    name="x"
+                    size={22}
+                    color={
+                      gStyles.cinza[500]
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingBottom: 20,
-              }}
+              showsVerticalScrollIndicator={
+                false
+              }
             >
-              <ChipRow
-                label="Tipo de Artista"
-                items={tipos}
-                selecionado={tipoSel}
-                onPress={(v: string) =>
-                  setTipoSel(v)
-                }
-                corAtiva={{
-                  bg: "#EEEDFE",
-                  border: "#AFA9EC",
-                  text: "#1A56DB",
-                }}
-              />
+              {/* FILTROS USUÁRIO */}
+              {escopo === "artista" && (
+                <View style={{ gap: 12 }}>
+                  <View>
+                    <Text
+                      style={
+                        style.labelFiltro
+                      }
+                    >
+                      Nome
+                    </Text>
 
-              <ChipRow
-                label="Gênero"
-                items={generos}
-                selecionado={generoSel}
-                onPress={(v: string) => {
-                  setGeneroSel(v);
-                  setEstiloSel("");
-                }}
-                corAtiva={{
-                  bg: "#ECFDF5",
-                  border: "#A7F3D0",
-                  text: "#065F46",
-                }}
-              />
+                    <TextInput
+                      style={
+                        style.modalInput
+                      }
+                      value={filtroNome}
+                      onChangeText={
+                        setFiltroNome
+                      }
+                      placeholder="Ex: Samuel"
+                      placeholderTextColor={
+                        gStyles
+                          .cinza[400]
+                      }
+                    />
+                  </View>
 
-              <ChipRow
-                label="Estilo"
-                items={estilos}
-                selecionado={estiloSel}
-                onPress={(v: string) =>
-                  setEstiloSel(v)
-                }
-                corAtiva={{
-                  bg: "#FFFBEB",
-                  border: "#FDE68A",
-                  text: "#92400E",
-                }}
-              />
+                  <View>
+                    <Text
+                      style={
+                        style.labelFiltro
+                      }
+                    >
+                      Cidade
+                    </Text>
+
+                    <TextInput
+                      style={
+                        style.modalInput
+                      }
+                      value={filtroCidade}
+                      onChangeText={
+                        setFiltroCidade
+                      }
+                      placeholder="Ex: São Paulo"
+                      placeholderTextColor={
+                        gStyles
+                          .cinza[400]
+                      }
+                    />
+                  </View>
+
+                  <View>
+                    <Text
+                      style={
+                        style.labelFiltro
+                      }
+                    >
+                      UF
+                    </Text>
+
+                    <TextInput
+                      style={
+                        style.modalInput
+                      }
+                      value={filtroEstado}
+                      onChangeText={
+                        setFiltroEstado
+                      }
+                      placeholder="Ex: SP"
+                      placeholderTextColor={
+                        gStyles
+                          .cinza[400]
+                      }
+                      maxLength={2}
+                      autoCapitalize="characters"
+                    />
+                  </View>
+
+                  <View>
+                    <Text
+                      style={
+                        style.labelFiltro
+                      }
+                    >
+                      Tipo de Conta
+                    </Text>
+
+                    <View
+                      style={
+                        style.containerBotoesTipo
+                      }
+                    >
+                      <TouchableOpacity
+                        style={[
+                          style.botaoTipo,
+
+                          filtroTipoUsuario ===
+                          "ARTISTA" &&
+                          style.botaoTipoAtivo,
+                        ]}
+                        onPress={() =>
+                          setFiltroTipoUsuario(
+                            "ARTISTA"
+                          )
+                        }
+                      >
+                        <Text
+                          style={[
+                            style.textoBotaoTipo,
+
+                            filtroTipoUsuario ===
+                            "ARTISTA" &&
+                            style
+                              .textoBotaoTipoAtivo,
+                          ]}
+                        >
+                          Artista
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[
+                          style.botaoTipo,
+
+                          filtroTipoUsuario ===
+                          "CONTRATANTE" &&
+                          style.botaoTipoAtivo,
+                        ]}
+                        onPress={() =>
+                          setFiltroTipoUsuario(
+                            "CONTRATANTE"
+                          )
+                        }
+                      >
+                        <Text
+                          style={[
+                            style.textoBotaoTipo,
+
+                            filtroTipoUsuario ===
+                            "CONTRATANTE" &&
+                            style
+                              .textoBotaoTipoAtivo,
+                          ]}
+                        >
+                          Contratante
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* FILTROS PUBLICAÇÃO */}
+              {escopo ===
+                "publicacao" && (
+                  <View style={{ gap: 12 }}>
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Legenda
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroLegenda}
+                        onChangeText={
+                          setFiltroLegenda
+                        }
+                        placeholder="Palavra-chave..."
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                      />
+                    </View>
+
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Nome do Autor
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroNomeAutor}
+                        onChangeText={
+                          setFiltroNomeAutor
+                        }
+                        placeholder="Ex: André"
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                      />
+                    </View>
+
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Data Início
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroDataInicio}
+                        onChangeText={(
+                          text
+                        ) =>
+                          setFiltroDataInicio(
+                            formatarData(
+                              text
+                            )
+                          )
+                        }
+                        placeholder="25/05/2026"
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                        keyboardType="numeric"
+                        maxLength={10}
+                      />
+                    </View>
+
+                    <View>
+                      <Text
+                        style={
+                          style.labelFiltro
+                        }
+                      >
+                        Data Fim
+                      </Text>
+
+                      <TextInput
+                        style={
+                          style.modalInput
+                        }
+                        value={filtroDataFim}
+                        onChangeText={(
+                          text
+                        ) =>
+                          setFiltroDataFim(
+                            formatarData(
+                              text
+                            )
+                          )
+                        }
+                        placeholder="30/05/2026"
+                        placeholderTextColor={
+                          gStyles
+                            .cinza[400]
+                        }
+                        keyboardType="numeric"
+                        maxLength={10}
+                      />
+                    </View>
+                  </View>
+                )}
             </ScrollView>
 
+            {/* BOTÃO APLICAR */}
             <TouchableOpacity
-              style={styles.botaoAplicarModal}
-              onPress={() =>
-                setModalVisivel(false)
-              }
+              style={style.botaoAplicar}
+              onPress={() => {
+                setModalFiltroVisivel(
+                  false
+                );
+
+                executarBusca();
+              }}
             >
               <Text
                 style={
-                  styles.textoBotaoAplicarModal
+                  style.textoBotaoAplicar
                 }
               >
                 Aplicar filtros
@@ -355,81 +1029,6 @@ export default function Search() {
           </View>
         </View>
       </Modal>
-
-      {buscaRealizada ? (
-        <FlatList
-          data={resultados}
-          keyExtractor={(item: any) =>
-            String(item.id)
-          }
-          contentContainerStyle={
-            styles.listContainer
-          }
-          ListEmptyComponent={
-            <Text style={styles.empty}>
-              Nenhum artista encontrado.
-            </Text>
-          }
-          renderItem={({ item }: any) => (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() =>
-                router.push(
-                  `/artista/${item.id}` as any
-                )
-              }
-            >
-              <Text style={styles.nome}>
-                {item.nomeArtistico}
-              </Text>
-
-              <Text style={styles.subNome}>
-                {item.nome}
-              </Text>
-
-              <View style={styles.tagRow}>
-                {item.tipoArtista && (
-                  <Text
-                    style={[
-                      styles.tag,
-                      styles.tagTipo,
-                    ]}
-                  >
-                    {item.tipoArtista}
-                  </Text>
-                )}
-
-                {item.genero && (
-                  <Text
-                    style={[
-                      styles.tag,
-                      styles.tagGenero,
-                    ]}
-                  >
-                    {item.genero}
-                  </Text>
-                )}
-
-                {item.estilo && (
-                  <Text
-                    style={[
-                      styles.tag,
-                      styles.tagEstilo,
-                    ]}
-                  >
-                    {item.estilo}
-                  </Text>
-                )}
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      ) : (
-        <Text style={styles.empty}>
-          Digite pelo menos 2 letras ou
-          selecione um filtro para buscar.
-        </Text>
-      )}
-    </View>
+    </>
   );
 }
