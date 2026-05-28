@@ -1,8 +1,6 @@
 import { Post } from "@/components/Post";
-import { Action } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
 import PublicacoesService from "@/services/PublicacoesService";
-import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -19,33 +17,59 @@ import {
     View,
 } from "react-native";
 import { style } from "./style";
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
+import { Reacao } from "@/components/Reacao";
+import UsuarioService from "@/services/UsuarioService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UsuarioResponse } from "@/models/response/UsuarioResponse";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 
 export default function Perfil() {
-  const usuario = useAuthStore((s) => s.usuario);
-  const [publicacoes, setPublicacoes] = useState<any[]>([]);
+  const [usuario, setUsuario] = useState<UsuarioResponse>();
+  const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [loading, setLoading] = useState(true);
+
+  
 
   useEffect(() => {
     async function carregar() {
       try {
-        const data = await PublicacoesService.listar();
-        if (usuario) {
+        let us: UsuarioResponse = {} as UsuarioResponse;
+        
+        const tk = await AsyncStorage.getItem("@artconnect:token");
+        
+        // SE ESTIVER COM TOKEN
+        if(tk) {
+          const tokenParse: AuthLoginResponse = JSON.parse(tk);
+          
+          us = await UsuarioService.findById(tokenParse.id);
+          console.log(us)
+          setUsuario(us)
+        }
+  
+        if (us.id) {
+          const data = await PublicacoesService.listar();
           const meus = (data ?? []).filter(
-            (p: any) => p.autor?.id === (usuario as any).id,
+            (p: PublicacaoResponse) => p.autor.id == us?.id,
           );
           setPublicacoes(meus);
         } else {
           setPublicacoes([]);
         }
+        
+        
+        
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
       }
+      setLoading(false);   
     }
-
     carregar();
-  }, [usuario]);
+  
+  }, []);
+  if(loading) return <ActivityIndicator />
+
   return (
     <>
       <View style={style.navbarMom}>
@@ -137,7 +161,7 @@ export default function Perfil() {
                 <Post.root>
                   <Post.header
                     nomePerfil={item.autor?.nome ?? "Usuário"}
-                    data={new Date(item.dataPublicacao)}
+                    dataPublicacao={new Date(item.dataPublicacao)}
                   >
                     <Post.headerActions>
                       <TextButton title="Seguir" theme="secondary" />
@@ -148,21 +172,21 @@ export default function Perfil() {
                   {item.urlMidia && <Post.image url={item.urlMidia} />}
 
                   <Post.actions>
-                    <Action insight={0}>
+                    <Reacao insight={0}>
                       <FontAwesome
                         name="heart-o"
                         size={24}
                         color={gStyles.vermelho[400]}
                       />
-                    </Action>
+                    </Reacao>
 
-                    <Action insight={0}>
+                    <Reacao insight={0}>
                       <Feather
                         name="message-circle"
                         size={24}
                         color={gStyles.cinza[600]}
                       />
-                    </Action>
+                    </Reacao>
                   </Post.actions>
                 </Post.root>
               )}

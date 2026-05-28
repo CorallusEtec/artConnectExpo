@@ -1,6 +1,9 @@
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
+import { useQuery } from "@/hooks/useQuery";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 
 interface CriarPublicacaoDTO {
   legenda: string;
@@ -18,7 +21,7 @@ export default class PublicacoesService {
     try {
       const formData = new FormData();
 
-      formData.append("legenda", legenda ?? "");
+      formData.append("legenda", legenda);
 
       if (file?.uri) {
         let blob: Blob;
@@ -37,14 +40,21 @@ export default class PublicacoesService {
           `image-${Date.now()}.jpg`
         );
       }
+      
+      
+      const tk = await AsyncStorage.getItem("@artconnect:token");
 
-      const response = await fetch(
-        `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      if(!tk) {
+        return;
+      }
+      const tokenParse: AuthLoginResponse = JSON.parse(tk);
+      const response = await fetch(`${config.apiUrl}/publicacao/save?autorId=${autorId}`, {
+        headers: {
+          "Authorization": `Bearer ${tokenParse.token}`
+        },
+        body:formData,
+        method:"POST"
+      });
 
       const text = await response.text();
 
@@ -52,7 +62,7 @@ export default class PublicacoesService {
         throw new Error(text);
       }
 
-      return text;
+      return "Publicação cadastrada com sucesso";
     } catch (error) {
       console.error(
         "Erro ao salvar publicação:",

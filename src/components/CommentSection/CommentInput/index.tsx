@@ -8,6 +8,7 @@ import { ComentarioResponse } from "@/models/response/ComentarioResponse";
 import { ComentarioService } from "@/services/ComentarioService";
 import { ComentarioRequest } from "@/models/request/ComentarioRequest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 
 
 type CommentInputProps = TextInputProps & {
@@ -42,18 +43,19 @@ export function CommentInput({...props}: CommentInputProps) {
 
     // Função para enviar o comentario
     async function sendComment() {
-        const idAutor = await AsyncStorage.getItem("@artconnect:token");
+        const token = await AsyncStorage.getItem("@artconnect:token");
 
-        if(idAutor == null) {
+        if(token == null) {
             throw new Error("Erro de permissão");
         } else {
 
             // Remove possíveis espaços em branco em volta do comentario
             commentText.trim()
-
+            // ID
+            const tokenParse: AuthLoginResponse = JSON.parse(token)
             // Request
             const comment: ComentarioRequest = {
-                idAutor: Number(idAutor),
+                idAutor: Number(tokenParse.id),
                 mensagem: commentText,
                 idPublicacao: props.postId as number
             }

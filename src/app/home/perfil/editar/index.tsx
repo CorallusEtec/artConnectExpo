@@ -17,12 +17,15 @@ import {
 } from "react-native";
 
 import { style } from "./style";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import UsuarioService from "@/services/UsuarioService";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 
 export default function EditPerfil() {
-  const usuario = useAuthStore((state) => state.usuario);
-  const setUsuario = useAuthStore((state) => state.setUsuario);
+  const [usuario, setUsuario] = useState<UsuarioResponse>();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     nome: "",
@@ -39,24 +42,42 @@ export default function EditPerfil() {
   });
 
   useEffect(() => {
-    if (!usuario) return;
+    async function carregar() {
+      const tk = await AsyncStorage.getItem("@artconnect:token");
+      let model!: UsuarioResponse;
+      if(tk) {
+        const tokenParse: AuthLoginResponse = JSON.parse(tk);
+
+        model = await UsuarioService.findById(tokenParse.id)
+        setUsuario(model);
+      }
+      
+    
+    
+    if (!model) return;
 
     setForm({
-      nome: usuario.nome || "",
-      textoBio: usuario.textoBio || "",
-      contatos: (usuario.contatos || [])
+      nome: model.nome || "",
+      textoBio: model.textoBio || "",
+      contatos: (model?.contatos || [])
         .map((c: any) => c.valor || c)
         .join(", "),
 
-      nomeLog: usuario.nomeLog || "",
-      numLog: usuario.numLog ? String(usuario.numLog) : "",
-      cep: usuario.cep || "",
-      bairro: usuario.bairro || "",
-      complemento: usuario.complemento || "",
-      cidade: usuario.cidade || "",
-      uf: usuario.uf || "",
+      nomeLog: model.nomeLog || "",
+      numLog: model.numLog ? String(model.numLog) : "",
+      cep: model.cep || "",
+      bairro: model.bairro || "",
+      complemento: model.complemento || "",
+      cidade: model.cidade || "",
+      uf: model.uf || "",
     });
-  }, [usuario]);
+
+    setLoading(false);
+  }
+  carregar();
+  
+  }, []);
+
 
   function alterarCampo(campo: string, valor: string) {
     setForm((prev) => ({
@@ -97,7 +118,7 @@ export default function EditPerfil() {
         uf: form.uf,
       };
 
-      await ArtistaService.edit((usuario as any).id, payload);
+      await ArtistaService.edit(usuario.id, payload);
 
       setUsuario({
         ...(usuario as any),
@@ -112,6 +133,7 @@ export default function EditPerfil() {
     }
   }
 
+  if(loading) return <ActivityIndicator size={"large"} />
   return (
     <ScrollView style={style.container}>
       <Pressable onPress={() => router.navigate("/home")}>

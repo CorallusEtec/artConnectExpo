@@ -50,9 +50,7 @@ export default function Home() {
           source={require("@/assets/img/banner.png")}
         />
         <View style={{ flexDirection: "row", gap: 16 }}>
-          <TouchableOpacity>
-            <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
-          </TouchableOpacity>
+          
         </View>
       </View>
       <View style={style.container}>

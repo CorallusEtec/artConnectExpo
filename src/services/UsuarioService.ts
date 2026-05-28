@@ -1,6 +1,7 @@
+import { useQuery } from "@/hooks/useQuery";
 import config from "./config";
 
-class UsuarioService {
+export class UsuarioService {
   async listar(params?: any) {
 
     const queryParams = new URLSearchParams();
@@ -34,6 +35,16 @@ class UsuarioService {
       throw new Error(
         "Erro ao buscar usuários"
       );
+    }
+
+    return await response.json();
+  }
+
+  async findById(id: number): Promise<any> {
+    const response = await useQuery({url: `${config.apiUrl}/usuario/${id}`})
+
+    if(!response.ok) {
+      return response.status;
     }
 
     return await response.json();

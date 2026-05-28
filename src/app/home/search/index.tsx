@@ -401,7 +401,7 @@ export default function Busca() {
                       <View style={{ flex: 1 }}>
                         <Text style={style.tituloCard}>
                           {usuario.nomeLog
-                            ? `${usuario.nomeLog} (${usuario.nome})`
+                            ? `${usuario.nome}`
                             : usuario.nome}
                         </Text>
 

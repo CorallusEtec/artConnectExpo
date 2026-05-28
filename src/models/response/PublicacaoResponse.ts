@@ -1,3 +1,5 @@
+import { UsuarioResponse } from "./UsuarioResponse"
+
 interface ReacaoDetails {
     totalReacoes: number,
     tipoReacao: {
@@ -11,9 +13,7 @@ export interface PublicacaoResponse {
     legenda: string,
     urlMidia: string | null,
     dataPublicacao: string,
-    autor: {
-        nome: string
-    },
+    autor: UsuarioResponse
     totalReacoes: null | number,
     totalComentarios: number,
     reacoes: ReacaoDetails[]
