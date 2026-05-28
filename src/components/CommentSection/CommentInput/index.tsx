@@ -42,11 +42,14 @@ export function CommentInput({...props}: CommentInputProps) {
 
     // Função para enviar o comentario
     async function sendComment() {
-        const idAutor = await AsyncStorage.getItem("@artconnect:token");
+        const userData = await AsyncStorage.getItem("@artconnect:token");
 
-        if(idAutor == null) {
+        if(userData == null) {
             throw new Error("Erro de permissão");
-        } else {
+        }
+        //transforma de json pra objeto
+        const user = JSON.parse(userData);
+        const idAutor = user.id //separar apenas id do objeto
 
             // Remove possíveis espaços em branco em volta do comentario
             commentText.trim()
@@ -61,7 +64,6 @@ export function CommentInput({...props}: CommentInputProps) {
             // Envia o comentário
             await ComentarioService.comment(comment);  
             
-        }
         // Atualiza os comentarios
         props.attComments();
 
