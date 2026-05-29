@@ -86,4 +86,26 @@ export const style = StyleSheet.create({
     width: 92,
     borderRadius: "100%",
   },
+
+  contatoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+
+  contatoInput: {
+    flex: 1,
+    marginRight: 8,
+  },
+
+  botaoAdicionarContato: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: gStyles.azul[200],
+  },
+
+  textoAdicionarContato: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });

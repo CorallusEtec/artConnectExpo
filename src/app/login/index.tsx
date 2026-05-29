@@ -16,6 +16,8 @@ import ArtistaService from "@/services/ArtistaService";
 import ContratanteService from "@/services/ContratanteService";
 import LoginService from "@/services/LoginService";
 import { useAuthStore } from "@/store";
+import { AuthService } from "@/services/AuthService";
+import UsuarioService from "@/services/UsuarioService";
 
 export default function Login() {
   const [checked, setChecked] = useState(false);
@@ -33,18 +35,15 @@ export default function Login() {
         return;
       }
 
-      const data = await LoginService.login(email, senha);
+      const data = await AuthService.login({email, senha});
       const id = data.id;
-
-      try {
-        const contratante = await ContratanteService.getById(id);
-        setUsuario(contratante);
-      } catch {
-        const artista = await ArtistaService.getById(id);
-        setUsuario(artista);
-      }
+      const responseUsuario = await UsuarioService.findById(id);
+      const usuario: any = await responseUsuario.json();
       
-      await AsyncStorage.setItem('@artconnect:token', id); 
+      setUsuario(usuario);
+
+
+      await AsyncStorage.setItem('@artconnect:token', JSON.stringify(data)); 
 
       router.replace("/home");
 
