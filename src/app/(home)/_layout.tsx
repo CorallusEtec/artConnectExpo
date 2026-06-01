@@ -12,6 +12,7 @@ export default function HomeLayout() {
     <>
       <StatusBar hidden />
       <Tabs
+        initialRouteName="home"
         backBehavior="initialRoute"
         screenOptions={{
           header: () => <Header />,
