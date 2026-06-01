@@ -5,19 +5,17 @@ import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
 import { FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Checkbox from "expo-checkbox";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import ArtistaService from "@/services/ArtistaService";
-import ContratanteService from "@/services/ContratanteService";
-import LoginService from "@/services/LoginService";
-import { useAuthStore } from "@/store";
 import { AuthService } from "@/services/AuthService";
+import LoginService from "@/services/LoginService";
 import UsuarioService from "@/services/UsuarioService";
+import { useAuthStore } from "@/store";
 
 export default function Login() {
   const [checked, setChecked] = useState(false);
@@ -105,6 +103,13 @@ export default function Login() {
           theme="secondary"
           title="Cadastrar"
           onPress={() => router.navigate("/cadastro")}
+          style={{width: "55%", height: "15%", justifyContent: "center"}}
+        />
+
+        <TextButton
+          theme="secondary"
+          title="HOme"
+          onPress={() => router.navigate("/home")}
           style={{width: "55%", height: "15%", justifyContent: "center"}}
         />
       </View>
