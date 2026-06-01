@@ -1,12 +1,18 @@
 import { Header } from "@/components/Header";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import {
+  StatusBar,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from "react-native";
 
 export default function HomeLayout() {
   return (
     <>
+      <StatusBar hidden />
       <Tabs
+        backBehavior="initialRoute"
         screenOptions={{
           header: () => <Header />,
           tabBarButton: (props) => (
