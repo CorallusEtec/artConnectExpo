@@ -8,39 +8,22 @@ export const style = StyleSheet.create({
     flex: 1,
   },
 
-  navbar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: gStyles.cinza[100],
-    margin:8,
-  },
-
-  banner: {
-    width: 150,
-    maxHeight: 50,
-    resizeMode: "contain",
-  },
-
   pic: {
-
     height: 52,
     width: 52,
     borderRadius: 100,
   },
   // No seu StyleSheet
   userRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 10, 
-  padding: 10,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 10,
+  },
   userName: {
     fontWeight: "bold",
     fontSize: 16,
-    color: gStyles.cinza[500], 
+    color: gStyles.cinza[500],
   },
   subtitle: {
     color: gStyles.cinza[500],
@@ -50,7 +33,7 @@ export const style = StyleSheet.create({
   notifs: {
     fontWeight: "bold",
     fontSize: 16,
-    color: gStyles.cinza[500], 
-    textAlign: "center"
+    color: gStyles.cinza[500],
+    textAlign: "center",
   },
 });
