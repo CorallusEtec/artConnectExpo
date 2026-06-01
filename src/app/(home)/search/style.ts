@@ -1,5 +1,5 @@
 import { gStyles } from "@/style/gStyle";
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 const { height } = Dimensions.get("window");
 
@@ -8,22 +8,7 @@ export const style = StyleSheet.create({
     padding: 16,
     gap: 16,
     flex: 1,
-    backgroundColor: "#FFFFFF", 
-  },
-
-  navbar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: gStyles.cinza[100],
-  },
-
-  banner: {
-    width: 150,
-    maxHeight: 50,
-    resizeMode: "contain",
+    backgroundColor: "#FFFFFF",
   },
 
   // SEÇÃO DE PESQUISA SUPERIOR
@@ -40,7 +25,7 @@ export const style = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    color: gStyles.cinza[500], 
+    color: gStyles.cinza[500],
   },
 
   botaoFiltro: {
@@ -52,9 +37,8 @@ export const style = StyleSheet.create({
     alignItems: "center",
   },
 
-
   botaoBuscarPrincipal: {
-    backgroundColor: "#113093", 
+    backgroundColor: "#113093",
     height: 48,
     borderRadius: 8,
     justifyContent: "center",
@@ -68,7 +52,7 @@ export const style = StyleSheet.create({
   },
 
   cardResultado: {
-    backgroundColor: gStyles.cinza[300], 
+    backgroundColor: gStyles.cinza[300],
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -115,7 +99,7 @@ export const style = StyleSheet.create({
   },
 
   textoLimpar: {
-    color: "#EF4444", 
+    color: "#EF4444",
     fontSize: 14,
     fontWeight: "600",
   },
@@ -156,7 +140,7 @@ export const style = StyleSheet.create({
   },
 
   botaoTipoAtivo: {
-    backgroundColor: "#2563EB", 
+    backgroundColor: "#2563EB",
     borderColor: "#2563EB",
   },
 
@@ -170,7 +154,6 @@ export const style = StyleSheet.create({
     fontWeight: "bold",
   },
 
- 
   botaoAplicar: {
     backgroundColor: "#2563EB",
     height: 48,

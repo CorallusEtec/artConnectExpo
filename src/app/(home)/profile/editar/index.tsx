@@ -8,15 +8,13 @@ import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import UsuarioService from "@/services/UsuarioService";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 
 export default function EditPerfil() {
-  const [usuario, setUsuario] = useState<UsuarioResponse>();
+  const [user, setUsuario] = useState<UsuarioResponse>();
 
   const [loading, setLoading] = useState(true);
 
@@ -87,9 +85,6 @@ export default function EditPerfil() {
       return router.navigate("/login");
     }
 
-    try {
-      setLoading(true);
-
       const payload: ArtistaEditDTO = {
         nome: form.nome,
         textoBio: form.textoBio,
@@ -113,10 +108,10 @@ export default function EditPerfil() {
         uf: form.uf,
       };
 
-      await ArtistaService.edit(usuario.id, payload);
+      await ArtistaService.edit(user.id, payload);
 
       setUsuario({
-        ...(usuario as any),
+        ...(user as any),
         ...payload,
       });
 
@@ -125,8 +120,8 @@ export default function EditPerfil() {
       console.log(error);
     } finally {
       setLoading(false);
-    }
-
+  }
+  }
   if(loading) return <ActivityIndicator size={"large"} />
   return (
     <ScrollView style={style.container}>
@@ -266,4 +261,4 @@ export default function EditPerfil() {
       </TouchableOpacity>
     </ScrollView>
   );
-}
+  }
