@@ -1,52 +1,50 @@
 import { Post } from "@/components/Post";
+import { Reacao } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
+import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import PublicacoesService from "@/services/PublicacoesService";
+import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
+import { style } from "@/style/pages/(home)/(private)/profile";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    Pressable,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { style } from "./style";
-import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
-import { Reacao } from "@/components/Reacao";
-import UsuarioService from "@/services/UsuarioService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UsuarioResponse } from "@/models/response/UsuarioResponse";
-import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 
 export default function Perfil() {
   const [usuario, setUsuario] = useState<UsuarioResponse>();
   const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
-  
-
   useEffect(() => {
     async function carregar() {
       try {
         let us: UsuarioResponse = {} as UsuarioResponse;
-        
+
         const tk = await AsyncStorage.getItem("@artconnect:token");
-        
+
         // SE ESTIVER COM TOKEN
-        if(tk) {
+        if (tk) {
           const tokenParse: AuthLoginResponse = JSON.parse(tk);
-          
+
           us = await UsuarioService.findById(tokenParse.id);
-          console.log(us)
-          setUsuario(us)
+          console.log(us);
+          setUsuario(us);
         }
-  
+
         if (us.id) {
           const data = await PublicacoesService.listar();
           const meus = (data ?? []).filter(
@@ -56,19 +54,15 @@ export default function Perfil() {
         } else {
           setPublicacoes([]);
         }
-        
-        
-        
       } catch (err) {
         console.error(err);
       } finally {
       }
-      setLoading(false);   
+      setLoading(false);
     }
     carregar();
-  
   }, []);
-  if(loading) return <ActivityIndicator />
+  if (loading) return <ActivityIndicator />;
 
   return (
     <>

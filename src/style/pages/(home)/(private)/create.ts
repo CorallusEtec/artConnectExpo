@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
 import { gStyles } from "@/style/gStyle";
+import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
@@ -60,16 +60,16 @@ export const style = StyleSheet.create({
   },
 
   attach: {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 6,
-  paddingVertical: 6,
-  paddingHorizontal: 10,
-  alignSelf: "flex-start",
-},
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: "flex-start",
+  },
 
-attachText: {
-  color: gStyles.cinza[600],
-  fontSize: 14,
-},
+  attachText: {
+    color: gStyles.cinza[600],
+    fontSize: 14,
+  },
 });

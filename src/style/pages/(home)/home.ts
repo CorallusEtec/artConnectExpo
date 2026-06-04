@@ -6,4 +6,9 @@ export const style = StyleSheet.create({
     gap: 5,
     flex: 1,
   },
+
+  listaContainer: {
+    gap: 15,
+    padding: 3,
+  },
 });

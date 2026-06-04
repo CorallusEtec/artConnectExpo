@@ -1,88 +1,26 @@
-import { CommentSection } from "@/components/CommentSection";
-import { Post } from "@/components/Post";
-import { Reacao } from "@/components/Reacao";
-import { TextButton } from "@/components/TextButton";
-import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
-import PublicacoesService from "@/services/PublicacoesService";
-import { gStyles } from "@/style/gStyle";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
-import { style } from "./style";
+import { Publicacao } from "@/components/Publicacao";
+import { style } from "@/style/pages/(home)/home";
+import { FlatList, View } from "react-native";
 
 export default function Home() {
-  const [legenda, setLegenda] = useState("");
-  const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
-  const [load, setLoad] = useState(true);
-  const [modalStatus, setModalStatus] = useState(false);
-  const [postId, setPostId] = useState<number>();
-
-  useEffect(() => {
-    async function carregar() {
-      try {
-        const data = await PublicacoesService.listar();
-        setPublicacoes(data);
-      } catch (Erro) {
-        console.error(Erro);
-      } finally {
-        setLoad(false);
-      }
-    }
-
-    carregar();
-  }, []);
-
-  if (load) return <ActivityIndicator size={"large"} />;
+  const publi = [
+    { id: 1, titulo: "Olá Mundo" },
+    { id: 3, titulo: "Olá Mundo dois" },
+    { id: 4, titulo: "Olá Mundo dois" },
+    { id: 5, titulo: "Olá Mundo dois" },
+    { id: 6, titulo: "Olá Mundo dois" },
+    { id: 7, titulo: "Olá Mundo dois" },
+    { id: 8, titulo: "Olá Mundo dois" },
+  ];
 
   return (
     <View style={style.container}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-        {publicacoes.map((item) => (
-          <Post.root key={item.id}>
-            <Post.header
-              nomePerfil={item.autor?.nome ?? "Usuário"}
-              dataPublicacao={new Date(item.dataPublicacao)}
-            >
-              <Post.headerActions>
-                <TextButton title="Seguir" theme="secondary" />
-              </Post.headerActions>
-            </Post.header>
-
-            <Post.legend data={item.legenda} />
-            {item.urlMidia && <Post.image url={item.urlMidia} />}
-
-            <Post.actions>
-              <Reacao insight={0}>
-                <MaterialCommunityIcons
-                  name="thumb-up-outline"
-                  size={24}
-                  color={gStyles.cinza[600]}
-                />
-              </Reacao>
-
-              <Reacao
-                insight={item.totalComentarios}
-                onPress={() => {
-                  setModalStatus(true);
-                  setPostId(item.id as number);
-                }}
-              >
-                <Feather
-                  name="message-circle"
-                  size={24}
-                  color={gStyles.cinza[600]}
-                />
-              </Reacao>
-            </Post.actions>
-          </Post.root>
-        ))}
-
-        <CommentSection
-          setModalStatus={setModalStatus}
-          postId={postId}
-          visible={modalStatus}
-        />
-      </ScrollView>
+      <FlatList
+        contentContainerStyle={style.listaContainer}
+        data={publi}
+        keyExtractor={(publi) => publi.id.toString()}
+        renderItem={({ item }) => <Publicacao />}
+      />
     </View>
   );
 }
