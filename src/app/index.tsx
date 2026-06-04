@@ -11,8 +11,6 @@ export default function Splash() {
       try {
         const token = await AsyncStorage.getItem("@artconnect:token");
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
         if (token) {
           router.replace("/home");
         } else {

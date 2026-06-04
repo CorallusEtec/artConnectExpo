@@ -8,6 +8,11 @@ import {
 } from "react-native";
 
 export default function HomeLayout() {
+  // LÓGICA PARA SABER SE ESTÁ AUTENTICADO
+  // SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
+  // LIBERA TODAS AS ROTAS
+  // SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
+  const guest = true;
   return (
     <>
       <StatusBar hidden />
@@ -31,25 +36,7 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="notify/index"
-          options={{
-            title: "Notificações",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="bell" size={20} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="create/index"
-          options={{
-            title: "Criar",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="plus" size={20} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="search/index"
+          name="search"
           options={{
             title: "Pesquisar",
             tabBarIcon: ({ color }) => (
@@ -57,25 +44,46 @@ export default function HomeLayout() {
             ),
           }}
         />
-        <Tabs.Screen
-          name="profile/index"
-          options={{
-            headerShown: false,
-            title: "Perfil",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="user" size={20} color={color} />
-            ),
-          }}
-        />
+
+        <Tabs.Protected guard={!guest}>
+          <Tabs.Screen
+            name="(private)/create"
+            options={{
+              title: "Criar",
+              tabBarIcon: ({ color }) => (
+                <FontAwesome name="plus" size={20} color={color} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="(private)/notify"
+            options={{
+              title: "Notificações",
+              tabBarIcon: ({ color }) => (
+                <FontAwesome name="bell" size={20} color={color} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="(private)/profile"
+            options={{
+              headerShown: false,
+              title: "Perfil",
+              tabBarIcon: ({ color }) => (
+                <FontAwesome name="user" size={20} color={color} />
+              ),
+            }}
+          />
+        </Tabs.Protected>
 
         <Tabs.Screen
-          name="profile/editar/index"
+          name="(private)/edit"
           options={{
             href: null,
           }}
         />
         <Tabs.Screen
-          name="[id]/index"
+          name="[id]"
           options={{
             href: null,
           }}

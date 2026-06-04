@@ -1,26 +1,33 @@
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
-import ContratanteService from "@/services/ContratanteService";
+import ArtistaService from "@/services/ArtistaService";
+import { AuthService } from "@/services/AuthService";
 import { gStyles } from "@/style/gStyle";
+import { style } from "@/style/pages/(cadastro)/cadastro";
 import { FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { style } from "./style";
-import { AuthService } from "@/services/AuthService";
 
-export default function CadastroContratante() {
-  const [isEmpresa, setIsEmpresa] = useState(true);
-  const [razaoSocial, setRazaoSocial] = useState("");
+export default function Cadastro() {
+  const [erro, setErro] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [erro, setErro] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: "Masculino", value: "m" },
+    { label: "Feminino", value: "f" },
+    { label: "Não binário", value: "n" },
+    { label: "Prefiro não informar", value: "" },
+  ]);
 
   const handleCadastro = async () => {
     try {
@@ -29,32 +36,22 @@ export default function CadastroContratante() {
         email,
         senha,
         confirmaSenha,
-        razaoSocial: isEmpresa ? razaoSocial : null,
-        cnpj: isEmpresa ? cnpj : null,
-        cpf: null,
-        tipo: isEmpresa ? ("CONTRATANTE_CNPJ" as const) : ("CONTRATANTE_CPF" as const),
       };
-
-      const validacao = ContratanteService.validarCadastro(body);
+      const validacao = ArtistaService.validarCadastro(body);
 
       if (!validacao.valido) {
         setErro(validacao.mensagem);
         return;
       }
-
       await AuthService.register({
-        nome,
         email,
+        nome,
         senha,
-        tipoConta: body.tipo,
-        cnpj,
-        razaoSocial
+        tipoConta: "ARTISTA",
       });
-
-
       router.navigate("/login");
     } catch (err) {
-      console.log("ERRO CADASTRO:", err);
+      console.log("Erro cadastro: ", err);
     }
   };
 
@@ -70,7 +67,7 @@ export default function CadastroContratante() {
           style={{ width: "100%", height: 350, position: "absolute" }}
         />
         <Pressable
-          onPress={() => router.navigate("/cadastro")}
+          onPress={() => router.navigate("/home")}
           style={{
             position: "absolute",
             backgroundColor: "white",
@@ -89,70 +86,17 @@ export default function CadastroContratante() {
 
       <View>
         <View style={style.titleContainer}>
-          <Text style={style.titulo}> Cadastre-se como Contratante </Text>
+          <Text style={style.titulo}> Cadastre-se </Text>
         </View>
+        {erro ? (
+          <Text style={{ color: "red", textAlign: "center" }}>{erro}</Text>
+        ) : null}
 
         <ScrollView>
-          <View style={{ gap: 15 }}>
-            <View style={style.inputContainer}>
-              <View style={style.toggleContainer}>
-                <Pressable
-                  style={[
-                    style.toggleButton,
-                    isEmpresa ? style.toggleButtonActive : style.toggleButtonInactive
-                  ]}
-                  onPress={() => setIsEmpresa(true)}
-                >
-                  <Text style={[
-                    style.toggleButtonText,
-                    isEmpresa ? style.toggleButtonTextActive : style.toggleButtonTextInactive
-                  ]}>
-                    Conta Empresa
-                  </Text>
-                </Pressable>
-
-                <Pressable
-                  style={[
-                    style.toggleButton,
-                    !isEmpresa ? style.toggleButtonActive : style.toggleButtonInactive
-                  ]}
-                  onPress={() => setIsEmpresa(false)}
-                >
-                  <Text style={[
-                    style.toggleButtonText,
-                    !isEmpresa ? style.toggleButtonTextActive : style.toggleButtonTextInactive
-                  ]}>
-                    Conta Padrão
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-            {erro ? (
-              <Text style={{ color: "red", textAlign: "center" }}>
-                {erro}
-              </Text>
-            ) : null}
-
-            <View style={[style.inputContainer]}>
-              {isEmpresa && (
-                <View style={style.inputWrapper}>
-                  <Text style={style.label}> Razão Social </Text>
-                  <InputIcon
-                    placeholder="  Digite a razão social"
-                    onChangeText={setRazaoSocial}
-                    value={razaoSocial}
-                  >
-                    <FontAwesome
-                      name="building"
-                      size={24}
-                      color={gStyles.azul[200]}
-                    />
-                  </InputIcon>
-                </View>
-              )}
-
+          <View style={{ gap: 20 }}>
+            <View style={[style.inputContainer, open && { marginBottom: 100 }]}>
               <View style={style.inputWrapper}>
-                <Text style={style.label}>Nome</Text>
+                <Text style={style.label}> Nome </Text>
                 <InputIcon
                   placeholder="  Digite seu nome"
                   onChangeText={setNome}
@@ -184,7 +128,7 @@ export default function CadastroContratante() {
               <View style={style.inputWrapper}>
                 <Text style={style.label}> Senha </Text>
                 <InputSenha
-                  placeholder="Digite sua senha"
+                  placeholder="Crie sua senha"
                   onChangeText={setSenha}
                   value={senha}
                 >
@@ -211,24 +155,30 @@ export default function CadastroContratante() {
                 </InputSenha>
               </View>
 
-                {isEmpresa && (
-                <View style={style.inputWrapper}>
-                  <Text style={style.label}> CNPJ </Text>
-                  <InputIcon
-                    placeholder="Digite o CNPJ"
-                    onChangeText={setCnpj}
-                    value={cnpj}
-                  >
-                    <FontAwesome
-                      name="id-card"
-                      size={24}
-                      color={gStyles.azul[200]}
-                    />
-                  </InputIcon>
-                </View>
-              )}
+              <View>
+                <Text style={style.label}> Selecione seu gênero </Text>
+
+                <DropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  listMode="SCROLLVIEW"
+                  style={style.picker}
+                  maxHeight={100}
+                  placeholder="Selecione um gênero"
+                  dropDownContainerStyle={{
+                    width: "100%",
+                    backgroundColor: gStyles.cinza[200],
+                    borderColor: gStyles.cinza[200],
+                  }}
+                />
+              </View>
             </View>
 
+            {/* botoes */}
             <View style={style.btnContainer}>
               <View style={style.btnWrapper}>
                 <TextButton
@@ -246,15 +196,23 @@ export default function CadastroContratante() {
                 />
               </View>
             </View>
-
-            <View style={{ alignItems: 'center', marginTop: 10, marginBottom: 20 }}>
-              <Pressable onPress={() => router.navigate("/cadastro")}>
-                <Text style={{ color: gStyles.azul[200], fontWeight: '600', fontSize: 14 }}>
-                  Deseja cadastrar como Artista? Clique aqui
+            <View
+              style={{ alignItems: "center", marginTop: 10, marginBottom: 20 }}
+            >
+              <Pressable
+                onPress={() => router.navigate("/cadastro/contratante")}
+              >
+                <Text
+                  style={{
+                    color: gStyles.azul[200],
+                    fontWeight: "600",
+                    fontSize: 14,
+                  }}
+                >
+                  Deseja cadastrar como Contratante? Clique aqui
                 </Text>
               </Pressable>
             </View>
-
           </View>
         </ScrollView>
       </View>

@@ -21,7 +21,7 @@ import {
   View,
 } from "react-native";
 
-import { style } from "./style";
+import { style } from "@/style/pages/(home)/search";
 
 type TipoEscopo = "artista" | "publicacao";
 

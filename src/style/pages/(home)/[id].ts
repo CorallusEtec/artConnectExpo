@@ -5,7 +5,7 @@ export const style = StyleSheet.create({
   container: {
     gap: 5,
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
 
   navbarMom: {
@@ -42,13 +42,15 @@ export const style = StyleSheet.create({
   },
 
   nomeProfile: {
+    width: 150,
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
-    color: "white"
+    color: "white",
   },
 
   profile: {
+    width: 300,
     height: 25,
     flexDirection: "row",
   },
@@ -69,7 +71,7 @@ export const style = StyleSheet.create({
     width: 100,
     textAlign: "center",
     fontSize: 18,
-    color: "white"
+    color: "white",
   },
 
   botaoEdit: {
@@ -82,7 +84,7 @@ export const style = StyleSheet.create({
   users: {
     marginTop: 50,
     flexDirection: "row",
-    justifyContent: 'space-between'
+    justifyContent: "space-between",
   },
   user: {
     height: 72,
@@ -97,23 +99,10 @@ export const style = StyleSheet.create({
     paddingHorizontal: 16,
   },
 
-  bioContainer: {
-    marginTop: 8,
-    marginBottom: 6,
-    paddingHorizontal: 6,
-  },
-
-  bioText: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-
   icons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: '20%',
+    marginHorizontal: "20%",
     marginTop: 12,
     margin: 8,
   },
@@ -121,11 +110,26 @@ export const style = StyleSheet.create({
   posts: {
     width: "100%",
     flexDirection: "row",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
   thumb: {
-    width: '100%',
+    width: "100%",
     height: 160,
-    margin: 4
+    margin: 4,
+  },
+
+  contatoWrapper: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
+  contatoContainer: {
+    paddingTop: 10,
+    gap: 10,
+  },
+
+  contatoText: {
+    color: "white",
+    fontSize: 16,
   },
 });

@@ -1,16 +1,25 @@
-import { Post } from '@/components/Post';
-import { PostActions } from '@/components/Post/PostActions';
+import { Post } from "@/components/Post";
+import { PostActions } from "@/components/Post/PostActions";
 import { TextButton } from "@/components/TextButton";
-import PublicacoesService from '@/services/PublicacoesService';
-import UsuarioService from '@/services/UsuarioService';
+import PublicacoesService from "@/services/PublicacoesService";
+import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
+import { style } from "@/style/pages/(home)/[id]";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, Text, TouchableOpacity, View, Linking } from "react-native";
-import { style } from "./style";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Linking,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface Contato {
   idContato: number;
@@ -24,52 +33,54 @@ interface Usuario {
   contatos?: Contato[];
 }
 
-export default function Perfil() {
+export default function PerfilId() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [publicacoes, setPublicacoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const {id} = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
 
   function mapearContatos(contatos: Contato[] = [], tipo: number) {
     return contatos.filter(
-      contato => contato.tipoContato?.idTipoContato === tipo
+      (contato) => contato.tipoContato?.idTipoContato === tipo,
     );
   }
 
-const contatosWhatsapp = mapearContatos(usuario?.contatos, 1);
-const contatosInstagram = mapearContatos(usuario?.contatos, 2);
+  const contatosWhatsapp = mapearContatos(usuario?.contatos, 1);
+  const contatosInstagram = mapearContatos(usuario?.contatos, 2);
 
   useEffect(() => {
-    async function preencherCampos()  {
-      const dados = await UsuarioService.getById(Number(id));
+    async function preencherCampos() {
+      const dados = await UsuarioService.findById(Number(id));
       setUsuario(dados);
     }
 
     async function carregar() {
       try {
         const data = await PublicacoesService.listar();
-          const meus = (data ?? []).filter((p: any) => p.autor?.id === Number(id));
-          setPublicacoes(meus);
+        const meus = (data ?? []).filter(
+          (p: any) => p.autor?.id === Number(id),
+        );
+        setPublicacoes(meus);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
-    
+
     preencherCampos();
     carregar();
-    },[id]);
+  }, [id]);
 
-    const abrirWhatsapp = (numero: string) => {
-      const url = `https://wa.me/${numero}`;
-      Linking.openURL(url);
-    }
-    const abrirInstagram = async (nome: string) => {
-      const url = `https://instagram.com/${nome}`;
-      Linking.openURL(url)
-    };
+  const abrirWhatsapp = (numero: string) => {
+    const url = `https://wa.me/${numero}`;
+    Linking.openURL(url);
+  };
+  const abrirInstagram = async (nome: string) => {
+    const url = `https://instagram.com/${nome}`;
+    Linking.openURL(url);
+  };
 
   return (
     <>
@@ -123,13 +134,14 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
           </View>
 
           <View style={style.contatoContainer}>
-
             {contatosWhatsapp.length > 0 && (
               <View style={style.contatoWrapper}>
                 <FontAwesome name="whatsapp" size={26} color="white" />
 
                 {contatosWhatsapp.map((contato: any) => (
-                  <Pressable onPress={() => abrirWhatsapp(contato.valorContato)}>
+                  <Pressable
+                    onPress={() => abrirWhatsapp(contato.valorContato)}
+                  >
                     <Text style={style.contatoText} key={contato.idContato}>
                       {contato.valorContato}
                     </Text>
@@ -143,7 +155,9 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
                 <FontAwesome name="instagram" size={26} color="white" />
 
                 {contatosInstagram.map((contato: any) => (
-                  <Pressable onPress={() => abrirInstagram(contato.valorContato)}>
+                  <Pressable
+                    onPress={() => abrirInstagram(contato.valorContato)}
+                  >
                     <Text style={style.contatoText} key={contato.idContato}>
                       {contato.valorContato}
                     </Text>
@@ -155,7 +169,7 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
         </View>
 
         <View style={style.posts}>
-           {loading ? (
+          {loading ? (
             <ActivityIndicator />
           ) : (
             <FlatList
@@ -164,7 +178,7 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
               renderItem={({ item }) => (
                 <Post.root>
                   <Post.header
-                    nomePerfil={item.autor?.nome ?? 'Usuário'}
+                    nomePerfil={item.autor?.nome ?? "Usuário"}
                     dataPublicacao={new Date(item.dataPublicacao)}
                   >
                     <Post.headerActions>
@@ -177,17 +191,25 @@ const contatosInstagram = mapearContatos(usuario?.contatos, 2);
 
                   <Post.actions>
                     <PostActions>
-                      <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
+                      <FontAwesome
+                        name="heart-o"
+                        size={24}
+                        color={gStyles.vermelho[400]}
+                      />
                     </PostActions>
 
                     <PostActions>
-                      <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
+                      <Feather
+                        name="message-circle"
+                        size={24}
+                        color={gStyles.cinza[600]}
+                      />
                     </PostActions>
                   </Post.actions>
                 </Post.root>
               )}
             />
-          )} 
+          )}
         </View>
       </View>
     </>

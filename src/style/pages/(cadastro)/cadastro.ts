@@ -4,56 +4,56 @@ import { StyleSheet } from "react-native";
 export const style = StyleSheet.create({
   container: {
     flex: 1,
-    gap:35,
-    backgroundColor: 'white',
-    height: '100%'
+    gap: 35,
+    backgroundColor: "white",
+    height: "100%",
   },
 
   titleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   titulo: {
     fontSize: 25,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 
   // relacionado aos inputs
   inputContainer: {
-    gap:15,
-    alignItems: 'center',
+    gap: 15,
+    alignItems: "center",
   },
 
   inputWrapper: {
-    width: '80%',
-    gap: 5
+    width: "80%",
+    gap: 5,
   },
 
   label: {
     fontSize: 17,
-    fontWeight: '500'
+    fontWeight: "500",
   },
 
   // relacionado aos botões
   btnContainer: {
-    gap:15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
+    gap: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
 
   btnWrapper: {
-    width: '38%',
+    width: "38%",
     gap: 5,
   },
 
   // relacionado ao picker
   picker: {
-    width: '100%',
+    width: "100%",
     fontSize: 15,
     borderRadius: 7,
     backgroundColor: gStyles.cinza[200],
     borderColor: gStyles.cinza[200],
-  }
+  },
 });

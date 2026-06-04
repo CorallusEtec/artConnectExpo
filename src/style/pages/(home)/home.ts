@@ -9,6 +9,6 @@ export const style = StyleSheet.create({
 
   listaContainer: {
     gap: 15,
-    padding: 3
-  }
+    padding: 3,
+  },
 });

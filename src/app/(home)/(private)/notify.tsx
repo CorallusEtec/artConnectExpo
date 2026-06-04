@@ -1,8 +1,8 @@
 import { gStyles } from "@/style/gStyle";
+import { style } from "@/style/pages/(home)/(private)/notify";
 import { FontAwesome } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image, Text, View } from "react-native";
-import { style } from "./style";
 
 export default function Notify() {
   return (
