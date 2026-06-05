@@ -56,6 +56,22 @@ export default function FilterModal({
     onClose();      
   };
 
+  const formatarData = (texto: string) => {
+  
+    const numeros = texto.replace(/\D/g, "");
+
+    
+    const numerosLimitados = numeros.slice(0, 8);
+
+    if (numerosLimitados.length <= 2) {
+      return numerosLimitados;
+    }
+    if (numerosLimitados.length <= 4) {
+      return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2)}`;
+    }
+    return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2, 4)}/${numerosLimitados.slice(4, 8)}`;
+  };
+
   return (
     <Portal>
       <Modal
@@ -73,7 +89,7 @@ export default function FilterModal({
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-       
+      
           {escopo === "artista" || escopo === "usuario" ? (
             <View>
               <Text style={styles.label}>Nome do Usuário</Text>
@@ -137,7 +153,7 @@ export default function FilterModal({
               </View>
             </View>
           ) : (
-       
+      
             <View>
               <Text style={styles.label}>Legenda</Text>
               <TextInput 
@@ -167,11 +183,12 @@ export default function FilterModal({
                   <TextInput 
                     mode="outlined" 
                     placeholder="25/05/2026" 
+                    keyboardType="numeric"
                     style={styles.input} 
                     outlineColor="#E0E0E0" 
                     activeOutlineColor="#0B31A3" 
                     value={filtroDataInicio}
-                    onChangeText={setFiltroDataInicio}
+                    onChangeText={(txt) => setFiltroDataInicio(formatarData(txt))}
                   />
                 </View>
                 <View style={styles.flex1}>
@@ -179,11 +196,12 @@ export default function FilterModal({
                   <TextInput 
                     mode="outlined" 
                     placeholder="30/05/2026" 
+                    keyboardType="numeric"
                     style={styles.input} 
                     outlineColor="#E0E0E0" 
                     activeOutlineColor="#0B31A3" 
                     value={filtroDataFim}
-                    onChangeText={setFiltroDataFim}
+                    onChangeText={(txt) => setFiltroDataFim(formatarData(txt))}
                   />
                 </View>
               </View>
