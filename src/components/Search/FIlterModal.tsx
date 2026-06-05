@@ -3,27 +3,7 @@ import { View, Text, ScrollView } from "react-native";
 import { Modal, Portal, TextInput, Button, IconButton } from "react-native-paper";
 import { style } from "./modal.style";
 import { AppUtils } from "../../services/AppUtils";
-
-export interface FiltrosState {
-  nome: string;
-  cidade: string;
-  estado: string;
-  tipoUsuario: string;
-  legenda: string;
-  nomeAutor: string;
-  dataInicio: string;
-  dataFim: string;
-}
-
-interface FilterModalProps {
-  visible: boolean;
-  onClose: () => void;
-  escopo: string;
-  filtros: FiltrosState;
-  setFiltros: React.Dispatch<React.SetStateAction<FiltrosState>>;
-  executarBusca: () => void;
-  limparTodosFiltros: () => void;
-}
+import { FiltrosState, FilterModalProps } from "./types";
 
 const executarAcaoFiltrar = (executarBusca: () => void, onClose: () => void) => {
   executarBusca();
@@ -65,9 +45,7 @@ export default function FilterModal({
             <IconButton icon="close" size={24} iconColor="#666" onPress={onClose} style={style.closeButton} />
           </View>
         </View>
-
         <ScrollView showsVerticalScrollIndicator={false}>
-      
           {escopo === "artista" || escopo === "usuario" ? (
             <View>
               <Text style={style.label}>Nome do Usuário</Text>
@@ -80,7 +58,6 @@ export default function FilterModal({
                 value={filtros.nome}
                 onChangeText={(txt) => modificarCampoObjeto(setFiltros, "nome", txt)}
               />
-
               <Text style={style.label}>Cidade</Text>
               <TextInput 
                 mode="outlined" 
@@ -91,7 +68,6 @@ export default function FilterModal({
                 value={filtros.cidade}
                 onChangeText={(txt) => modificarCampoObjeto(setFiltros, "cidade", txt)}
               />
-
               <Text style={style.label}>Estado</Text>
               <TextInput 
                 mode="outlined" 
@@ -102,7 +78,6 @@ export default function FilterModal({
                 value={filtros.estado}
                 onChangeText={(txt) => modificarCampoObjeto(setFiltros, "estado", txt)}
               />
-
               <Text style={style.label}>Tipo de Usuário</Text>
               <View style={style.row}>
                 <Button 
@@ -140,7 +115,6 @@ export default function FilterModal({
                 value={filtros.legenda}
                 onChangeText={(txt) => modificarCampoObjeto(setFiltros, "legenda", txt)}
               />
-
               <Text style={style.label}>Nome do Autor</Text>
               <TextInput 
                 mode="outlined" 
@@ -151,7 +125,6 @@ export default function FilterModal({
                 value={filtros.nomeAutor}
                 onChangeText={(txt) => modificarCampoObjeto(setFiltros, "nomeAutor", txt)}
               />
-
               <View style={style.row}>
                 <View style={style.flex1}>
                   <Text style={style.label}>Data Início</Text>
@@ -182,7 +155,6 @@ export default function FilterModal({
               </View>
             </View>
           )}
-
           {/* Botão de Ação */}
           <Button 
             mode="contained" 
