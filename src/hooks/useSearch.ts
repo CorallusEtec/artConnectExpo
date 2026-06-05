@@ -1,7 +1,6 @@
 import { useState } from "react";
 import UsuarioService from "@/services/UsuarioService";
 import PublicacoesService from "@/services/PublicacoesService";
-
 import { FiltrosState } from "@/components/Search/types";
 
 type Escopo = "artista" | "publicacao";

@@ -1,17 +1,13 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
-
 import SearchBar from "@/components/Search/SearchBar";
 import ScopeTabs from "@/components/Search/ScopeTabs";
 import SearchResult from "@/components/Search/SearchResult";
 import EmptyState from "@/components/Search/EmptyState";
-
-
 import FilterModal from "@/components/Search/FIlterModal"; 
 import userCard from "@/components/Search/userCard"; 
 import { useSearch } from "@/hooks/useSearch";
-
 export default function Search() {
   const search = useSearch();
 
@@ -27,7 +23,6 @@ export default function Search() {
         escopo={search.escopo}
         onChange={search.setEscopo}
       />
-
       <Button
         mode="contained"
         style={styles.button}
@@ -37,7 +32,6 @@ export default function Search() {
       >
         Buscar
       </Button>
-
       <SearchResult
         load={search.load}
         pesquisaRealizada={search.pesquisaRealizada}
@@ -48,7 +42,6 @@ export default function Search() {
 
       {!search.pesquisaRealizada && <EmptyState />}
 
-   
       <FilterModal
         visible={search.modalFiltroVisivel}
         onClose={() => search.setModalFiltroVisivel(false)}
