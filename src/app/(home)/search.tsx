@@ -6,7 +6,8 @@ import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import PublicacoesService from "@/services/PublicacoesService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
-
+import  FilterChips  from "@/components/Search/FilterChips";
+import  SearchResult  from "@/components/Search/SearchResult";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useState } from "react";
