@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     color: "#444",
   },
   tag: {
-    color: "#0B31A3", // Azul padrão do seu botão
+    color: "#0B31A3", 
     fontWeight: "bold",
     marginTop: 4,
   },
