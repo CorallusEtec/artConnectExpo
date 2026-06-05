@@ -8,7 +8,7 @@ interface FilterChipsProps {
 
 export default function FilterChips({ escopo }: FilterChipsProps) {
   return (
-    // ScrollView horizontal permite que os chips rolem de lado se forem muitos
+
     <ScrollView 
       horizontal 
       showsHorizontalScrollIndicator={false} 
@@ -17,7 +17,7 @@ export default function FilterChips({ escopo }: FilterChipsProps) {
       <Chip 
         mode="flat" 
         style={styles.chip} 
-        onClose={() => { /* lógica para remover filtro */ }}
+        onClose={() => { }}
       >
         {escopo === "publicacao" ? "Publicações" : "Usuários"}
       </Chip>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   chip: {
-    backgroundColor: "#E8EAF6", // Um tom de azul bem clarinho para o fundo do chip
+    backgroundColor: "#E8EAF6", 
     borderRadius: 8,
   },
 });

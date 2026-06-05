@@ -130,7 +130,7 @@ export default function FilterModal({
                   style={[styles.flex1, styles.typeButton]}
                   buttonColor={filtroTipoUsuario === "CONTRATANTE" ? "#E8EAF6" : undefined}
                   textColor={filtroTipoUsuario === "CONTRATANTE" ? "#0B31A3" : "#666"}
-                  onPress={() => setFiltroTipoUsuario("CONTRATANTE")} // Altera o estado global para "CONTRATANTE"
+                  onPress={() => setFiltroTipoUsuario("CONTRATANTE")} 
                 >
                   Contratante
                 </Button>

@@ -21,7 +21,7 @@ export default function SearchBar({ value, onChangeText, onFilterPress }: Search
         activeOutlineColor="#0B31A3"
       />
       <IconButton
-        icon="tune" // Ícone de filtro/ajustes do Material Design
+        icon="tune" 
         mode="contained"
         containerColor="#E0E0E0"
         iconColor="#111"

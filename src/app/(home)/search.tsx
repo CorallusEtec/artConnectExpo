@@ -9,7 +9,7 @@ import EmptyState from "@/components/Search/EmptyState";
 
 
 import FilterModal from "@/components/Search/FIlterModal"; 
-
+import userCard from "@/components/Search/userCard"; 
 import { useSearch } from "@/hooks/useSearch";
 
 export default function Search() {

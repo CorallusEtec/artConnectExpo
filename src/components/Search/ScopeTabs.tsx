@@ -3,7 +3,7 @@ import { SegmentedButtons } from "react-native-paper";
 
 interface ScopeTabsProps {
   escopo: string;
-  // Alterado aqui: aceita tanto uma função simples quanto o Dispatch do useState
+  
   onChange: (value: any) => void; 
 }
 
