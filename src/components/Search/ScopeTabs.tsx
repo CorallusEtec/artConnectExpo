@@ -1,4 +1,4 @@
-import React from "react"; // Certifique-se de importar o React se não estiver implícito
+import React from "react"; 
 import { SegmentedButtons } from "react-native-paper";
 
 interface ScopeTabsProps {
