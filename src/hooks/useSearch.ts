@@ -1,71 +1,28 @@
 import { useState } from "react";
-
 import UsuarioService from "@/services/UsuarioService";
 import PublicacoesService from "@/services/PublicacoesService";
+import { FiltrosState } from "@/components/Search/FIlterModal";
 
 type Escopo = "artista" | "publicacao";
 
 export function useSearch() {
-  const [escopo, setEscopo] =
-    useState<Escopo>("publicacao");
-
-  const [pesquisaPrincipal,
-    setPesquisaPrincipal] =
-    useState("");
-
-  const [load, setLoad] =
-    useState(false);
-
-  const [pesquisaRealizada,
-    setPesquisaRealizada] =
-    useState(false);
-
-  const [modalFiltroVisivel,
-    setModalFiltroVisivel] =
-    useState(false);
-
-  const [usuarios, setUsuarios] =
-    useState<any[]>([]);
-
-  const [publicacoes,
-    setPublicacoes] =
-    useState<any[]>([]);
-
-  const [filtroNome,
-    setFiltroNome] =
-    useState("");
-
-  const [filtroCidade,
-    setFiltroCidade] =
-    useState("");
-
-  const [filtroEstado,
-    setFiltroEstado] =
-    useState("");
-
-  const [
-    filtroTipoUsuario,
-    setFiltroTipoUsuario
-  ] = useState("");
-
-  const [filtroLegenda,
-    setFiltroLegenda] =
-    useState("");
-
-  const [
-    filtroNomeAutor,
-    setFiltroNomeAutor
-  ] = useState("");
-
-  const [
-    filtroDataInicio,
-    setFiltroDataInicio
-  ] = useState("");
-
-  const [
-    filtroDataFim,
-    setFiltroDataFim
-  ] = useState("");
+  const [escopo, setEscopo] = useState<Escopo>("publicacao");
+  const [pesquisaPrincipal, setPesquisaPrincipal] = useState("");
+  const [load, setLoad] = useState(false);
+  const [pesquisaRealizada, setPesquisaRealizada] = useState(false);
+  const [modalFiltroVisivel, setModalFiltroVisivel] = useState(false);
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [publicacoes, setPublicacoes] = useState<any[]>([]);
+  const [filtros, setFiltros] = useState<FiltrosState>({
+    nome: "",
+    cidade: "",
+    estado: "",
+    tipoUsuario: "",
+    legenda: "",
+    nomeAutor: "",
+    dataInicio: "",
+    dataFim: "",
+  });
 
   async function executarBusca() {
     try {
@@ -73,39 +30,23 @@ export function useSearch() {
       setPesquisaRealizada(true);
 
       if (escopo === "artista") {
-        const response =
-          await UsuarioService.listar({
-            nome:
-              filtroNome ||
-              pesquisaPrincipal,
-
-            cidade:
-              filtroCidade,
-
-            uf:
-              filtroEstado,
-
-            tipoConta:
-              filtroTipoUsuario,
-          });
+        const response = await UsuarioService.listar({
+         
+          nome: filtros.nome || pesquisaPrincipal,
+          cidade: filtros.cidade,
+          uf: filtros.estado,
+          tipoConta: filtros.tipoUsuario,
+        });
 
         setUsuarios(response);
       } else {
-        const response =
-          await PublicacoesService.listar({
-            legenda:
-              filtroLegenda ||
-              pesquisaPrincipal,
-
-            nomeAutor:
-              filtroNomeAutor,
-
-            dataInicio:
-              filtroDataInicio,
-
-            dataFim:
-              filtroDataFim,
-          });
+        const response = await PublicacoesService.listar({
+       
+          legenda: filtros.legenda || pesquisaPrincipal,
+          nomeAutor: filtros.nomeAutor,
+          dataInicio: filtros.dataInicio,
+          dataFim: filtros.dataFim,
+        });
 
         setPublicacoes(response);
       }
@@ -117,65 +58,39 @@ export function useSearch() {
   }
 
   function limparTodosFiltros() {
-    setFiltroNome("");
-    setFiltroCidade("");
-    setFiltroEstado("");
-    setFiltroTipoUsuario("");
-
-    setFiltroLegenda("");
-    setFiltroNomeAutor("");
-
-    setFiltroDataInicio("");
-    setFiltroDataFim("");
+  
+    setFiltros({
+      nome: "",
+      cidade: "",
+      estado: "",
+      tipoUsuario: "",
+      legenda: "",
+      nomeAutor: "",
+      dataInicio: "",
+      dataFim: "",
+    });
 
     setPesquisaPrincipal("");
-
     setUsuarios([]);
     setPublicacoes([]);
-
     setPesquisaRealizada(false);
   }
 
   return {
     escopo,
     setEscopo,
-
     pesquisaPrincipal,
     setPesquisaPrincipal,
-
     pesquisaRealizada,
-
     modalFiltroVisivel,
     setModalFiltroVisivel,
-
     usuarios,
     publicacoes,
-
     load,
-
-    filtroNome,
-    setFiltroNome,
-
-    filtroCidade,
-    setFiltroCidade,
-
-    filtroEstado,
-    setFiltroEstado,
-
-    filtroTipoUsuario,
-    setFiltroTipoUsuario,
-
-    filtroLegenda,
-    setFiltroLegenda,
-
-    filtroNomeAutor,
-    setFiltroNomeAutor,
-
-    filtroDataInicio,
-    setFiltroDataInicio,
-
-    filtroDataFim,
-    setFiltroDataFim,
+    
+   
+    filtros,
+    setFiltros,
 
     executarBusca,
     limparTodosFiltros,

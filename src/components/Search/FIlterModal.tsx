@@ -1,63 +1,55 @@
 import React from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { Modal, Portal, TextInput, Button, IconButton } from "react-native-paper";
 import { style } from "./modal.style";
 import { AppUtils } from "../../services/AppUtils";
+
+export interface FiltrosState {
+  nome: string;
+  cidade: string;
+  estado: string;
+  tipoUsuario: string;
+  legenda: string;
+  nomeAutor: string;
+  dataInicio: string;
+  dataFim: string;
+}
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
   escopo: string;
-
-  filtroNome: string;
-  setFiltroNome: (val: string) => void;
-  filtroCidade: string;
-  setFiltroCidade: (val: string) => void;
-  filtroEstado: string;
-  setFiltroEstado: (val: string) => void;
-  filtroTipoUsuario: string;
-  setFiltroTipoUsuario: (val: string) => void;
-  filtroLegenda: string;
-  setFiltroLegenda: (val: string) => void;
-  filtroNomeAutor: string;
-  setFiltroNomeAutor: (val: string) => void;
-  filtroDataInicio: string;
-  setFiltroDataInicio: (val: string) => void;
-  filtroDataFim: string;
-  setFiltroDataFim: (val: string) => void;
+  filtros: FiltrosState;
+  setFiltros: React.Dispatch<React.SetStateAction<FiltrosState>>;
   executarBusca: () => void;
   limparTodosFiltros: () => void;
 }
+
+const executarAcaoFiltrar = (executarBusca: () => void, onClose: () => void) => {
+  executarBusca();
+  onClose();
+};
+const modificarCampoObjeto = (
+  setFiltros: React.Dispatch<React.SetStateAction<FiltrosState>>,
+  campo: keyof FiltrosState,
+  valor: string
+) => {
+  setFiltros((prevState) => ({
+    ...prevState,
+    [campo]: valor,
+  }));
+};
 
 export default function FilterModal({
   visible,
   onClose,
   escopo,
-  filtroNome,
-  setFiltroNome,
-  filtroCidade,
-  setFiltroCidade,
-  filtroEstado,
-  setFiltroEstado,
-  filtroTipoUsuario,
-  setFiltroTipoUsuario,
-  filtroLegenda,
-  setFiltroLegenda,
-  filtroNomeAutor,
-  setFiltroNomeAutor,
-  filtroDataInicio,
-  setFiltroDataInicio,
-  filtroDataFim,
-  setFiltroDataFim,
+  filtros,
+  setFiltros,
   executarBusca,
   limparTodosFiltros,
 }: FilterModalProps) {
 
-  const lidarComAplicarFiltros = () => {
-    executarBusca(); 
-    onClose();      
-  };
-  
   return (
     <Portal>
       <Modal
@@ -85,8 +77,8 @@ export default function FilterModal({
                 style={style.input}
                 outlineColor="#E0E0E0"
                 activeOutlineColor="#0B31A3"
-                value={filtroNome}
-                onChangeText={setFiltroNome}
+                value={filtros.nome}
+                onChangeText={(txt) => modificarCampoObjeto(setFiltros, "nome", txt)}
               />
 
               <Text style={style.label}>Cidade</Text>
@@ -96,9 +88,10 @@ export default function FilterModal({
                 style={style.input}
                 outlineColor="#E0E0E0"
                 activeOutlineColor="#0B31A3"
-                value={filtroCidade}
-                onChangeText={setFiltroCidade}
+                value={filtros.cidade}
+                onChangeText={(txt) => modificarCampoObjeto(setFiltros, "cidade", txt)}
               />
+
               <Text style={style.label}>Estado</Text>
               <TextInput 
                 mode="outlined" 
@@ -106,31 +99,30 @@ export default function FilterModal({
                 style={style.input}
                 outlineColor="#E0E0E0"
                 activeOutlineColor="#0B31A3"
-                value={filtroEstado}
-                onChangeText={setFiltroEstado}
+                value={filtros.estado}
+                onChangeText={(txt) => modificarCampoObjeto(setFiltros, "estado", txt)}
               />
+
               <Text style={style.label}>Tipo de Usuário</Text>
               <View style={style.row}>
-                {/* Botão Artista */}
                 <Button 
-                  mode={filtroTipoUsuario === "ARTISTA" ? "contained-tonal" : "outlined"} 
+                  mode={filtros.tipoUsuario === "ARTISTA" ? "contained-tonal" : "outlined"} 
                   compact 
                   style={[style.flex1, style.typeButton]}
-                  buttonColor={filtroTipoUsuario === "ARTISTA" ? "#E8EAF6" : undefined}
-                  textColor={filtroTipoUsuario === "ARTISTA" ? "#0B31A3" : "#666"}
-                  onPress={() => setFiltroTipoUsuario("ARTISTA")} 
+                  buttonColor={filtros.tipoUsuario === "ARTISTA" ? "#E8EAF6" : undefined}
+                  textColor={filtros.tipoUsuario === "ARTISTA" ? "#0B31A3" : "#666"}
+                  onPress={() => modificarCampoObjeto(setFiltros, "tipoUsuario", "ARTISTA")} 
                 >
                   Artista
                 </Button>
 
-                {/* Botão Contratante */}
                 <Button 
-                  mode={filtroTipoUsuario === "CONTRATANTE" ? "contained-tonal" : "outlined"} 
+                  mode={filtros.tipoUsuario === "CONTRATANTE" ? "contained-tonal" : "outlined"} 
                   compact 
                   style={[style.flex1, style.typeButton]}
-                  buttonColor={filtroTipoUsuario === "CONTRATANTE" ? "#E8EAF6" : undefined}
-                  textColor={filtroTipoUsuario === "CONTRATANTE" ? "#0B31A3" : "#666"}
-                  onPress={() => setFiltroTipoUsuario("CONTRATANTE")} 
+                  buttonColor={filtros.tipoUsuario === "CONTRATANTE" ? "#E8EAF6" : undefined}
+                  textColor={filtros.tipoUsuario === "CONTRATANTE" ? "#0B31A3" : "#666"}
+                  onPress={() => modificarCampoObjeto(setFiltros, "tipoUsuario", "CONTRATANTE")} 
                 >
                   Contratante
                 </Button>
@@ -145,9 +137,10 @@ export default function FilterModal({
                 style={style.input}
                 outlineColor="#E0E0E0"
                 activeOutlineColor="#0B31A3"
-                value={filtroLegenda}
-                onChangeText={setFiltroLegenda}
+                value={filtros.legenda}
+                onChangeText={(txt) => modificarCampoObjeto(setFiltros, "legenda", txt)}
               />
+
               <Text style={style.label}>Nome do Autor</Text>
               <TextInput 
                 mode="outlined" 
@@ -155,9 +148,10 @@ export default function FilterModal({
                 style={style.input}
                 outlineColor="#E0E0E0"
                 activeOutlineColor="#0B31A3"
-                value={filtroNomeAutor}
-                onChangeText={setFiltroNomeAutor}
+                value={filtros.nomeAutor}
+                onChangeText={(txt) => modificarCampoObjeto(setFiltros, "nomeAutor", txt)}
               />
+
               <View style={style.row}>
                 <View style={style.flex1}>
                   <Text style={style.label}>Data Início</Text>
@@ -168,8 +162,8 @@ export default function FilterModal({
                     style={style.input} 
                     outlineColor="#E0E0E0" 
                     activeOutlineColor="#0B31A3" 
-                    value={filtroDataInicio}
-                    onChangeText={(txt) => setFiltroDataInicio(AppUtils.formatarData(txt))}
+                    value={filtros.dataInicio}
+                    onChangeText={(txt) => modificarCampoObjeto(setFiltros, "dataInicio", AppUtils.formatarData(txt))}
                   />
                 </View>
                 <View style={style.flex1}>
@@ -181,13 +175,14 @@ export default function FilterModal({
                     style={style.input} 
                     outlineColor="#E0E0E0" 
                     activeOutlineColor="#0B31A3" 
-                    value={filtroDataFim}
-                    onChangeText={(txt) => setFiltroDataFim(AppUtils.formatarData(txt))}
+                    value={filtros.dataFim}
+                    onChangeText={(txt) => modificarCampoObjeto(setFiltros, "dataFim", AppUtils.formatarData(txt))}
                   />
                 </View>
               </View>
             </View>
           )}
+
           {/* Botão de Ação */}
           <Button 
             mode="contained" 
@@ -195,7 +190,7 @@ export default function FilterModal({
             textColor="#FFF"
             style={style.applyButton}
             labelStyle={style.applyButtonLabel}
-            onPress={lidarComAplicarFiltros}
+            onPress={() => executarAcaoFiltrar(executarBusca, onClose)}
           >
             Aplicar filtros
           </Button>
