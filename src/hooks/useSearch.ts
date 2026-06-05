@@ -1,38 +1,46 @@
 import { useState } from "react";
 
+import UsuarioService from "@/services/UsuarioService";
+import PublicacoesService from "@/services/PublicacoesService";
+
+type Escopo = "artista" | "publicacao";
+
 export function useSearch() {
   const [escopo, setEscopo] =
-    useState<"artista" | "publicacao">(
-      "publicacao"
-    );
+    useState<Escopo>("publicacao");
 
-  const [pesquisaPrincipal, setPesquisaPrincipal] =
+  const [pesquisaPrincipal,
+    setPesquisaPrincipal] =
     useState("");
 
   const [load, setLoad] =
-    useState(false);
-
-  const [modalFiltroVisivel,
-    setModalFiltroVisivel] =
     useState(false);
 
   const [pesquisaRealizada,
     setPesquisaRealizada] =
     useState(false);
 
+  const [modalFiltroVisivel,
+    setModalFiltroVisivel] =
+    useState(false);
+
   const [usuarios, setUsuarios] =
-    useState([]);
+    useState<any[]>([]);
 
-  const [publicacoes, setPublicacoes] =
-    useState([]);
+  const [publicacoes,
+    setPublicacoes] =
+    useState<any[]>([]);
 
-  const [filtroNome, setFiltroNome] =
+  const [filtroNome,
+    setFiltroNome] =
     useState("");
 
-  const [filtroCidade, setFiltroCidade] =
+  const [filtroCidade,
+    setFiltroCidade] =
     useState("");
 
-  const [filtroEstado, setFiltroEstado] =
+  const [filtroEstado,
+    setFiltroEstado] =
     useState("");
 
   const [
@@ -40,10 +48,9 @@ export function useSearch() {
     setFiltroTipoUsuario
   ] = useState("");
 
-  const [
-    filtroLegenda,
-    setFiltroLegenda
-  ] = useState("");
+  const [filtroLegenda,
+    setFiltroLegenda] =
+    useState("");
 
   const [
     filtroNomeAutor,
@@ -60,13 +67,74 @@ export function useSearch() {
     setFiltroDataFim
   ] = useState("");
 
-  const executarBusca = async () => {
-     // sua lógica atual
-  };
+  async function executarBusca() {
+    try {
+      setLoad(true);
+      setPesquisaRealizada(true);
 
-  const limparTodosFiltros = () => {
-     // sua lógica atual
-  };
+      if (escopo === "artista") {
+        const response =
+          await UsuarioService.listar({
+            nome:
+              filtroNome ||
+              pesquisaPrincipal,
+
+            cidade:
+              filtroCidade,
+
+            uf:
+              filtroEstado,
+
+            tipoConta:
+              filtroTipoUsuario,
+          });
+
+        setUsuarios(response);
+      } else {
+        const response =
+          await PublicacoesService.listar({
+            legenda:
+              filtroLegenda ||
+              pesquisaPrincipal,
+
+            nomeAutor:
+              filtroNomeAutor,
+
+            dataInicio:
+              filtroDataInicio,
+
+            dataFim:
+              filtroDataFim,
+          });
+
+        setPublicacoes(response);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoad(false);
+    }
+  }
+
+  function limparTodosFiltros() {
+    setFiltroNome("");
+    setFiltroCidade("");
+    setFiltroEstado("");
+    setFiltroTipoUsuario("");
+
+    setFiltroLegenda("");
+    setFiltroNomeAutor("");
+
+    setFiltroDataInicio("");
+    setFiltroDataFim("");
+
+    setPesquisaPrincipal("");
+
+    setUsuarios([]);
+    setPublicacoes([]);
+
+    setPesquisaRealizada(false);
+  }
 
   return {
     escopo,
@@ -75,10 +143,10 @@ export function useSearch() {
     pesquisaPrincipal,
     setPesquisaPrincipal,
 
+    pesquisaRealizada,
+
     modalFiltroVisivel,
     setModalFiltroVisivel,
-
-    pesquisaRealizada,
 
     usuarios,
     publicacoes,

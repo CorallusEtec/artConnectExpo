@@ -1,55 +1,54 @@
-
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
- 
+import { View, StyleSheet, ScrollView } from "react-native";
+import { Chip } from "react-native-paper";
+
 interface FilterChipsProps {
-  filters?: string[];
-  selected?: string;
-  onSelect?: (filter: string) => void;
+  escopo: string;
 }
- 
-export default function FilterChips({ filters = [], selected, onSelect }: FilterChipsProps) {
+
+export default function FilterChips({ escopo }: FilterChipsProps) {
   return (
-    <View style={styles.container}>
-      {filters.map((filter) => (
-        <TouchableOpacity
-          key={filter}
-          style={[styles.chip, selected === filter && styles.chipSelected]}
-          onPress={() => onSelect?.(filter)}
-        >
-          <Text style={[styles.text, selected === filter && styles.textSelected]}>
-            {filter}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    // ScrollView horizontal permite que os chips rolem de lado se forem muitos
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false} 
+      contentContainerStyle={styles.container}
+    >
+      <Chip 
+        mode="flat" 
+        style={styles.chip} 
+        onClose={() => { /* lógica para remover filtro */ }}
+      >
+        {escopo === "publicacao" ? "Publicações" : "Usuários"}
+      </Chip>
+
+      <Chip 
+        mode="flat" 
+        style={styles.chip} 
+        onClose={() => {}}
+      >
+        Artista
+      </Chip>
+
+      <Chip 
+        mode="flat" 
+        style={styles.chip} 
+        onClose={() => {}}
+      >
+        SP
+      </Chip>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    flexWrap: "wrap",
     gap: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#fff",
-  },
-  chipSelected: {
-    backgroundColor: "#000",
-    borderColor: "#000",
-  },
-  text: {
-    fontSize: 14,
-    color: "#333",
-  },
-  textSelected: {
-    color: "#fff",
+    backgroundColor: "#E8EAF6", // Um tom de azul bem clarinho para o fundo do chip
+    borderRadius: 8,
   },
 });
