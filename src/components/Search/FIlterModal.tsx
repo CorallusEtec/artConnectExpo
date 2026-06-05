@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { Modal, Portal, TextInput, Button, IconButton } from "react-native-paper";
 import { style } from "./modal.style";
+import { AppUtils } from "../../services/AppUtils";
 
 interface FilterModalProps {
   visible: boolean;
@@ -56,23 +57,7 @@ export default function FilterModal({
     executarBusca(); 
     onClose();      
   };
-
-  const formatarData = (texto: string) => {
   
-    const numeros = texto.replace(/\D/g, "");
-
-    
-    const numerosLimitados = numeros.slice(0, 8);
-
-    if (numerosLimitados.length <= 2) {
-      return numerosLimitados;
-    }
-    if (numerosLimitados.length <= 4) {
-      return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2)}`;
-    }
-    return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2, 4)}/${numerosLimitados.slice(4, 8)}`;
-  };
-
   return (
     <Portal>
       <Modal
@@ -114,7 +99,6 @@ export default function FilterModal({
                 value={filtroCidade}
                 onChangeText={setFiltroCidade}
               />
-
               <Text style={style.label}>Estado</Text>
               <TextInput 
                 mode="outlined" 
@@ -125,7 +109,6 @@ export default function FilterModal({
                 value={filtroEstado}
                 onChangeText={setFiltroEstado}
               />
-
               <Text style={style.label}>Tipo de Usuário</Text>
               <View style={style.row}>
                 {/* Botão Artista */}
@@ -154,7 +137,6 @@ export default function FilterModal({
               </View>
             </View>
           ) : (
-      
             <View>
               <Text style={style.label}>Legenda</Text>
               <TextInput 
@@ -166,7 +148,6 @@ export default function FilterModal({
                 value={filtroLegenda}
                 onChangeText={setFiltroLegenda}
               />
-
               <Text style={style.label}>Nome do Autor</Text>
               <TextInput 
                 mode="outlined" 
@@ -177,7 +158,6 @@ export default function FilterModal({
                 value={filtroNomeAutor}
                 onChangeText={setFiltroNomeAutor}
               />
-
               <View style={style.row}>
                 <View style={style.flex1}>
                   <Text style={style.label}>Data Início</Text>
@@ -189,7 +169,7 @@ export default function FilterModal({
                     outlineColor="#E0E0E0" 
                     activeOutlineColor="#0B31A3" 
                     value={filtroDataInicio}
-                    onChangeText={(txt) => setFiltroDataInicio(formatarData(txt))}
+                    onChangeText={(txt) => setFiltroDataInicio(AppUtils.formatarData(txt))}
                   />
                 </View>
                 <View style={style.flex1}>
@@ -202,13 +182,12 @@ export default function FilterModal({
                     outlineColor="#E0E0E0" 
                     activeOutlineColor="#0B31A3" 
                     value={filtroDataFim}
-                    onChangeText={(txt) => setFiltroDataFim(formatarData(txt))}
+                    onChangeText={(txt) => setFiltroDataFim(AppUtils.formatarData(txt))}
                   />
                 </View>
               </View>
             </View>
           )}
-
           {/* Botão de Ação */}
           <Button 
             mode="contained" 
