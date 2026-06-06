@@ -49,4 +49,24 @@ export class AppUtils {
       const diffSeg = Math.ceil(diffMili / 1000);
       return diffSeg;
     }
+
+
+    //function sformatar data
+
+    static formatarData = (texto: string) => {
+  
+    const numeros = texto.replace(/\D/g, "");
+
+    
+    const numerosLimitados = numeros.slice(0, 8);
+
+    if (numerosLimitados.length <= 2) {
+      return numerosLimitados;
+    }
+    if (numerosLimitados.length <= 4) {
+      return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2)}`;
+    }
+    return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2, 4)}/${numerosLimitados.slice(4, 8)}`;
+  };
+
 }
