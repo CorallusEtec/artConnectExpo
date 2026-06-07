@@ -5,7 +5,6 @@ import ArtistaService from "@/services/ArtistaService";
 import { AuthService } from "@/services/AuthService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(cadastro)/cadastro";
-import { FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -96,63 +95,43 @@ export default function Cadastro() {
           <View style={{ gap: 20 }}>
             <View style={[style.inputContainer, open && { marginBottom: 100 }]}>
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Nome </Text>
                 <InputIcon
-                  placeholder="  Digite seu nome"
+                  label="Nome"
+                  placeholder="Digite seu nome"
                   onChangeText={setNome}
                   value={nome}
-                >
-                  <FontAwesome
-                    name="user"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputIcon>
+                  icon="account-outline"
+                />
               </View>
 
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Email </Text>
                 <InputIcon
-                  placeholder="  Digite seu email"
+                  label="Email"
+                  placeholder="Digite seu email"
                   onChangeText={setEmail}
                   value={email}
-                >
-                  <FontAwesome
-                    name="envelope"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputIcon>
+                  icon="email-outline"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
               </View>
 
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Senha </Text>
                 <InputSenha
+                  label="Senha"
                   placeholder="Crie sua senha"
                   onChangeText={setSenha}
                   value={senha}
-                >
-                  <FontAwesome
-                    name="lock"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputSenha>
+                />
               </View>
 
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Confirmar senha </Text>
                 <InputSenha
+                  label="Confirmar Senha"
                   placeholder="Digite a senha novamente"
                   onChangeText={setConfirmaSenha}
                   value={confirmaSenha}
-                >
-                  <FontAwesome
-                    name="lock"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputSenha>
+                />
               </View>
 
               <View>

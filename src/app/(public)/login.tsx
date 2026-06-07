@@ -6,8 +6,8 @@ import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { BannerLogo } from "@/components/BannerLogo";
-import { PaperInputIcon } from "@/components/PaperInputIcon";
-import { PaperInputSenha } from "@/components/PaperInputSenha";
+import { InputIcon } from "@/components/InputIcon";
+import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
 import { AuthService } from "@/services/AuthService";
 import LoginService from "@/services/LoginService";
@@ -82,7 +82,7 @@ export default function Login() {
         <Text style={{ fontSize: 26, fontWeight: "bold" }}>Login</Text>
 
         <View style={{ width: '85%' }}>
-          <PaperInputIcon
+          <InputIcon
             label="Email"
             placeholder="Digite seu Email"
             value={email}
@@ -94,7 +94,7 @@ export default function Login() {
         </View>
 
         <View style={{ width: '85%' }}>
-          <PaperInputSenha
+          <InputSenha
             label="Senha"
             placeholder="Digite sua Senha"
             value={senha}

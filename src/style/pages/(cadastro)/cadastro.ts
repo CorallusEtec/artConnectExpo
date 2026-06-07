@@ -21,7 +21,7 @@ export const style = StyleSheet.create({
 
   // relacionado aos inputs
   inputContainer: {
-    gap: 15,
+    gap: 17,
     alignItems: "center",
   },
 
