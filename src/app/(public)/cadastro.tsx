@@ -161,7 +161,7 @@ export default function Cadastro() {
             <View style={style.btnContainer}>
               <View style={style.btnWrapper}>
                 <TextButton
-                  theme="primary"
+                  variant="primary"
                   title="Cadastrar"
                   onPress={handleCadastro}
                 />
@@ -169,7 +169,7 @@ export default function Cadastro() {
 
               <View style={style.btnWrapper}>
                 <TextButton
-                  theme="secondary"
+                  variant="secondary"
                   title="Já tenho login"
                   onPress={() => router.navigate("/login")}
                 />

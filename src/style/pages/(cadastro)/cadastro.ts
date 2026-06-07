@@ -44,7 +44,7 @@ export const style = StyleSheet.create({
   },
 
   btnWrapper: {
-    width: "38%",
+    width: "45%",
     gap: 5,
   },
 

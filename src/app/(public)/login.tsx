@@ -117,7 +117,7 @@ export default function Login() {
         </View>
 
         <TextButton
-          theme="primary"
+          variant="primary"
           title="Login"
           onPress={logar}
           style={{
