@@ -2,18 +2,19 @@ import { style } from "@/style/pages/login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { InputIcon } from "@/components/InputIcon";
-import { InputSenha } from "@/components/InputSenha";
+import { BannerLogo } from "@/components/BannerLogo";
+import { PaperInputIcon } from "@/components/PaperInputIcon";
+import { PaperInputSenha } from "@/components/PaperInputSenha";
 import { TextButton } from "@/components/TextButton";
 import { AuthService } from "@/services/AuthService";
 import LoginService from "@/services/LoginService";
 import UsuarioService from "@/services/UsuarioService";
 import { useAuthStore } from "@/store";
 import { gStyles } from "@/style/gStyle";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
 
 export default function Login() {
@@ -71,41 +72,34 @@ export default function Login() {
           </Pressable>
         )}
       </View>
-      {/* view da imagem de banner */}
+      {/* view da imagem de banner  */}
       <View style={{ paddingTop: '40%', flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-        <Image
-          source={require("../../../assets/images/banner.png")}
-          style={{ maxWidth: 300 }}
-          resizeMode="contain"
-        />
+        <BannerLogo size={'80%'} />
       </View>
 
       {/* resto da página */}
       <View style={style.view1}>
         <Text style={{ fontSize: 26, fontWeight: "bold" }}>Login</Text>
 
-        <View style={{ width: '85%', gap: 4 }}>
-          <Text style={{ fontSize: 16, color: "#374151" }}>Email</Text>
-          <InputIcon
-            style={{ fontSize: 16 }}
+        <View style={{ width: '85%' }}>
+          <PaperInputIcon
+            label="Email"
             placeholder="Digite seu Email"
             value={email}
             onChangeText={setEmail}
-          >
-            <FontAwesome name="envelope" size={17} color={gStyles.azul[500]} />
-          </InputIcon>
+            keyboardType="email-address"
+            autoCapitalize="none"
+            icon="email-outline"
+          />
         </View>
 
-        <View style={{ width: '85%', gap: 4 }}>
-          <Text style={{ fontSize: 16, color: "#374151" }}>Senha</Text>
-          <InputSenha
-            style={{ fontSize: 16 }}
+        <View style={{ width: '85%' }}>
+          <PaperInputSenha
+            label="Senha"
             placeholder="Digite sua Senha"
             value={senha}
             onChangeText={setSenha}
-          >
-            <FontAwesome name="lock" size={17} color={gStyles.azul[500]} />
-          </InputSenha>
+          />
         </View>
 
         <View style={{ width: '85%' }}>
