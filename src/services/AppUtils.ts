@@ -1,11 +1,11 @@
 /**
- * 
+ *
  * Classe utilitária com funções que são compartilhadas entre componentes
- * 
+ *
  */
 
 export class AppUtils {
-      // Recebe quantia de data (em segundos) e converte para um texto formato para as postagens
+  /**  Recebe quantia de data (em segundos) e converte para um texto formato para as postagens*/
   static labelData(seg /*Padrão inicial: Segundos*/ : number): string {
     // Objeto que abstraí os intervalos de tempos somados
     const t = {
@@ -23,7 +23,6 @@ export class AppUtils {
      * apenas é dividido por 12, o que nos retorna a quantidade de tempo em anos do intervalo
      */
 
-    
     if (Math.trunc(seg / t.min) <= 0) {
       return `${seg.toFixed(0)} segundos atrás`;
     } else if (Math.trunc(seg / t.hora) <= 0) {
@@ -41,23 +40,20 @@ export class AppUtils {
     }
   }
 
-  //Recebe data do parametro e retorna a diferença em segundos
-    static converterData(data: Date): number {
-      const dataAtual = new Date(Date.now());
-      const diffMili = Math.abs(data.getTime() - dataAtual.getTime());
-  
-      const diffSeg = Math.ceil(diffMili / 1000);
-      return diffSeg;
-    }
+  /**Recebe data do parametro e retorna a diferença em segundos*/
+  static converterData(data: Date): number {
+    const dataAtual = new Date(Date.now());
+    const diffMili = Math.abs(data.getTime() - dataAtual.getTime());
 
+    const diffSeg = Math.ceil(diffMili / 1000);
+    return diffSeg;
+  }
 
-    //function sformatar data
+  //function sformatar data
 
-    static formatarData = (texto: string) => {
-  
+  static formatarData = (texto: string) => {
     const numeros = texto.replace(/\D/g, "");
 
-    
     const numerosLimitados = numeros.slice(0, 8);
 
     if (numerosLimitados.length <= 2) {
@@ -68,5 +64,4 @@ export class AppUtils {
     }
     return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2, 4)}/${numerosLimitados.slice(4, 8)}`;
   };
-
 }
