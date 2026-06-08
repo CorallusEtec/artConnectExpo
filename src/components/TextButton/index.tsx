@@ -22,7 +22,7 @@ export function TextButton({
       textColor={variant === "secondary" ? "#2563eb" : "#fff"}
       rippleColor={variant === "secondary" ? "#2563eb20" : undefined}
       contentStyle={{ paddingVertical: 4 }}
-      labelStyle={[{ fontWeight: "600", fontSize: 16 }, textStyle]}
+      labelStyle={[{ fontWeight: "600", fontSize: 15 }, textStyle]}
       {...props}
     >
       {title}

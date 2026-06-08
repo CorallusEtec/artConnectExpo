@@ -5,8 +5,7 @@ export const style = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     gap: 10,
-    justifyContent: "flex-start",
-    marginTop: -50,
+    paddingTop: 120
   },
   view1: {
     gap: 20,

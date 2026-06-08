@@ -16,7 +16,7 @@ export type BannerLogoProps = {
 export function BannerLogo({ size = "5%" }: BannerLogoProps) {
   return (
     <Image
-      style={[style.banner, { width: size, maxHeight: size }]}
+      style={[style.banner, { maxHeight: size }]}
       source={require("@/assets/images/banner.png")}
     />
   );

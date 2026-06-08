@@ -52,34 +52,11 @@ export default function Login() {
 
   return (
     <SafeAreaView style={style.container}>
-      <View style={{ flexDirection: "row" }}>
-        {hasPreviousPage && (
-          <Pressable
-            onPress={() => router.back()}
-            style={{
-              position: "absolute",
-              backgroundColor: "white",
-              borderRadius: 25,
-              top: 60,
-              left: 10,
-            }}
-          >
-            <FontAwesome6
-              name="circle-arrow-left"
-              size={35}
-              color={gStyles.azul[500]}
-            />
-          </Pressable>
-        )}
-      </View>
-      {/* view da imagem de banner  */}
-      <View style={{ paddingTop: '40%', flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-        <BannerLogo size={'80%'} />
-      </View>
+          <BannerLogo size={'8%'}/>
 
       {/* resto da página */}
       <View style={style.view1}>
-        <Text style={{ fontSize: 26, fontWeight: "bold" }}>Login</Text>
+        <Text style={{ fontSize: 24, fontWeight: "500" }}>Login</Text>
 
         <View style={{ width: '85%' }}>
           <InputIcon
@@ -112,7 +89,7 @@ export default function Login() {
               onPress={() => setChecked(!checked)}
               color={checked ? "#2563eb" : undefined}
             />
-            <Text style={{ fontSize: 16 }}>Lembre-se de Mim</Text>
+            <Text style={{ fontSize: 15 }}>Lembre-se de Mim</Text>
           </Pressable>
         </View>
 
@@ -128,19 +105,10 @@ export default function Login() {
           }}
         />
 
-         <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: "85%",
-            gap: 8,
-          }}
-        >
-          
-          <View style={{flex: 1,height: 1,backgroundColor: "#c6c6c6"}}/>
-          <Text style={{ color: "#9ca3af", fontSize: 16 }}>ou</Text>
-          <View style={{flex: 1, height: 1, backgroundColor: "#c6c6c6"}}/>
-
+        <View style={{flexDirection: 'row', width: '100%', padding: 10, alignItems: 'center', justifyContent: 'center'}}>
+          <View style={{width: '40%', height: 1, backgroundColor: '#9b9b9b'}} />
+          <Text style={{color: '#9b9b9b', fontSize: 13}}> ou </Text>
+          <View style={{width: '40%', height: 1, backgroundColor: '#9b9b9b'}} />
         </View>
  
         <Pressable
@@ -155,7 +123,7 @@ export default function Login() {
             backgroundColor: pressed ? "#f3f4f6" : "#ffffff",
           })}
         >
-          <Text style={{ fontSize: 16, color: "#374151" }}>
+          <Text style={{ fontSize: 15, color: "#374151" }}>
             Continuar sem login
           </Text>
         </Pressable>
@@ -163,7 +131,7 @@ export default function Login() {
         <Pressable onPress={() => router.navigate("/cadastro")}>
           <Text
             style={{
-              fontSize: 16,
+              fontSize: 15,
               color: "#374151",
               textDecorationLine: "underline",
             }}
