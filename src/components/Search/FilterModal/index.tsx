@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Modal, Portal, TextInput, Button, IconButton } from "react-native-paper";
-import { style } from "./modal.style";
+import { style } from "./style";
 import { AppUtils } from "../../services/AppUtils";
 import { FiltrosState, FilterModalProps } from "./types";
 

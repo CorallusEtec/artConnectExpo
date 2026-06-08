@@ -1,7 +1,7 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { TextInput, IconButton } from "react-native-paper";
-import { style } from "./bar.style";
+import { View } from "react-native";
+import { IconButton, TextInput } from "react-native-paper";
+import { style } from "./style";
 
 interface SearchBarProps {
   value: string;
