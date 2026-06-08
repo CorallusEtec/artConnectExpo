@@ -1,3 +1,4 @@
+import { BannerLogo } from "@/components/BannerLogo";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
@@ -56,33 +57,8 @@ export default function Cadastro() {
 
   return (
     <SafeAreaView style={style.container}>
-      <View style={{ flexDirection: "row" }}>
-        <Image
-          source={require("@/assets/template/bannerLogin.png")}
-          style={{ width: "100%", height: 200 }}
-        />
-        <Image
-          source={require("@/assets/template/onda.png")}
-          style={{ width: "100%", height: 350, position: "absolute" }}
-        />
-        <Pressable
-          onPress={() => router.navigate("/home")}
-          style={{
-            position: "absolute",
-            backgroundColor: "white",
-            borderRadius: 25,
-            top: 10,
-            left: 10,
-          }}
-        >
-          <FontAwesome6
-            name="circle-arrow-left"
-            size={35}
-            color={gStyles.azul[200]}
-          />
-        </Pressable>
-      </View>
-
+      <BannerLogo size={'8%'}/>
+      
       <View>
         <View style={style.titleContainer}>
           <Text style={style.titulo}> Cadastre-se </Text>

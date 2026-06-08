@@ -5,6 +5,7 @@ export const style = StyleSheet.create({
   container: {
     flex: 1,
     gap: 35,
+    paddingTop: 120,
     backgroundColor: "white",
     height: "100%",
   },
