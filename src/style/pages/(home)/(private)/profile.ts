@@ -3,109 +3,98 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
-    gap: 5,
     flex: 1,
     backgroundColor: "white",
   },
 
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   navbarMom: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 7,
     backgroundColor: gStyles.azul[500],
-  },
-  navbarSon1: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 7,
-  },
-  navbarSon2: {
-    width: 100,
-    flexDirection: "row",
-    alignItems: "center",
+    elevation: 0,
+    shadowOpacity: 0,
+    height: 56,
     justifyContent: "space-between",
-    padding: 7,
   },
 
-  banner: {
-    width: 150,
-    maxHeight: 50,
-    resizeMode: "contain",
-  },
-
-  headerProfile: {
-    height: 92,
-    width: 92,
-    borderRadius: "100%",
-  },
-
-  nomeProfile: {
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
   profile: {
-    height: 25,
-    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   infosProfile: {
     flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: 10,
-    marginBottom: 12.5,
+    flex: 1,
+    justifyContent: "space-around",
+    alignItems: 'center',
   },
 
   infoDuo: {
+    alignItems: "center",
     justifyContent: "center",
-    alignContent: "center",
   },
 
-  info: {
-    width: 100,
+  infoLabel: {
     textAlign: "center",
-    fontSize: 18,
     color: "white",
+    fontWeight: '400',
+  },
+
+  infoValue: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    marginTop: 2,
   },
 
   botaoEdit: {
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1,
+    marginTop: -20, 
     marginBottom: 6,
   },
 
-  users: {
-    marginTop: 50,
-    flexDirection: "row",
-    justifyContent: "space-between",
+  paperButton: {
+    backgroundColor: gStyles.azul[500],
+    borderWidth: 2,
+    borderColor: "white",
+    borderRadius: 20,
+    minWidth: 130,
+    elevation: 2,
   },
-  user: {
-    height: 72,
-    width: 72,
-    borderRadius: "100%",
+
+  paperButtonLabel: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 
   fundo: {
     backgroundColor: gStyles.azul[500],
-    paddingTop: 18,
-    paddingBottom: 26,
-    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 35, 
+    paddingHorizontal: 20,
   },
 
   bioContainer: {
-    marginTop: 8,
+    marginTop: 16,
     marginBottom: 6,
     paddingHorizontal: 6,
   },
 
   bioText: {
     color: "white",
-    fontSize: 16,
     textAlign: "center",
     lineHeight: 20,
   },
@@ -119,13 +108,7 @@ export const style = StyleSheet.create({
   },
 
   posts: {
+    flex: 1,
     width: "100%",
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  thumb: {
-    width: "100%",
-    height: 160,
-    margin: 4,
   },
 });

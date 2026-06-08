@@ -1,193 +1,125 @@
+import React from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
+import { Appbar, Avatar, Button, Text, TouchableRipple } from "react-native-paper";
+import { router } from "expo-router";
+
 import { Post } from "@/components/Post";
 import { Reacao } from "@/components/Reacao";
-import { TextButton } from "@/components/TextButton";
-import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
-import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
-import { UsuarioResponse } from "@/models/response/UsuarioResponse";
-import PublicacoesService from "@/services/PublicacoesService";
-import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/profile";
+import { usePerfil } from "../../../hooks/userPerfil";
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 
 export default function Perfil() {
-  const [usuario, setUsuario] = useState<UsuarioResponse>();
-  const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { usuario, publicacoes, loading } = usePerfil();
 
-  useEffect(() => {
-    async function carregar() {
-      try {
-        let us: UsuarioResponse = {} as UsuarioResponse;
-
-        const tk = await AsyncStorage.getItem("@artconnect:token");
-
-        // SE ESTIVER COM TOKEN
-        if (tk) {
-          const tokenParse: AuthLoginResponse = JSON.parse(tk);
-
-          us = await UsuarioService.findById(tokenParse.id);
-          console.log(us);
-          setUsuario(us);
-        }
-
-        if (us.id) {
-          const data = await PublicacoesService.listar();
-          const meus = (data ?? []).filter(
-            (p: PublicacaoResponse) => p.autor.id == us?.id,
-          );
-          setPublicacoes(meus);
-        } else {
-          setPublicacoes([]);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-      }
-      setLoading(false);
-    }
-    carregar();
-  }, []);
-  if (loading) return <ActivityIndicator />;
+  if (loading) {
+    return (
+      <View style={style.loadingContainer}>
+        <ActivityIndicator size="large" color={gStyles.azul[500]} />
+      </View>
+    );
+  }
 
   return (
-    <>
-      <View style={style.navbarMom}>
-        <View style={style.navbarSon1}>
-          <TouchableOpacity>
-            <FontAwesome5
-              name="arrow-left"
-              color={gStyles.cinza[100]}
-              size={30}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={style.navbarSon2}>
-          <TouchableOpacity>
-            <Feather name="send" color={gStyles.cinza[100]} size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="menu" color={gStyles.cinza[100]} size={40} />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={style.container}>
-        <View style={style.fundo}>
+    <View style={style.container}>
+      {/* Navbar */}
+      <Appbar.Header style={style.navbarMom} statusBarHeight={0}>
+        <Appbar.Action icon="arrow-left" color="white" size={30} onPress={() => router.back()} />
+        <Appbar.Content title="" />
+        <Appbar.Action icon="send" color="white" size={25} onPress={() => {}} />
+        <Appbar.Action icon="menu" color="white" size={30} onPress={() => {}} />
+      </Appbar.Header>
+
+      {/* Painel de Informações do Usuário */}
+      <View style={style.fundo}>
+        <View style={style.headerRow}>
           <View style={style.profile}>
-            <Pressable>
-              <Image
-                style={style.headerProfile}
-                source={require("@/assets/template/avatar.png")}
-              />
-            </Pressable>
-            <Text style={style.nomeProfile}>{usuario?.nome}</Text>
+            <Avatar.Image size={92} source={require("@/assets/template/avatar.png")} />
           </View>
+
           <View style={style.infosProfile}>
             <View style={style.infoDuo}>
-              <Text style={style.info}>Posts</Text>
-              <Text style={style.info}>{publicacoes.length}</Text>
+              <Text variant="bodyLarge" style={style.infoLabel}>Posts</Text>
+              <Text variant="titleMedium" style={style.infoValue}>{publicacoes.length}</Text>
             </View>
-            <Pressable>
+          
+            <TouchableRipple onPress={() => {}} rippleColor="rgba(255, 255, 255, .2)">
               <View style={style.infoDuo}>
-                <Text style={style.info}>Seguidores</Text>
-                <Text style={style.info}>0</Text>
+                <Text variant="bodyLarge" style={style.infoLabel}>Seguidores</Text>
+                <Text variant="titleMedium" style={style.infoValue}>0</Text>
               </View>
-            </Pressable>
-            <Pressable>
-              <View style={style.infoDuo}>
-                <Text style={style.info}>Seguindo</Text>
-                <Text style={style.info}>0</Text>
-              </View>
-            </Pressable>
-          </View>
+            </TouchableRipple>
 
-          <View style={style.bioContainer}>
-            <Text style={style.bioText}>
-              {usuario?.textoBio ?? "Sem biografia."}
-            </Text>
+            <TouchableRipple onPress={() => {}} rippleColor="rgba(255, 255, 255, .2)">
+              <View style={style.infoDuo}>
+                <Text variant="bodyLarge" style={style.infoLabel}>Seguindo</Text>
+                <Text variant="titleMedium" style={style.infoValue}>0</Text>
+              </View>
+            </TouchableRipple>
           </View>
         </View>
 
-        <View style={style.botaoEdit}>
-          <TextButton
-            onPress={() => router.navigate("/home/perfil/editar")}
-            style={{
-              width: "30%",
-              backgroundColor: gStyles.azul[500],
-              borderWidth: 3,
-              borderColor: "white",
-            }}
-            title="Editar perfil"
-          />
-        </View>
-
-        <View style={style.icons}>
-          <Pressable>
-            <Feather name="camera" color={gStyles.cinza[600]} size={32.5} />
-          </Pressable>
-          <Pressable>
-            <Feather name="bookmark" color={gStyles.cinza[600]} size={35} />
-          </Pressable>
-        </View>
-
-        <View style={style.posts}>
-          {loading ? (
-            <ActivityIndicator />
-          ) : (
-            <FlatList
-              data={publicacoes}
-              keyExtractor={(item) => String(item.id)}
-              renderItem={({ item }) => (
-                <Post.root>
-                  <Post.header
-                    nomePerfil={item.autor?.nome ?? "Usuário"}
-                    dataPublicacao={new Date(item.dataPublicacao)}
-                  >
-                    <Post.headerActions>
-                      <TextButton title="Seguir" theme="secondary" />
-                    </Post.headerActions>
-                  </Post.header>
-
-                  <Post.legend data={item.legenda} />
-                  {item.urlMidia && <Post.image url={item.urlMidia} />}
-
-                  <Post.actions>
-                    <Reacao insight={0}>
-                      <FontAwesome
-                        name="heart-o"
-                        size={24}
-                        color={gStyles.vermelho[400]}
-                      />
-                    </Reacao>
-
-                    <Reacao insight={0}>
-                      <Feather
-                        name="message-circle"
-                        size={24}
-                        color={gStyles.cinza[600]}
-                      />
-                    </Reacao>
-                  </Post.actions>
-                </Post.root>
-              )}
-            />
-          )}
+        <View style={style.bioContainer}>
+          <Text variant="bodyMedium" style={style.bioText}>
+            {usuario?.textoBio ?? "Sem biografia."}
+          </Text>
         </View>
       </View>
-    </>
+
+      {/* Botão de Ação */}
+      <View style={style.botaoEdit}>
+        <Button
+          mode="contained"
+          onPress={() => router.navigate("/home/perfil/editar")}
+          style={style.paperButton}
+          labelStyle={style.paperButtonLabel}
+        >
+          Editar ...
+        </Button>
+      </View>
+
+      {/* Abas/Ícones de Navegação Interna */}
+      <View style={style.icons}>
+        <TouchableRipple onPress={() => {}}>
+          <Feather name="camera" color={gStyles.cinza[600]} size={32.5} />
+        </TouchableRipple>
+        <TouchableRipple onPress={() => {}}>
+          <Feather name="bookmark" color={gStyles.cinza[600]} size={35} />
+        </TouchableRipple>
+      </View>
+
+      {/* Feed */}
+      <View style={style.posts}>
+        <FlatList
+          data={publicacoes}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => (
+            <Post.root>
+              <Post.header
+                nomePerfil={item.autor?.nome ?? "Usuário"}
+                dataPublicacao={new Date(item.dataPublicacao)}
+              >
+                <Post.headerActions>
+                  <Button mode="text" compact>Seguir</Button>
+                </Post.headerActions>
+              </Post.header>
+
+              <Post.legend data={item.legenda} />
+              {item.urlMidia && <Post.image url={item.urlMidia} />}
+
+              <Post.actions>
+                <Reacao insight={0}>
+                  <FontAwesome name="heart-o" size={24} color={gStyles.vermelho[400]} />
+                </Reacao>
+                <Reacao insight={0}>
+                  <Feather name="message-circle" size={24} color={gStyles.cinza[600]} />
+                </Reacao>
+              </Post.actions>
+            </Post.root>
+          )}
+        />
+      </View>
+    </View>
   );
 }
