@@ -1,5 +1,3 @@
-import { Post } from "@/components/Post";
-import { Reacao } from "@/components/Reacao";
 import { TextButton } from "@/components/TextButton";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
@@ -8,7 +6,7 @@ import PublicacoesService from "@/services/PublicacoesService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/profile";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,12 +14,11 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
   Image,
   Pressable,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 export default function Perfil() {
@@ -145,7 +142,7 @@ export default function Perfil() {
         </View>
 
         <View style={style.posts}>
-          {loading ? (
+          {/*loading ? (
             <ActivityIndicator />
           ) : (
             <FlatList
@@ -185,7 +182,7 @@ export default function Perfil() {
                 </Post.root>
               )}
             />
-          )}
+          )*/}
         </View>
       </View>
     </>

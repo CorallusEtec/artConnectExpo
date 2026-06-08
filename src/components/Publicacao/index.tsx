@@ -1,4 +1,4 @@
-import { Card, Divider } from "react-native-paper";
+import { Card } from "react-native-paper";
 import { PublicacaoActions } from "./PublicacaoActions";
 import { PublicacaoContent } from "./PublicacaoContent";
 import { PublicacaoHeader } from "./PublicacaoHeader";
@@ -8,9 +8,9 @@ export function Publicacao() {
     <Card>
       {/* HEADER */}
       <PublicacaoHeader />
-
+      {/* CONTENT */}
       <PublicacaoContent />
-      <Divider />
+      {/* ACTIONS */}
       <PublicacaoActions />
     </Card>
   );

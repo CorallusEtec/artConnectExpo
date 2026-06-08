@@ -1,6 +1,3 @@
-import { Post } from "@/components/Post";
-import { PostActions } from "@/components/Post/PostActions";
-import { TextButton } from "@/components/TextButton";
 import PublicacoesService from "@/services/PublicacoesService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
@@ -11,8 +8,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
   Image,
   Linking,
   Pressable,
@@ -169,7 +164,7 @@ export default function PerfilId() {
         </View>
 
         <View style={style.posts}>
-          {loading ? (
+          {/*loading ? (
             <ActivityIndicator />
           ) : (
             <FlatList
@@ -209,7 +204,7 @@ export default function PerfilId() {
                 </Post.root>
               )}
             />
-          )}
+          )*/}
         </View>
       </View>
     </>

@@ -1,40 +1,29 @@
 import { Publicacao } from "@/components/Publicacao";
-import { MockData, PublicacaoProvider } from "@/contexts/PublicacaoContext";
+import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
+import PublicacoesService from "@/services/PublicacoesService";
 import { style } from "@/style/pages/(home)/home";
-import { FlatList, View } from "react-native";
+import { Suspense, use } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
+
+const publicacoesPromise = PublicacoesService.findAll();
 
 export default function Home() {
-  const publi: MockData[] = [
-    { id: 1, titulo: "Olá Mundo um", dataPublicacao: "2026-05-06T09:06:00Z" },
-    {
-      id: 3,
-      titulo: "Olá Mundo dois",
-      dataPublicacao: "2026-05-06T09:06:00Z",
-    },
-    {
-      id: 4,
-      titulo: "Olá Mundo dois",
-      dataPublicacao: "2026-05-06T09:06:00Z",
-    },
-    {
-      id: 5,
-      titulo: "Olá Mundo dois",
-      dataPublicacao: "2026-05-06T09:06:00Z",
-    },
-  ];
+  const publicacoaData = use(publicacoesPromise);
 
   return (
     <View style={style.container}>
-      <FlatList
-        contentContainerStyle={style.listaContainer}
-        data={publi}
-        keyExtractor={(publi) => publi.id.toString()}
-        renderItem={({ item }) => (
-          <PublicacaoProvider dadosPubli={item}>
-            <Publicacao />
-          </PublicacaoProvider>
-        )}
-      />
+      <Suspense fallback={<ActivityIndicator />}>
+        <FlatList
+          contentContainerStyle={style.listaContainer}
+          data={publicacoaData.content}
+          keyExtractor={(publi) => publi.publicacao.id.toString()}
+          renderItem={({ item }) => (
+            <PublicacaoProvider dadosPubli={item}>
+              <Publicacao />
+            </PublicacaoProvider>
+          )}
+        />
+      </Suspense>
     </View>
   );
 }

@@ -1,22 +1,22 @@
+import { PublicacaoDetails } from "@/models/response/PublicacaoResponse";
 import {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useState,
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
 } from "react";
 
-export interface MockData {
-  id: number;
-  titulo: string;
-  dataPublicacao: string;
-}
+/**
+ * Tipagem do contexto
+ */
 export interface PublicacaoContextType {
-  data: MockData;
-  setData: Dispatch<SetStateAction<MockData>>;
+  data: PublicacaoDetails;
+  setData: Dispatch<SetStateAction<PublicacaoDetails>>;
 }
 
+// CONTEXTO CRIADO
 const PublicacaoContext = createContext<PublicacaoContextType>(
   {} as PublicacaoContextType,
 );
@@ -31,10 +31,22 @@ export function PublicacaoProvider({
   dadosPubli,
 }: {
   children: ReactNode;
-  dadosPubli: MockData;
+  dadosPubli: PublicacaoDetails;
 }) {
-  const [data, setData] = useState<MockData>(dadosPubli);
+  const [data, setData] = useState<PublicacaoDetails>(dadosPubli);
 
+  const handlePublicacaoData = (value: any, att: string) => {
+    switch (att) {
+      default:
+        setData((prevState) => ({
+          ...prevState,
+          publicacao: {
+            ...prevState.publicacao,
+            [att]: value,
+          },
+        }));
+    }
+  };
   return (
     <PublicacaoContext.Provider value={{ data: data, setData: setData }}>
       {children}

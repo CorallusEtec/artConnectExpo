@@ -1,9 +1,11 @@
-import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import {
+  PublicacaoPagedResponse,
+  PublicacaoResponse,
+} from "@/models/response/PublicacaoResponse";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
-import { useQuery } from "@/hooks/useQuery";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 
 interface CriarPublicacaoDTO {
   legenda: string;
@@ -12,12 +14,13 @@ interface CriarPublicacaoDTO {
 }
 
 export default class PublicacoesService {
-  
-  static async save({
-    legenda,
-    file,
-    autorId,
-  }: CriarPublicacaoDTO) {
+  static async findAll(): Promise<PublicacaoPagedResponse> {
+    const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
+
+    return await response.json();
+  }
+
+  static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
     try {
       const formData = new FormData();
 
@@ -34,27 +37,25 @@ export default class PublicacoesService {
           throw blobErr;
         }
 
-        formData.append(
-          "file",
-          blob,
-          `image-${Date.now()}.jpg`
-        );
+        formData.append("file", blob, `image-${Date.now()}.jpg`);
       }
-      
-      
+
       const tk = await AsyncStorage.getItem("@artconnect:token");
 
-      if(!tk) {
+      if (!tk) {
         return;
       }
       const tokenParse: AuthLoginResponse = JSON.parse(tk);
-      const response = await fetch(`${config.apiUrl}/publicacao/save?autorId=${autorId}`, {
-        headers: {
-          "Authorization": `Bearer ${tokenParse.token}`
+      const response = await fetch(
+        `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenParse.token}`,
+          },
+          body: formData,
+          method: "POST",
         },
-        body:formData,
-        method:"POST"
-      });
+      );
 
       const text = await response.text();
 
@@ -64,48 +65,30 @@ export default class PublicacoesService {
 
       return "Publicação cadastrada com sucesso";
     } catch (error) {
-      console.error(
-        "Erro ao salvar publicação:",
-        error
-      );
+      console.error("Erro ao salvar publicação:", error);
 
       throw error;
     }
   }
 
-  static async listar(
-    params?: any
-  ): Promise<PublicacaoResponse[]> {
+  static async listar(params?: any): Promise<PublicacaoResponse[]> {
     try {
-      const queryParams =
-        new URLSearchParams();
+      const queryParams = new URLSearchParams();
 
       if (params?.legenda) {
-        queryParams.append(
-          "legenda",
-          params.legenda
-        );
+        queryParams.append("legenda", params.legenda);
       }
 
       if (params?.nomeAutor) {
-        queryParams.append(
-          "nomeAutor",
-          params.nomeAutor
-        );
+        queryParams.append("nomeAutor", params.nomeAutor);
       }
 
       if (params?.dataInicio) {
-        queryParams.append(
-          "dataInicio",
-          params.dataInicio
-        );
+        queryParams.append("dataInicio", params.dataInicio);
       }
 
       if (params?.dataFim) {
-        queryParams.append(
-          "dataFim",
-          params.dataFim
-        );
+        queryParams.append("dataFim", params.dataFim);
       }
 
       const url = `${
@@ -115,32 +98,25 @@ export default class PublicacoesService {
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error(
-          "Erro ao buscar publicações"
-        );
+        throw new Error("Erro ao buscar publicações");
       }
 
       const data = await response.json();
 
       return data;
     } catch (error) {
-      console.error(
-        "Erro ao listar publicações",
-        error
-      );
+      console.error("Erro ao listar publicações", error);
 
       throw error;
     }
   }
 
-  static validarCriacao(
-    dados: any
-  ): ErroValidacao {
+  static validarCriacao(dados: any): ErroValidacao {
     const erro = new ErroValidacao();
 
     if (!dados.legenda && !dados.file) {
       return erro.invalido(
-        "Ao menos uma legenda ou uma mídia deve ser fornecida"
+        "Ao menos uma legenda ou uma mídia deve ser fornecida",
       );
     }
 

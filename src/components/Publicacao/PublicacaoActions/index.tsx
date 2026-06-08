@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { Card, IconButton } from "react-native-paper";
 import { ICON_SIZE } from "../style";
+import { PublicacaoReacaoToggle } from "./PublicacaoReacaoToggle";
 import { style } from "./style";
 
 export function PublicacaoActions() {
@@ -10,15 +11,15 @@ export function PublicacaoActions() {
       {/* ACTIONS LEFT */}
       <View style={{ flexDirection: "row", gap: 5 }}>
         {/* LIKE */}
-        <View style={style.actionContainer}>
-          <IconButton icon="thumb-up-outline" size={ICON_SIZE} />
-          <Text style={style.actionInsight}>1</Text>
-        </View>
+        <PublicacaoReacaoToggle
+          tipoReacao="LIKE"
+          reacaoIconStates={{ on: "thumb-up", off: "thumb-up-outline" }}
+        />
         {/* DESLIKE */}
-        <View style={style.actionContainer}>
-          <IconButton icon="thumb-down-outline" size={ICON_SIZE} />
-          <Text style={style.actionInsight}>0</Text>
-        </View>
+        <PublicacaoReacaoToggle
+          tipoReacao="DESLIKE"
+          reacaoIconStates={{ on: "thumb-down", off: "thumb-down-outline" }}
+        />
         {/* COMMENT */}
         <View style={style.actionContainer}>
           <IconButton
@@ -29,10 +30,11 @@ export function PublicacaoActions() {
           <Text style={style.actionInsight}>0</Text>
         </View>
       </View>
-      {/* ACTIONS RIGHT */}
+      {/* ACTIONS RIGHT 
       <View>
         <IconButton icon="bookmark-outline" />
       </View>
+      */}
     </Card.Actions>
   );
 }

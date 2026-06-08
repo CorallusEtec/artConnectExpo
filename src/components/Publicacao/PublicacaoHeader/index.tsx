@@ -12,17 +12,18 @@ import { style } from "./style";
  */
 export function PublicacaoHeader() {
   const [menu, setMenu] = useState(false);
-  const { data } = usePublicacaoData();
+  const publicacao = usePublicacaoData().data.publicacao;
 
   return (
     <Card.Content style={style.headerContainer}>
       <View style={style.headerContent}>
-        <Avatar.Text label="SS" size={32} />
+        {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
+        <Avatar.Text label={publicacao.autor.nome.charAt(0)} size={32} />
         <View style={style.metadataPubli}>
-          <Text style={style.autorLabel}>Samuel Santiago</Text>
+          <Text style={style.autorLabel}>{publicacao.autor.nome}</Text>
           <Text style={style.publishDateLabel}>
             {AppUtils.labelData(
-              AppUtils.converterData(new Date(data.dataPublicacao)),
+              AppUtils.converterData(new Date(publicacao.dataPublicacao)),
             )}
           </Text>
         </View>
