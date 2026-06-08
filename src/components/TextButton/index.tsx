@@ -1,29 +1,31 @@
-import { StyleProp, Text, TextStyle, TouchableOpacity, TouchableOpacityProps } from "react-native";
-import { style } from "./style";
+import { StyleProp, TextStyle } from "react-native";
+import { Button, ButtonProps } from "react-native-paper";
 
-type TextButtonProps = TouchableOpacityProps & {
+type TextButtonProps = Omit<ButtonProps, "theme" | "children"> & {
   title?: string;
-  theme?: "primary" | "secondary";
-  textStyle?: StyleProp<TextStyle>
+  variant?: "primary" | "secondary";
+  textStyle?: StyleProp<TextStyle>;
+  children?: React.ReactNode;
 };
 
 export function TextButton({
-  theme = "primary",
+  variant = "primary",
   title = "",
+  textStyle,
+  buttonColor,
   ...props
 }: TextButtonProps) {
   return (
-    <TouchableOpacity
+    <Button
+      mode={variant === "primary" ? "contained" : "outlined"}
+      buttonColor={variant === "primary" ? (buttonColor ?? "#2563eb") : undefined}
+      textColor={variant === "secondary" ? "#2563eb" : "#fff"}
+      rippleColor={variant === "secondary" ? "#2563eb20" : undefined}
+      contentStyle={{ paddingVertical: 4 }}
+      labelStyle={[{ fontWeight: "600", fontSize: 15 }, textStyle]}
       {...props}
-      style={
-        theme == "primary" ? [style.containerPrimary, props.style] : [style.containerSecondary, props.style]
-      }
     >
-      <Text
-        style={theme == "primary" ? [style.textPrimary, props.textStyle] : [style.textSecondary, props.textStyle]}
-      >
-        {title}
-      </Text>
-    </TouchableOpacity>
+      {title}
+    </Button>
   );
 }
