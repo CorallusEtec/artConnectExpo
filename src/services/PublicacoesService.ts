@@ -14,10 +14,15 @@ interface CriarPublicacaoDTO {
 }
 
 export default class PublicacoesService {
-  static async findAll(): Promise<PublicacaoPagedResponse> {
-    const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
-
-    return await response.json();
+  static async findAll(): Promise<undefined| PublicacaoPagedResponse> {
+      try {
+        const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
+        return await response.json();
+      } catch(e) {
+        if(e instanceof Error) {
+          return undefined;
+        }
+      }
   }
 
   static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {

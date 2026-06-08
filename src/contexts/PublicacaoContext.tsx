@@ -35,18 +35,6 @@ export function PublicacaoProvider({
 }) {
   const [data, setData] = useState<PublicacaoDetails>(dadosPubli);
 
-  const handlePublicacaoData = (value: any, att: string) => {
-    switch (att) {
-      default:
-        setData((prevState) => ({
-          ...prevState,
-          publicacao: {
-            ...prevState.publicacao,
-            [att]: value,
-          },
-        }));
-    }
-  };
   return (
     <PublicacaoContext.Provider value={{ data: data, setData: setData }}>
       {children}

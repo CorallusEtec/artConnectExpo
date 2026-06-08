@@ -27,17 +27,22 @@ export type PublicacaoReacaoToggleProps = {
  */
 export function PublicacaoReacaoToggle({
   reacaoIconStates,
+  tipoReacao
 }: PublicacaoReacaoToggleProps) {
   /** Estado que faz o botão ficar curtido visualmente */
   const [reagido, setReagido] = useState(false);
-
+  const { data } = usePublicacaoData();
   /** Função ativada para reagir ou desreagir essa action */
   function toggleReagir() {
-    setReagido((prevReagido) => !prevReagido);
+    const reacaoAtiva = data.reacaoUsuario;
+    if(reacaoAtiva != tipoReacao) {
+      setReagido(prevReacao => !prevReacao);
+    }
+    
     // Aqui vai ter a lógica de reagir no back end...
   }
 
-  const { data } = usePublicacaoData();
+
   return (
     <View style={style.actionContainer}>
       <IconButton

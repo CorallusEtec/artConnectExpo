@@ -13,7 +13,7 @@ export interface PublicacaoDetails {
   /** Dados das reações da publicação */
   reacoes: ReacaoDetails[];
   /**  Reação do usuário autenticado. Se não estiver autenticado ou não tiver reagido o valor é `null` */
-  reacaoUsuario: null | string;
+  reacaoUsuario: null | TipoReacao;
   totalComentarios: number;
 }
 /** Metadados da publicação em si */
