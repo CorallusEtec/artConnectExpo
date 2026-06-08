@@ -1,22 +1,20 @@
 import { gStyles } from "@/style/gStyle";
-import { ReactNode } from "react";
-import { StyleProp, TextInput, TextInputProps, View, ViewStyle } from "react-native";
-import { style } from "./style";
+import { StyleProp, ViewStyle } from "react-native";
+import { TextInput, TextInputProps } from "react-native-paper";
 
-type InputIconProps = TextInputProps & {
-  children?: ReactNode;
-  containerStyle?: StyleProp<ViewStyle>
+type PaperInputProps = TextInputProps & {
+  containerStyle?: StyleProp<ViewStyle>;
+  icon?: string;
 };
 
-export function InputIcon({ children = <></>, ...props }: InputIconProps) {
+export function InputIcon({ icon, ...props }: PaperInputProps) {
   return (
-    <View style={[style.container, props.containerStyle]}>
-      {children}
-      <TextInput
-        {...props}
-        style={[style.input, props.style]}
-        placeholderTextColor={gStyles.cinza[500]}
-      />
-    </View>
+    <TextInput
+      mode="outlined"
+      left={icon ? <TextInput.Icon icon={icon} color={gStyles.azul[500]} /> : undefined}
+      style={{ fontSize: 16, backgroundColor: "#ffffff" }}
+      outlineStyle={{ borderRadius: 8, borderColor: "#c6c6c6" }}
+      {...props}
+    />
   );
 }

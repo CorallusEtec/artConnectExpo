@@ -1,3 +1,4 @@
+import { BannerLogo } from "@/components/BannerLogo";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
@@ -5,7 +6,6 @@ import ArtistaService from "@/services/ArtistaService";
 import { AuthService } from "@/services/AuthService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(cadastro)/cadastro";
-import { FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -57,33 +57,8 @@ export default function Cadastro() {
 
   return (
     <SafeAreaView style={style.container}>
-      <View style={{ flexDirection: "row" }}>
-        <Image
-          source={require("@/assets/template/bannerLogin.png")}
-          style={{ width: "100%", height: 200 }}
-        />
-        <Image
-          source={require("@/assets/template/onda.png")}
-          style={{ width: "100%", height: 350, position: "absolute" }}
-        />
-        <Pressable
-          onPress={() => router.navigate("/home")}
-          style={{
-            position: "absolute",
-            backgroundColor: "white",
-            borderRadius: 25,
-            top: 10,
-            left: 10,
-          }}
-        >
-          <FontAwesome6
-            name="circle-arrow-left"
-            size={35}
-            color={gStyles.azul[200]}
-          />
-        </Pressable>
-      </View>
-
+      <BannerLogo size={'8%'}/>
+      
       <View>
         <View style={style.titleContainer}>
           <Text style={style.titulo}> Cadastre-se </Text>
@@ -96,63 +71,43 @@ export default function Cadastro() {
           <View style={{ gap: 20 }}>
             <View style={[style.inputContainer, open && { marginBottom: 100 }]}>
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Nome </Text>
                 <InputIcon
-                  placeholder="  Digite seu nome"
+                  label="Nome"
+                  placeholder="Digite seu nome"
                   onChangeText={setNome}
                   value={nome}
-                >
-                  <FontAwesome
-                    name="user"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputIcon>
+                  icon="account-outline"
+                />
               </View>
 
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Email </Text>
                 <InputIcon
-                  placeholder="  Digite seu email"
+                  label="Email"
+                  placeholder="Digite seu email"
                   onChangeText={setEmail}
                   value={email}
-                >
-                  <FontAwesome
-                    name="envelope"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputIcon>
+                  icon="email-outline"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
               </View>
 
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Senha </Text>
                 <InputSenha
+                  label="Senha"
                   placeholder="Crie sua senha"
                   onChangeText={setSenha}
                   value={senha}
-                >
-                  <FontAwesome
-                    name="lock"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputSenha>
+                />
               </View>
 
               <View style={style.inputWrapper}>
-                <Text style={style.label}> Confirmar senha </Text>
                 <InputSenha
+                  label="Confirmar Senha"
                   placeholder="Digite a senha novamente"
                   onChangeText={setConfirmaSenha}
                   value={confirmaSenha}
-                >
-                  <FontAwesome
-                    name="lock"
-                    size={24}
-                    color={gStyles.azul[200]}
-                  />
-                </InputSenha>
+                />
               </View>
 
               <View>
@@ -182,7 +137,7 @@ export default function Cadastro() {
             <View style={style.btnContainer}>
               <View style={style.btnWrapper}>
                 <TextButton
-                  theme="primary"
+                  variant="primary"
                   title="Cadastrar"
                   onPress={handleCadastro}
                 />
@@ -190,7 +145,7 @@ export default function Cadastro() {
 
               <View style={style.btnWrapper}>
                 <TextButton
-                  theme="secondary"
+                  variant="secondary"
                   title="Já tenho login"
                   onPress={() => router.navigate("/login")}
                 />

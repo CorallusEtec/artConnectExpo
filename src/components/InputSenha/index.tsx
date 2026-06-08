@@ -1,32 +1,30 @@
 import { gStyles } from "@/style/gStyle";
-import { Feather } from "@expo/vector-icons";
-import { ReactNode, useState } from "react";
-import { Pressable, StyleProp, TextInput, TextInputProps, View, ViewStyle } from "react-native";
-import { style } from "./style";
+import { useState } from "react";
+import { StyleProp, ViewStyle } from "react-native";
+import { TextInput, TextInputProps } from "react-native-paper";
 
-type InputSenhaProps = TextInputProps & {
-  children?: ReactNode;
+type PaperInputSenhaProps = TextInputProps & {
   containerStyle?: StyleProp<ViewStyle>;
 };
 
-export function InputSenha({ children = <></>, ...props }: InputSenhaProps) {
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+export function InputSenha({ ...props }: PaperInputSenhaProps) {
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
+
   return (
-    <View style={[style.container, props.containerStyle]}>
-      {children}
-      <TextInput
-        secureTextEntry={!mostrarSenha}
-        {...props}
-        style={[style.input, props.style]}
-        placeholderTextColor={gStyles.cinza[500]}
-      />
-      <Pressable onPress={() => setMostrarSenha(!mostrarSenha)}>
-        <Feather
-          name={mostrarSenha ? "eye" : "eye-off"}
-          size={22}
-          color={gStyles.azul[200]}
+    <TextInput
+      mode="outlined"
+      secureTextEntry={!senhaVisivel}
+      left={<TextInput.Icon icon="lock-outline" color={gStyles.azul[500]} />}
+      right={
+        <TextInput.Icon
+          icon={senhaVisivel ? "eye-off-outline" : "eye-outline"}
+          onPress={() => setSenhaVisivel(!senhaVisivel)}
+          color="#9ca3af"
         />
-      </Pressable>
-    </View>
+      }
+      style={{ fontSize: 16, backgroundColor: "#ffffff" }}
+      outlineStyle={{ borderRadius: 8, borderColor: "#c6c6c6" }}
+      {...props}
+    />
   );
 }

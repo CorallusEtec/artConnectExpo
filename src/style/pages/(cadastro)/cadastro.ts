@@ -5,6 +5,7 @@ export const style = StyleSheet.create({
   container: {
     flex: 1,
     gap: 35,
+    paddingTop: 120,
     backgroundColor: "white",
     height: "100%",
   },
@@ -21,7 +22,7 @@ export const style = StyleSheet.create({
 
   // relacionado aos inputs
   inputContainer: {
-    gap: 15,
+    gap: 17,
     alignItems: "center",
   },
 
@@ -44,7 +45,7 @@ export const style = StyleSheet.create({
   },
 
   btnWrapper: {
-    width: "38%",
+    width: "45%",
     gap: 5,
   },
 
