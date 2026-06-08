@@ -13,8 +13,6 @@ import { AuthService } from "@/services/AuthService";
 import LoginService from "@/services/LoginService";
 import UsuarioService from "@/services/UsuarioService";
 import { useAuthStore } from "@/store";
-import { gStyles } from "@/style/gStyle";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
 
 export default function Login() {
@@ -56,9 +54,9 @@ export default function Login() {
 
       {/* resto da página */}
       <View style={style.view1}>
-        <Text style={{ fontSize: 24, fontWeight: "500" }}>Login</Text>
+        <Text style={[style.titulo, {fontWeight: 500}]}>Login</Text>
 
-        <View style={{ width: '85%' }}>
+        <View style={style.inputWrapper}>
           <InputIcon
             label="Email"
             placeholder="Digite seu Email"
@@ -70,7 +68,7 @@ export default function Login() {
           />
         </View>
 
-        <View style={{ width: '85%' }}>
+        <View style={style.inputWrapper}>
           <InputSenha
             label="Senha"
             placeholder="Digite sua Senha"
@@ -79,9 +77,10 @@ export default function Login() {
           />
         </View>
 
-        <View style={{ width: '85%' }}>
+        <View style={style.inputWrapper}>
           <Pressable
             onPress={() => setChecked(!checked)}
+            // inline
             style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
           >
             <Checkbox
@@ -89,7 +88,7 @@ export default function Login() {
               onPress={() => setChecked(!checked)}
               color={checked ? "#2563eb" : undefined}
             />
-            <Text style={{ fontSize: 15 }}>Lembre-se de Mim</Text>
+            <Text style={style.textoPadrão}>Lembre-se de Mim</Text>
           </Pressable>
         </View>
 
@@ -97,6 +96,7 @@ export default function Login() {
           variant="primary"
           title="Login"
           onPress={logar}
+          // inline
           style={{
             width: "85%",
             height: "10%",
@@ -105,13 +105,14 @@ export default function Login() {
           }}
         />
 
-        <View style={{flexDirection: 'row', width: '100%', padding: 10, alignItems: 'center', justifyContent: 'center'}}>
-          <View style={{width: '40%', height: 1, backgroundColor: '#9b9b9b'}} />
-          <Text style={{color: '#9b9b9b', fontSize: 13}}> ou </Text>
-          <View style={{width: '40%', height: 1, backgroundColor: '#9b9b9b'}} />
+        <View style={style.linhaOuWrapper}>
+          <View style={style.linhaOu} />
+          <Text style={[style.textoDetalhe, {color:'#9b9b9b'}]}> ou </Text>
+          <View style={style.linhaOu} />
         </View>
  
         <Pressable
+        // inline
           style={({ pressed }) => ({
             width: "85%",
             height: "10%",
@@ -123,18 +124,18 @@ export default function Login() {
             backgroundColor: pressed ? "#f3f4f6" : "#ffffff",
           })}
         >
-          <Text style={{ fontSize: 15, color: "#374151" }}>
+          <Text style={[style.textoPadrão, {color: "#374151" }]}>
             Continuar sem login
           </Text>
         </Pressable>
  
         <Pressable onPress={() => router.navigate("/cadastro")}>
           <Text
-            style={{
-              fontSize: 15,
+            style={[style.textoPadrão, 
+            {
               color: "#374151",
               textDecorationLine: "underline",
-            }}
+            }]}
           >
             Criar uma Conta
           </Text>
