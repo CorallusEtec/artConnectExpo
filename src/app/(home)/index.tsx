@@ -1,11 +1,11 @@
 import { Publicacao } from "@/components/Publicacao";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
-import { useListarPublicacao } from "@/hooks/query/useListarPublicacao";
+import { usePublicacaoQuery } from "@/hooks/usePublicacaoQuery";
 import { style } from "@/style/pages/(home)/home";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function Home() {
-  const { data, isError, error, isPending } = useListarPublicacao();
+  const { data, isError, error, isPending } = usePublicacaoQuery();
   if (isPending) return <ActivityIndicator />;
   return (
     <View style={style.container}>

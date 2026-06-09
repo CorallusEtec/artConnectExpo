@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { FontAwesome } from "@expo/vector-icons";
-import * as NavigationBar from "expo-navigation-bar";
+
 import { Tabs } from "expo-router";
 import { memo } from "react";
 import {
@@ -22,8 +22,6 @@ const guest = true;
 // Esconder barra de gestos do android
 
 export default function HomeLayout() {
-  NavigationBar.setBehaviorAsync("overlay-swipe");
-  NavigationBar.setVisibilityAsync("hidden");
   return (
     <>
       <StatusBar hidden />

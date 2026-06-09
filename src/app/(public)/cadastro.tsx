@@ -72,7 +72,7 @@ export default function Cadastro() {
               <TextButton
                 variant="secondary"
                 title="Já tenho login"
-                onPress={() => router.navigate("/login")}
+                onPress={() => router.back()}
               />
             </View>
           </View>
