@@ -1,6 +1,6 @@
 import { usePublicacaoData } from "@/contexts/PublicacaoContext";
 import { TipoReacao } from "@/models/enumeration/enumeration";
-import { useState } from "react";
+import { useRef } from "react";
 import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { ICON_SIZE } from "../../style";
@@ -10,15 +10,11 @@ import { style } from "../style";
  * Props do componente
  */
 export type PublicacaoReacaoToggleProps = {
+  index?: number;
+  key?: number;
   /** T */
   tipoReacao: TipoReacao;
   /** Carrega os icones com os estados reagido e não reagido da reação */
-  reacaoIconStates: {
-    /** Icone ativo */
-    on: string;
-    /** Icone não ativo */
-    off: string;
-  };
 };
 
 /**
@@ -26,31 +22,38 @@ export type PublicacaoReacaoToggleProps = {
  * @returns Componente que ativa ou desativa uma reação
  */
 export function PublicacaoReacaoToggle({
-  reacaoIconStates,
-  tipoReacao
+  tipoReacao,
+  index,
 }: PublicacaoReacaoToggleProps) {
-  /** Estado que faz o botão ficar curtido visualmente */
-  const [reagido, setReagido] = useState(false);
-  const { data } = usePublicacaoData();
-  /** Função ativada para reagir ou desreagir essa action */
-  function toggleReagir() {
-    const reacaoAtiva = data.reacaoUsuario;
-    if(reacaoAtiva != tipoReacao) {
-      setReagido(prevReacao => !prevReacao);
-    }
-    
-    // Aqui vai ter a lógica de reagir no back end...
-  }
+  const { data, setData } = usePublicacaoData();
+  /** Estado que carrega o total da reacao*/
+  const insight = useRef(data.reacoes[index].total);
 
+  /**
+   * Ao reagir altera a reação feita pelo usuário
+   */
+  function toggleReagir() {
+    setData((prevState) => ({
+      ...prevState,
+      ["reacaoUsuario"]: tipoReacao != data.reacaoUsuario ? tipoReacao : null,
+    }));
+    // Código de reagir no banco de dados
+  }
 
   return (
     <View style={style.actionContainer}>
       <IconButton
-        icon={reagido ? reacaoIconStates.on : reacaoIconStates.off}
+        icon={
+          tipoReacao == data.reacaoUsuario ? "thumb-down" : "thumb-down-outline"
+        }
         size={ICON_SIZE}
-        onPress={toggleReagir}
+        onPress={() => toggleReagir()}
       />
-      <Text style={style.actionInsight}>0</Text>
+      <Text style={style.actionInsight}>
+        {data.reacaoUsuario == tipoReacao
+          ? insight.current + 1
+          : insight.current}
+      </Text>
     </View>
   );
 }

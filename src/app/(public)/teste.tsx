@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 export default function Splash() {
-  const [loading, setLoading] = useState(true);
-
   return (
     <View style={styles.container}>
       <Image
@@ -11,7 +8,7 @@ export default function Splash() {
         style={styles.logo}
         resizeMode="contain"
       />
-      {loading && <ActivityIndicator size="large" color="#0e2bcc" />}
+      {<ActivityIndicator size="large" color="#0e2bcc" />}
     </View>
   );
 }

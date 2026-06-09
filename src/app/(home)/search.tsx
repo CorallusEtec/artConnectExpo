@@ -9,7 +9,6 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 export default function Search() {
   const search = useSearch();
-
   return (
     <View style={styles.container}>
       <SearchBar

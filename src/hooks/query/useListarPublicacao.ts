@@ -2,7 +2,7 @@ import PublicacaoService from "@/services/PublicacaoService";
 import { useQuery } from "@tanstack/react-query";
 
 export function useListarPublicacao() {
-  const qury = useQuery({
+  const query = useQuery({
     queryKey: ["feed"],
     queryFn: () => PublicacaoService.listar(),
     staleTime: Infinity,
@@ -10,6 +10,7 @@ export function useListarPublicacao() {
     refetchOnMount: false,
   });
   return {
-    ...qury,
+    ...query,
+    data: query?.data,
   };
 }

@@ -16,7 +16,7 @@ interface CriarPublicacaoDTO {
 export default class PublicacaoService {
   static async listar(): Promise<PublicacaoPagedResponse> {
     const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
-    return response.json();
+    return await response.json();
   }
 
   static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
