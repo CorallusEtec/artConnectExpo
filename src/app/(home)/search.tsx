@@ -9,7 +9,6 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 export default function Search() {
   const search = useSearch();
-
   return (
     <View style={styles.container}>
       <SearchBar
@@ -18,16 +17,12 @@ export default function Search() {
         onFilterPress={() => search.setModalFiltroVisivel(true)}
       />
 
-      <ScopeTabs
-        escopo={search.escopo}
-        onChange={search.setEscopo}
-      />
+      <ScopeTabs escopo={search.escopo} onChange={search.setEscopo} />
       <Button
         mode="contained"
         style={styles.button}
-        buttonColor="#0B31A3" 
+        buttonColor="#0B31A3"
         textColor="#FFF"
-        onPress={search.executarBusca}
       >
         Buscar
       </Button>
@@ -42,9 +37,10 @@ export default function Search() {
       {!search.pesquisaRealizada && <EmptyState />}
 
       <FilterModal
+        executarBusca={() => console.log("Oi")}
         visible={search.modalFiltroVisivel}
         onClose={() => search.setModalFiltroVisivel(false)}
-        {...search} 
+        {...search}
       />
     </View>
   );

@@ -3,10 +3,10 @@ import { StyleSheet } from "react-native";
 export const style = StyleSheet.create({
   // views principais
   container: {
+    paddingTop: 50,
+    backgroundColor: "#ffffff",
     flex: 1,
-    backgroundColor: "white",
     gap: 10,
-    paddingTop: 120
   },
   view1: {
     gap: 20,
@@ -15,31 +15,31 @@ export const style = StyleSheet.create({
 
   // linha divisão
   linhaOuWrapper: {
-    flexDirection: 'row', 
-    width: '100%', 
-    padding: 10, 
-    alignItems: 'center', 
-    justifyContent: 'center'
+    flexDirection: "row",
+    width: "100%",
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   linhaOu: {
-    width: '40%',
+    width: "40%",
     height: 1,
-    backgroundColor: '#9b9b9b'
+    backgroundColor: "#9b9b9b",
   },
 
   // inputs
   inputWrapper: {
-    width: '85%'
+    width: "85%",
   },
 
   // tamanho pros textos sem detalhes especificos
   textoPadrão: {
-    fontSize: 15
+    fontSize: 15,
   },
   titulo: {
-    fontSize: 24
+    fontSize: 24,
   },
   textoDetalhe: {
-    fontSize: 13
-  }
+    fontSize: 13,
+  },
 });

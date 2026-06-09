@@ -1,5 +1,15 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
+
+const client = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // Minutos
+    },
+  },
+});
+
 export default function RootLayout() {
   const theme = {
     ...MD3LightTheme,
@@ -7,22 +17,31 @@ export default function RootLayout() {
       ...MD3LightTheme.colors,
     },
   };
-
   // LOGICA DE PROTEÇÃO DAS ROTAS DE LOGIN E HOME
-  // SE EXISTE NO ASYNC STORAGE, LIBERA (home) E DESATIVA (public)
-  // SE NÃO ATIVA (public) PARA LOGIN OU CADASTRO E DESATIVA (home)
+  // SE EXISTE NO ASYNC STORAGE, LIBERA (home) E DESATIVA /login
+  // SE NÃO, ATIVA /login E DESATIVA (home)
 
-  const existsAccount = true;
+  const existsAccount = { exists: true };
+
   return (
-    <PaperProvider theme={theme}>
-      <Stack screenOptions={{ headerShown: false   }}>
-        <Stack.Protected guard={existsAccount}>
-          <Stack.Screen name="(home)" />
-        </Stack.Protected>
-        <Stack.Protected guard={!existsAccount}>
-          <Stack.Screen name="(public)" />
-        </Stack.Protected>
-      </Stack>
-    </PaperProvider>
+    <QueryClientProvider client={client}>
+      <PaperProvider theme={theme}>
+        <Stack
+          screenOptions={{
+            statusBarHidden: true,
+            headerTitle: "",
+            headerTransparent: true,
+            headerBackButtonDisplayMode: "minimal",
+          }}
+        >
+          <Stack.Protected guard={existsAccount.exists}>
+            <Stack.Screen name="(home)" />
+          </Stack.Protected>
+          <Stack.Protected guard={!existsAccount.exists}>
+            <Stack.Screen name="(public)" />
+          </Stack.Protected>
+        </Stack>
+      </PaperProvider>
+    </QueryClientProvider>
   );
 }

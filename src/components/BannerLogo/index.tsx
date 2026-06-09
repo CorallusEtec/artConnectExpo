@@ -9,14 +9,14 @@ import { style } from "./style";
 
 export type BannerLogoProps = {
   /**
-   * Valor em porcentagem do tamanho
+   * Valor do tamanho do banner
    */
   size?: DimensionValue;
 };
-export function BannerLogo({ size = "5%" }: BannerLogoProps) {
+export function BannerLogo({ size = 70 }: BannerLogoProps) {
   return (
     <Image
-      style={[style.banner, { maxHeight: size }]}
+      style={[style.banner, { height: size }]}
       source={require("@/assets/images/banner.png")}
     />
   );

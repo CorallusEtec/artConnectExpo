@@ -1,47 +1,56 @@
 import { Header } from "@/components/Header";
 import { FontAwesome } from "@expo/vector-icons";
+import * as NavigationBar from "expo-navigation-bar";
 import { Tabs } from "expo-router";
+import { memo } from "react";
 import {
   StatusBar,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
 
+const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
+  return <FontAwesome name={name} color={color} size={20} />;
+});
+
+// LÓGICA PARA SABER SE ESTÁ AUTENTICADO
+// SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
+// LIBERA TODAS AS ROTAS
+// SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
+const guest = true;
+
+// Esconder barra de gestos do android
+
 export default function HomeLayout() {
-  // LÓGICA PARA SABER SE ESTÁ AUTENTICADO
-  // SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
-  // LIBERA TODAS AS ROTAS
-  // SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
-  const guest = false;
+  NavigationBar.setBehaviorAsync("overlay-swipe");
+  NavigationBar.setVisibilityAsync("hidden");
   return (
     <>
       <StatusBar hidden />
       <Tabs
-        initialRouteName="home"
+        detachInactiveScreens={true}
+        initialRouteName="index"
         backBehavior="initialRoute"
         screenOptions={{
           header: () => <Header />,
+          lazy: true,
           tabBarButton: (props) => (
             <TouchableOpacity {...(props as TouchableOpacityProps)} />
           ),
         }}
       >
         <Tabs.Screen
-          name="home"
+          name="index"
           options={{
             title: "Home",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="home" size={20} color={color} />
-            ),
+            tabBarIcon: ({ color }) => <TabIcon name="home" color={color} />,
           }}
         />
         <Tabs.Screen
           name="search"
           options={{
             title: "Pesquisar",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="search" size={20} color={color} />
-            ),
+            tabBarIcon: ({ color }) => <TabIcon name="search" color={color} />,
           }}
         />
 
@@ -50,18 +59,14 @@ export default function HomeLayout() {
             name="(private)/create"
             options={{
               title: "Criar",
-              tabBarIcon: ({ color }) => (
-                <FontAwesome name="plus" size={20} color={color} />
-              ),
+              tabBarIcon: ({ color }) => <TabIcon name="plus" color={color} />,
             }}
           />
           <Tabs.Screen
             name="(private)/notify"
             options={{
               title: "Notificações",
-              tabBarIcon: ({ color }) => (
-                <FontAwesome name="bell" size={20} color={color} />
-              ),
+              tabBarIcon: ({ color }) => <TabIcon name="bell" color={color} />,
             }}
           />
           <Tabs.Screen
@@ -69,9 +74,7 @@ export default function HomeLayout() {
             options={{
               headerShown: false,
               title: "Perfil",
-              tabBarIcon: ({ color }) => (
-                <FontAwesome name="user" size={20} color={color} />
-              ),
+              tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
             }}
           />
         </Tabs.Protected>

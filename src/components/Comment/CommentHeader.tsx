@@ -1,4 +1,4 @@
-import { AppUtils } from "@/services/AppUtils";
+import { AppUtils } from "@/utils/AppUtils";
 import { ReactNode } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { useCommentContext } from "./CommentContext";

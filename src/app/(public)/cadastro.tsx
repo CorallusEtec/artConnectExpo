@@ -2,25 +2,19 @@ import { BannerLogo } from "@/components/BannerLogo";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
-import ArtistaService from "@/services/ArtistaService";
-import { AuthService } from "@/services/AuthService";
 import { gStyles } from "@/style/gStyle";
-import { style } from "@/style/pages/(cadastro)/cadastro";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { style } from "@/style/pages/cadastro";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Cadastro() {
-  const [erro, setErro] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
 
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: "Masculino", value: "m" },
@@ -29,145 +23,73 @@ export default function Cadastro() {
     { label: "Prefiro não informar", value: "" },
   ]);
 
-  const handleCadastro = async () => {
-    try {
-      const body = {
-        nome,
-        email,
-        senha,
-        confirmaSenha,
-      };
-      const validacao = ArtistaService.validarCadastro(body);
-
-      if (!validacao.valido) {
-        setErro(validacao.mensagem);
-        return;
-      }
-      await AuthService.register({
-        email,
-        nome,
-        senha,
-        tipoConta: "ARTISTA",
-      });
-      router.navigate("/login");
-    } catch (err) {
-      console.log("Erro cadastro: ", err);
-    }
-  };
-
   return (
     <SafeAreaView style={style.container}>
-      <BannerLogo size={'8%'}/>
-      
+      <BannerLogo />
+
       <View>
         <View style={style.titleContainer}>
           <Text style={style.titulo}> Cadastre-se </Text>
         </View>
-        {erro ? (
-          <Text style={{ color: "red", textAlign: "center" }}>{erro}</Text>
-        ) : null}
 
         <ScrollView>
-          <View style={{ gap: 20 }}>
-            <View style={[style.inputContainer, open && { marginBottom: 100 }]}>
-              <View style={style.inputWrapper}>
-                <InputIcon
-                  label="Nome"
-                  placeholder="Digite seu nome"
-                  onChangeText={setNome}
-                  value={nome}
-                  icon="account-outline"
-                />
-              </View>
-
-              <View style={style.inputWrapper}>
-                <InputIcon
-                  label="Email"
-                  placeholder="Digite seu email"
-                  onChangeText={setEmail}
-                  value={email}
-                  icon="email-outline"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              </View>
-
-              <View style={style.inputWrapper}>
-                <InputSenha
-                  label="Senha"
-                  placeholder="Crie sua senha"
-                  onChangeText={setSenha}
-                  value={senha}
-                />
-              </View>
-
-              <View style={style.inputWrapper}>
-                <InputSenha
-                  label="Confirmar Senha"
-                  placeholder="Digite a senha novamente"
-                  onChangeText={setConfirmaSenha}
-                  value={confirmaSenha}
-                />
-              </View>
-
-              <View>
-                <Text style={style.label}> Selecione seu gênero </Text>
-
-                <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  listMode="SCROLLVIEW"
-                  style={style.picker}
-                  maxHeight={100}
-                  placeholder="Selecione um gênero"
-                  dropDownContainerStyle={{
-                    width: "100%",
-                    backgroundColor: gStyles.cinza[200],
-                    borderColor: gStyles.cinza[200],
-                  }}
-                />
-              </View>
+          <View style={style.inputContainer}>
+            <View style={style.inputGroup}>
+              <InputIcon
+                label="Nome"
+                placeholder="Digite seu nome"
+                onChangeText={setNome}
+                value={nome}
+                icon="account-outline"
+              />
+              <InputIcon
+                label="Email"
+                placeholder="Digite seu email"
+                onChangeText={setEmail}
+                value={email}
+                icon="email-outline"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <InputSenha
+                label="Senha"
+                placeholder="Crie sua senha"
+                onChangeText={setSenha}
+                value={senha}
+              />
+              <InputSenha
+                label="Confirmar Senha"
+                placeholder="Digite a senha novamente"
+                onChangeText={setConfirmaSenha}
+                value={confirmaSenha}
+              />
             </View>
-
-            {/* botoes */}
-            <View style={style.btnContainer}>
-              <View style={style.btnWrapper}>
-                <TextButton
-                  variant="primary"
-                  title="Cadastrar"
-                  onPress={handleCadastro}
-                />
-              </View>
-
-              <View style={style.btnWrapper}>
-                <TextButton
-                  variant="secondary"
-                  title="Já tenho login"
-                  onPress={() => router.navigate("/login")}
-                />
-              </View>
+          </View>
+          {/* botoes */}
+          <View style={style.btnContainer}>
+            <View style={style.btnGroup}>
+              <TextButton variant="primary" title="Cadastrar" />
+              <TextButton
+                variant="secondary"
+                title="Já tenho login"
+                onPress={() => router.navigate("/login")}
+              />
             </View>
-            <View
-              style={{ alignItems: "center", marginTop: 10, marginBottom: 20 }}
-            >
-              <Pressable
-                onPress={() => router.navigate("/cadastro/contratante")}
+          </View>
+          <View
+            style={{ alignItems: "center", marginTop: 10, marginBottom: 20 }}
+          >
+            <Pressable onPress={() => router.navigate("/cadastro/contratante")}>
+              <Text
+                style={{
+                  color: gStyles.azul[200],
+                  fontWeight: "600",
+                  fontSize: 14,
+                }}
               >
-                <Text
-                  style={{
-                    color: gStyles.azul[200],
-                    fontWeight: "600",
-                    fontSize: 14,
-                  }}
-                >
-                  Deseja cadastrar como Contratante? Clique aqui
-                </Text>
-              </Pressable>
-            </View>
+                Deseja cadastrar como Contratante? Clique aqui
+              </Text>
+            </Pressable>
           </View>
         </ScrollView>
       </View>
