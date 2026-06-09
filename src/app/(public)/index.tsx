@@ -1,24 +1,51 @@
 import { style } from "@/style/pages/login";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AlertMessage } from "@/components/AlertMessage";
 import { BannerLogo } from "@/components/BannerLogo";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
-import { TextButton } from "@/components/TextButton";
+import { useLoginMutate } from "@/hooks/useLoginMutate";
+import { schema } from "@/schemas/loginSchema";
 import { Button, Checkbox } from "react-native-paper";
-
 export default function Login() {
   const [checked, setChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
+  const errorMessage = useRef("");
+  const [showAlert, setShowAlert] = useState(false);
+  const { mutate, isPending, isError, error, isSuccess, data } =
+    useLoginMutate();
+  function login() {
+    const result = schema.safeParse({ email, senha });
+    // Validando campos
+    if (!result.success) {
+      errorMessage.current = result.error?.issues[0].message;
+      setShowAlert(true);
+      // Mandando requisição
+    } else {
+      mutate({ email, senha });
+      if (isError) {
+        errorMessage.current = error.message;
+        setShowAlert(true);
+      }
+    }
+  }
+
   return (
     <SafeAreaView style={style.container}>
-      <BannerLogo />
+      <AlertMessage
+        text={errorMessage.current}
+        visible={showAlert}
+        onDismiss={() => setShowAlert(false)}
+      />
 
+      <BannerLogo />
+      {isSuccess && <Text>logado</Text>}
       {/* resto da página */}
       <View style={style.view1}>
         <Text style={[style.titulo, { fontWeight: 500 }]}>Login</Text>
@@ -59,17 +86,16 @@ export default function Login() {
           </Pressable>
         </View>
 
-        <TextButton
-          variant="primary"
-          title="Login"
-          // inline
-          style={{
-            width: "85%",
-            height: "10%",
-            justifyContent: "center",
-            backgroundColor: "#2563eb",
-          }}
-        />
+        <View style={style.inputWrapper}>
+          <Button
+            mode="contained"
+            disabled={isPending}
+            loading={isPending}
+            onPress={() => login()}
+          >
+            Login
+          </Button>
+        </View>
 
         <View style={style.linhaOuWrapper}>
           <View style={style.linhaOu} />

@@ -1,6 +1,31 @@
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
+import { ActivityIndicator } from "react-native";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
+
+function NavigationLayout() {
+  const { isLoading, token } = useAuth();
+
+  if (isLoading) return <ActivityIndicator />;
+  return (
+    <Stack
+      screenOptions={{
+        statusBarHidden: true,
+        headerTitle: "",
+        headerTransparent: true,
+        headerBackButtonDisplayMode: "minimal",
+      }}
+    >
+      <Stack.Protected guard={token != null}>
+        <Stack.Screen name="(home)" />
+      </Stack.Protected>
+      <Stack.Protected guard={token == null}>
+        <Stack.Screen name="(public)" />
+      </Stack.Protected>
+    </Stack>
+  );
+}
 
 const client = new QueryClient({
   defaultOptions: {
@@ -21,27 +46,13 @@ export default function RootLayout() {
   // SE EXISTE NO ASYNC STORAGE, LIBERA (home) E DESATIVA /login
   // SE NÃO, ATIVA /login E DESATIVA (home)
 
-  const existsAccount = { exists: true };
-
   return (
-    <QueryClientProvider client={client}>
-      <PaperProvider theme={theme}>
-        <Stack
-          screenOptions={{
-            statusBarHidden: true,
-            headerTitle: "",
-            headerTransparent: true,
-            headerBackButtonDisplayMode: "minimal",
-          }}
-        >
-          <Stack.Protected guard={existsAccount.exists}>
-            <Stack.Screen name="(home)" />
-          </Stack.Protected>
-          <Stack.Protected guard={!existsAccount.exists}>
-            <Stack.Screen name="(public)" />
-          </Stack.Protected>
-        </Stack>
-      </PaperProvider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={client}>
+        <PaperProvider theme={theme}>
+          <NavigationLayout />
+        </PaperProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }
