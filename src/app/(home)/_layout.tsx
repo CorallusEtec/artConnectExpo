@@ -1,26 +1,28 @@
 import { Header } from "@/components/Header";
 import { FontAwesome } from "@expo/vector-icons";
+import * as NavigationBar from "expo-navigation-bar";
 import { Tabs } from "expo-router";
-import {
-  StatusBar,
-  TouchableOpacity,
-  TouchableOpacityProps,
-} from "react-native";
+import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+
+// LÓGICA PARA SABER SE ESTÁ AUTENTICADO
+// SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
+// LIBERA TODAS AS ROTAS
+// SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
+const guest = true;
+
+// Esconder barra de gestos do android
+NavigationBar.setVisibilityAsync("hidden");
+NavigationBar.setBehaviorAsync("overlay-swipe");
 
 export default function HomeLayout() {
-  // LÓGICA PARA SABER SE ESTÁ AUTENTICADO
-  // SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
-  // LIBERA TODAS AS ROTAS
-  // SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
-  const guest = false;
   return (
     <>
-      <StatusBar hidden />
       <Tabs
         initialRouteName="home"
         backBehavior="initialRoute"
         screenOptions={{
           header: () => <Header />,
+
           tabBarButton: (props) => (
             <TouchableOpacity {...(props as TouchableOpacityProps)} />
           ),

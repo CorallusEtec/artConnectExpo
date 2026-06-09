@@ -1,5 +1,5 @@
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
-import PublicacaoService from "@/services/PublicacoesService";
+import PublicacaoService from "@/services/PublicacaoService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/create";
 import { FontAwesome6 } from "@expo/vector-icons";

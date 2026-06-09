@@ -1,4 +1,3 @@
-import { gStyles } from "@/style/gStyle";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
@@ -36,22 +35,13 @@ export const style = StyleSheet.create({
 
   // relacionado aos botões
   btnContainer: {
-    gap: 15,
+    marginTop: 20,
+    marginBottom: 20,
     alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
   },
 
-  btnWrapper: {
-    width: "45%",
-    gap: 5,
-  },
-
-  // relacionado ao picker
-  picker: {
-    width: "100%",
-    fontSize: 15,
-    borderRadius: 7,
-    borderColor: gStyles.cinza[200],
+  btnGroup: {
+    width: "80%",
+    gap: 20,
   },
 });

@@ -10,13 +10,11 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Cadastro() {
-  const [erro, setErro] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
 
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: "Masculino", value: "m" },
@@ -69,11 +67,8 @@ export default function Cadastro() {
           </View>
           {/* botoes */}
           <View style={style.btnContainer}>
-            <View style={style.btnWrapper}>
+            <View style={style.btnGroup}>
               <TextButton variant="primary" title="Cadastrar" />
-            </View>
-
-            <View style={style.btnWrapper}>
               <TextButton
                 variant="secondary"
                 title="Já tenho login"

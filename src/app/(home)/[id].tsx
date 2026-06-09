@@ -1,4 +1,4 @@
-import PublicacoesService from "@/services/PublicacoesService";
+import PublicacoesService from "@/services/PublicacaoService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/[id]";
@@ -8,12 +8,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  Image,
-  Linking,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    Linking,
+    Pressable,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 interface Contato {

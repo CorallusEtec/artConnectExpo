@@ -1,5 +1,5 @@
 import { usePublicacaoData } from "@/contexts/PublicacaoContext";
-import { AppUtils } from "@/services/AppUtils";
+import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Text, View } from "react-native";

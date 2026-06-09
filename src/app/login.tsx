@@ -1,5 +1,4 @@
 import { style } from "@/style/pages/login";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -9,42 +8,12 @@ import { BannerLogo } from "@/components/BannerLogo";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
 import { TextButton } from "@/components/TextButton";
-import { AuthService } from "@/services/AuthService";
-import LoginService from "@/services/LoginService";
-import UsuarioService from "@/services/UsuarioService";
-import { useAuthStore } from "@/store";
-import { Checkbox } from "react-native-paper";
+import { Button, Checkbox } from "react-native-paper";
 
 export default function Login() {
   const [checked, setChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const { setUsuario } = useAuthStore();
-
-  async function logar() {
-    try {
-      const validacao = LoginService.validarLogin({ email, senha });
-
-      if (!validacao.valido) {
-        setErro(validacao.mensagem);
-        return;
-      }
-
-      const data = await AuthService.login({ email, senha });
-      const id = data.id;
-      const responseUsuario = await UsuarioService.findById(id);
-      const usuario: any = await responseUsuario.json();
-
-      setUsuario(usuario);
-
-      await AsyncStorage.setItem("@artconnect:token", JSON.stringify(data));
-
-      router.replace("/home");
-    } catch (erro: any) {
-      setErro(erro.message);
-    }
-  }
 
   return (
     <SafeAreaView style={style.container}>
@@ -93,7 +62,6 @@ export default function Login() {
         <TextButton
           variant="primary"
           title="Login"
-          onPress={logar}
           // inline
           style={{
             width: "85%",
@@ -109,23 +77,13 @@ export default function Login() {
           <View style={style.linhaOu} />
         </View>
 
-        <Pressable
-          // inline
-          style={({ pressed }) => ({
-            width: "85%",
-            height: "10%",
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#c6c6c6",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: pressed ? "#f3f4f6" : "#ffffff",
-          })}
+        <Button
+          onPress={() => router.navigate("/home")}
+          mode="outlined"
+          style={{ width: "80%", borderRadius: 12, borderColor: "#c6c6c6" }}
         >
-          <Text style={[style.textoPadrão, { color: "#374151" }]}>
-            Continuar sem login
-          </Text>
-        </Pressable>
+          Continuar sem Login
+        </Button>
 
         <Pressable onPress={() => router.navigate("/cadastro")}>
           <Text

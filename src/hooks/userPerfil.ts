@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
-import PublicacoesService from "@/services/PublicacoesService";
+import PublicacoesService from "@/services/PublicacaoService";
 import UsuarioService from "@/services/UsuarioService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 
 export function usePerfil() {
   const [usuario, setUsuario] = useState<UsuarioResponse>();
@@ -18,7 +18,6 @@ export function usePerfil() {
 
         const tk = await AsyncStorage.getItem("@artconnect:token");
 
-  
         if (tk) {
           const tokenParse: AuthLoginResponse = JSON.parse(tk);
 
@@ -44,7 +43,6 @@ export function usePerfil() {
     }
     carregar();
   }, []);
-
 
   return { usuario, publicacoes, loading };
 }

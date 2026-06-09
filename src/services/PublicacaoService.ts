@@ -13,16 +13,10 @@ interface CriarPublicacaoDTO {
   autorId: number;
 }
 
-export default class PublicacoesService {
-  static async findAll(): Promise<undefined| PublicacaoPagedResponse> {
-      try {
-        const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
-        return await response.json();
-      } catch(e) {
-        if(e instanceof Error) {
-          return undefined;
-        }
-      }
+export default class PublicacaoService {
+  static async listar(): Promise<PublicacaoPagedResponse> {
+    const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
+    return response.json();
   }
 
   static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
@@ -76,7 +70,14 @@ export default class PublicacoesService {
     }
   }
 
-  static async listar(params?: any): Promise<PublicacaoResponse[]> {
+  /**
+   * Função anterior de listar
+   * @deprecated Use {@link listar()} como alternativa
+   *
+   * @param params Request Params da url
+   * @returns Lista de publicações
+   */
+  static async listarAntigo(params?: any): Promise<PublicacaoResponse[]> {
     try {
       const queryParams = new URLSearchParams();
 

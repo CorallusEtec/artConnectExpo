@@ -1,9 +1,7 @@
-import { useQuery } from "@/hooks/useQuery";
 import config from "./config";
 
 export class UsuarioService {
   async listar(params?: any) {
-
     const queryParams = new URLSearchParams();
 
     if (params?.nome) {
@@ -11,10 +9,7 @@ export class UsuarioService {
     }
 
     if (params?.tipoConta) {
-      queryParams.append(
-        "tipoConta",
-        params.tipoConta
-      );
+      queryParams.append("tipoConta", params.tipoConta);
     }
 
     if (params?.cidade) {
@@ -26,25 +21,11 @@ export class UsuarioService {
     }
 
     const response = await fetch(
-      `${config.apiUrl}/usuario/findAll?${
-        queryParams.toString()
-      }`
+      `${config.apiUrl}/usuario/findAll?${queryParams.toString()}`,
     );
 
     if (!response.ok) {
-      throw new Error(
-        "Erro ao buscar usuários"
-      );
-    }
-
-    return await response.json();
-  }
-
-  async findById(id: number): Promise<any> {
-    const response = await useQuery({url: `${config.apiUrl}/usuario/${id}`})
-
-    if(!response.ok) {
-      return response.status;
+      throw new Error("Erro ao buscar usuários");
     }
 
     return await response.json();

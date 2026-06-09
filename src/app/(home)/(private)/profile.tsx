@@ -1,8 +1,6 @@
-import { Post } from "@/components/Post";
-import { Reacao } from "@/components/Reacao";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/profile";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
@@ -125,40 +123,7 @@ export default function Perfil() {
         <FlatList
           data={publicacoes}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <Post.root>
-              <Post.header
-                nomePerfil={item.autor?.nome ?? "Usuário"}
-                dataPublicacao={new Date(item.dataPublicacao)}
-              >
-                <Post.headerActions>
-                  <Button mode="text" compact>
-                    Seguir
-                  </Button>
-                </Post.headerActions>
-              </Post.header>
-
-              <Post.legend data={item.legenda} />
-              {item.urlMidia && <Post.image url={item.urlMidia} />}
-
-              <Post.actions>
-                <Reacao insight={0}>
-                  <FontAwesome
-                    name="heart-o"
-                    size={24}
-                    color={gStyles.vermelho[400]}
-                  />
-                </Reacao>
-                <Reacao insight={0}>
-                  <Feather
-                    name="message-circle"
-                    size={24}
-                    color={gStyles.cinza[600]}
-                  />
-                </Reacao>
-              </Post.actions>
-            </Post.root>
-          )}
+          renderItem={({ item }) => <></>}
         />
       </View>
     </View>

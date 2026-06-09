@@ -1,6 +1,4 @@
 import { FiltrosState } from "@/components/Search/types";
-import PublicacoesService from "@/services/PublicacoesService";
-import UsuarioService from "@/services/UsuarioService";
 import { useState } from "react";
 
 type Escopo = "artista" | "publicacao";
@@ -24,7 +22,7 @@ export function useSearch() {
     dataFim: "",
   });
 
-  async function executarBusca() {
+  /*async function executarBusca() {
     try {
       setLoad(true);
       setPesquisaRealizada(true);
@@ -39,7 +37,7 @@ export function useSearch() {
 
         setUsuarios(response);
       } else {
-        const response = await PublicacoesService.listar({
+        const response = await PublicacoesService.listarAntigo({
           legenda: filtros.legenda || pesquisaPrincipal,
           nomeAutor: filtros.nomeAutor,
           dataInicio: filtros.dataInicio,
@@ -53,7 +51,7 @@ export function useSearch() {
     } finally {
       setLoad(false);
     }
-  }
+  }*/
 
   function limparTodosFiltros() {
     setFiltros({
@@ -88,7 +86,7 @@ export function useSearch() {
     filtros,
     setFiltros,
 
-    executarBusca,
+    //executarBusca,
     limparTodosFiltros,
   };
 }
