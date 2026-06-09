@@ -3,9 +3,9 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
+    paddingTop: 50,
     flex: 1,
     gap: 35,
-    paddingTop: 120,
     backgroundColor: "white",
     height: "100%",
   },
@@ -16,23 +16,21 @@ export const style = StyleSheet.create({
   },
 
   titulo: {
-    fontSize: 25,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: "medium",
   },
 
-  // relacionado aos inputs
   inputContainer: {
-    gap: 17,
     alignItems: "center",
   },
-
-  inputWrapper: {
+  // relacionado aos inputs
+  inputGroup: {
     width: "80%",
-    gap: 5,
+    gap: 10,
   },
 
   label: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: "500",
   },
 
@@ -54,7 +52,6 @@ export const style = StyleSheet.create({
     width: "100%",
     fontSize: 15,
     borderRadius: 7,
-    backgroundColor: gStyles.cinza[200],
     borderColor: gStyles.cinza[200],
   },
 });

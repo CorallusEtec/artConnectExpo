@@ -1,6 +1,6 @@
 import { TextButton } from "@/components/TextButton";
 import { gStyles } from "@/style/gStyle";
-import { style } from "@/style/pages/(cadastro)/tipoArte";
+import { style } from "@/style/pages/tipoArte";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -82,7 +82,6 @@ export default function tipoArte() {
       <View style={style.btnContainer}>
         <View style={style.btnWrapper}>
           <TextButton
-            theme="primary"
             title="Criar conta"
             onPress={() => router.navigate("/login")}
           />

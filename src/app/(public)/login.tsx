@@ -22,8 +22,6 @@ export default function Login() {
   const [erro, setErro] = useState("");
   const { setUsuario } = useAuthStore();
 
-  const hasPreviousPage = router.canGoBack();
-
   async function logar() {
     try {
       const validacao = LoginService.validarLogin({ email, senha });
@@ -50,11 +48,11 @@ export default function Login() {
 
   return (
     <SafeAreaView style={style.container}>
-          <BannerLogo size={'8%'}/>
+      <BannerLogo />
 
       {/* resto da página */}
       <View style={style.view1}>
-        <Text style={[style.titulo, {fontWeight: 500}]}>Login</Text>
+        <Text style={[style.titulo, { fontWeight: 500 }]}>Login</Text>
 
         <View style={style.inputWrapper}>
           <InputIcon
@@ -107,12 +105,12 @@ export default function Login() {
 
         <View style={style.linhaOuWrapper}>
           <View style={style.linhaOu} />
-          <Text style={[style.textoDetalhe, {color:'#9b9b9b'}]}> ou </Text>
+          <Text style={[style.textoDetalhe, { color: "#9b9b9b" }]}> ou </Text>
           <View style={style.linhaOu} />
         </View>
- 
+
         <Pressable
-        // inline
+          // inline
           style={({ pressed }) => ({
             width: "85%",
             height: "10%",
@@ -124,23 +122,24 @@ export default function Login() {
             backgroundColor: pressed ? "#f3f4f6" : "#ffffff",
           })}
         >
-          <Text style={[style.textoPadrão, {color: "#374151" }]}>
+          <Text style={[style.textoPadrão, { color: "#374151" }]}>
             Continuar sem login
           </Text>
         </Pressable>
- 
+
         <Pressable onPress={() => router.navigate("/cadastro")}>
           <Text
-            style={[style.textoPadrão, 
-            {
-              color: "#374151",
-              textDecorationLine: "underline",
-            }]}
+            style={[
+              style.textoPadrão,
+              {
+                color: "#374151",
+                textDecorationLine: "underline",
+              },
+            ]}
           >
             Criar uma Conta
           </Text>
         </Pressable>
-
       </View>
     </SafeAreaView>
   );

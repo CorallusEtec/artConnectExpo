@@ -12,10 +12,18 @@ export default function RootLayout() {
   // SE EXISTE NO ASYNC STORAGE, LIBERA (home) E DESATIVA (public)
   // SE NÃO ATIVA (public) PARA LOGIN OU CADASTRO E DESATIVA (home)
 
-  const existsAccount = true;
+  const existsAccount = false;
   return (
     <PaperProvider theme={theme}>
-      <Stack screenOptions={{ headerShown: false   }}>
+      <Stack
+        screenOptions={{
+          statusBarStyle: "inverted",
+          headerTitle: "",
+          headerTransparent: true,
+          headerBackButtonDisplayMode: "minimal",
+          contentStyle: { marginBottom: 50 },
+        }}
+      >
         <Stack.Protected guard={existsAccount}>
           <Stack.Screen name="(home)" />
         </Stack.Protected>

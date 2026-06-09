@@ -9,7 +9,6 @@ import { StyleSheet } from "react-native";
 export const style = StyleSheet.create({
   banner: {
     width: "100%",
-    aspectRatio: 16 / 9,
     resizeMode: "contain",
   },
 });

@@ -1,4 +1,3 @@
-import ErrorBoundary from "@/components/ErrorBoundary";
 import { Publicacao } from "@/components/Publicacao";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import PublicacoesService from "@/services/PublicacoesService";
@@ -11,10 +10,9 @@ const publicacoesPromise = PublicacoesService.findAll();
 export default function Home() {
   const publicacoaData = use(publicacoesPromise);
 
-  console.log(publicacoaData)
+  console.log(publicacoaData);
   return (
     <View style={style.container}>
-      <ErrorBoundary>
       <Suspense fallback={<ActivityIndicator />}>
         <FlatList
           contentContainerStyle={style.listaContainer}
@@ -27,7 +25,6 @@ export default function Home() {
           )}
         />
       </Suspense>
-      </ErrorBoundary>
     </View>
   );
 }
