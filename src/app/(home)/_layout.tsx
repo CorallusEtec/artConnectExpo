@@ -12,7 +12,7 @@ export default function HomeLayout() {
   // SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
   // LIBERA TODAS AS ROTAS
   // SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
-  const guest = true;
+  const guest = false;
   return (
     <>
       <StatusBar hidden />
