@@ -2,7 +2,6 @@ import React from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import { Appbar, Avatar, Button, Text, TouchableRipple } from "react-native-paper";
 import { router } from "expo-router";
-
 import { Post } from "@/components/Post";
 import { Reacao } from "@/components/Reacao";
 import { gStyles } from "@/style/gStyle";
@@ -31,7 +30,7 @@ export default function Perfil() {
         <Appbar.Action icon="menu" color="white" size={30} onPress={() => {}} />
       </Appbar.Header>
 
-      {/* Painel de Informações do Usuário */}
+      {/* ppainel de Informações do usuário */}
       <View style={style.fundo}>
         <View style={style.headerRow}>
           <View style={style.profile}>
