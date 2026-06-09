@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Text, Avatar } from "react-native-paper";
-import { style } from "./card.style";
+import { style } from "./style";
 
 interface UserCardProps {
   nome: string;

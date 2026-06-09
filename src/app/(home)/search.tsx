@@ -1,13 +1,12 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Button } from "react-native-paper";
-import SearchBar from "@/components/Search/SearchBar";
-import ScopeTabs from "@/components/Search/ScopeTabs";
-import SearchResult from "@/components/Search/SearchResult";
 import EmptyState from "@/components/Search/EmptyState";
-import FilterModal from "@/components/Search/FIlterModal"; 
-import userCard from "@/components/Search/userCard"; 
+import FilterModal from "@/components/Search/FilterModal";
+import ScopeTabs from "@/components/Search/ScopeTabs";
+import SearchBar from "@/components/Search/SearchBar";
+import SearchResult from "@/components/Search/SearchResult";
 import { useSearch } from "@/hooks/useSearch";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
 export default function Search() {
   const search = useSearch();
 
