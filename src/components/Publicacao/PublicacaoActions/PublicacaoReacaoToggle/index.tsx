@@ -10,11 +10,17 @@ import { style } from "../style";
  * Props do componente
  */
 export type PublicacaoReacaoToggleProps = {
+  /** Indice da curtida no array de reações do back-end */
   index?: number;
   key?: number;
   /** T */
   tipoReacao: TipoReacao;
   /** Carrega os icones com os estados reagido e não reagido da reação */
+};
+
+const reacaoStateIcons = {
+  LIKE: { on: "thumb-up", off: "thumb-up-outline" },
+  DISLIKE: { on: "thumb-down", off: "thumb-down-outline" },
 };
 
 /**
@@ -25,6 +31,7 @@ export function PublicacaoReacaoToggle({
   tipoReacao,
   index,
 }: PublicacaoReacaoToggleProps) {
+  // Contexto
   const { data, setData } = usePublicacaoData();
   /** Estado que carrega o total da reacao*/
   const insight = useRef(data.reacoes[index].total);
@@ -44,7 +51,9 @@ export function PublicacaoReacaoToggle({
     <View style={style.actionContainer}>
       <IconButton
         icon={
-          tipoReacao == data.reacaoUsuario ? "thumb-down" : "thumb-down-outline"
+          tipoReacao == data.reacaoUsuario
+            ? reacaoStateIcons[tipoReacao].on
+            : reacaoStateIcons[tipoReacao].off
         }
         size={ICON_SIZE}
         onPress={() => toggleReagir()}

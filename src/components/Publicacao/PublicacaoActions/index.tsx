@@ -18,7 +18,7 @@ export function PublicacaoActions() {
     <Card.Actions style={style.cardActionContainer}>
       {/* ACTIONS LEFT */}
       <View style={{ flexDirection: "row", gap: 5 }}>
-        {/* LIKE */}
+        {/* RENDERIZA AS REAÇÕES */}
         {data.reacoes.map((r, index) => (
           <PublicacaoReacaoToggle
             key={index}
