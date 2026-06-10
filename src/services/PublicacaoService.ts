@@ -32,7 +32,7 @@ export function usePublicacaoQuery() {
 /**
  * Classe que agrega as consultas diretas à API
  */
-class PublicacaoService {
+export class PublicacaoService {
   /**
    * Faz a requisição das publicações no sistema, com parâmetros de busca
    * @see http://localhost:8080/swagger-ui/index.html Documentação da API
