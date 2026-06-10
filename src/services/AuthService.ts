@@ -1,9 +1,5 @@
+import { UsuarioLoginRequest } from "@/models/response/UsuarioLoginResponse";
 import config from "./config";
-
-export interface UsuarioLoginRequest {
-  email: string;
-  senha: string;
-}
 
 export class AuthService {
   static async login(loginRequest: UsuarioLoginRequest) {

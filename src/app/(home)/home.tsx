@@ -1,7 +1,7 @@
 import { Publicacao } from "@/components/Publicacao";
 import { RetryFetch } from "@/components/RetryFetch";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
-import { usePublicacaoQuery } from "@/hooks/usePublicacaoQuery";
+import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { style } from "@/style/pages/(home)/home";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
