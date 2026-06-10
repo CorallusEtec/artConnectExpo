@@ -5,11 +5,13 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
 type AuthContextType = {
   token: AuthLoginResponse | null;
+  isAuth: boolean;
   isLoading: boolean;
   signIn: (token: AuthLoginResponse) => Promise<void>;
   signOut: () => Promise<void>;
@@ -20,6 +22,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<AuthLoginResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const isAuth = useRef(false);
 
   // Busca o token salvo ao abrir o aplicativo
   useEffect(() => {
@@ -46,7 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null); // Remove o acesso instantaneamente
   };
   return (
-    <AuthContext.Provider value={{ token, isLoading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ token, isLoading, signIn, signOut, isAuth: isAuth.current }}
+    >
       {children}
     </AuthContext.Provider>
   );

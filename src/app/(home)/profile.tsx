@@ -1,9 +1,10 @@
+import { ModalSettings } from "@/components/ModalSettings";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/profile";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import React, { useState } from "react";
+import { FlatList, View } from "react-native";
 import {
   Appbar,
   Avatar,
@@ -11,35 +12,34 @@ import {
   Text,
   TouchableRipple,
 } from "react-native-paper";
-import { usePerfil } from "../../../hooks/userPerfil";
 
 export default function Perfil() {
-  const { usuario, publicacoes, loading } = usePerfil();
-
-  if (loading) {
-    return (
-      <View style={style.loadingContainer}>
-        <ActivityIndicator size="large" color={gStyles.azul[500]} />
-      </View>
-    );
-  }
+  //const { usuario, publicacoes, loading } = usePerfil();
+  const [modal, setModal] = useState(false);
 
   return (
     <View style={style.container}>
+      {/* Modal de configurações do aplicativo */}
+      <ModalSettings modal={modal} setModal={setModal} />
+
       {/* Navbar */}
-      <Appbar.Header style={style.navbarMom} statusBarHeight={0}>
+
+      <Appbar.Header style={style.navbar} statusBarHeight={0}>
         <Appbar.Action
           icon="arrow-left"
+          size={34}
+          onPress={router.back}
+          color="white"
+        />
+        <Appbar.Action
+          onPress={() => setModal(true)}
+          icon="cog"
           color="white"
           size={30}
-          onPress={() => router.back()}
         />
-        <Appbar.Content title="" />
-        <Appbar.Action icon="send" color="white" size={25} onPress={() => {}} />
-        <Appbar.Action icon="menu" color="white" size={30} onPress={() => {}} />
       </Appbar.Header>
 
-      {/* ppainel de Informações do usuário */}
+      {/* painel de Informações do usuário */}
       <View style={style.fundo}>
         <View style={style.headerRow}>
           <View style={style.profile}>
@@ -55,7 +55,7 @@ export default function Perfil() {
                 Posts
               </Text>
               <Text variant="titleMedium" style={style.infoValue}>
-                {publicacoes.length}
+                0
               </Text>
             </View>
 
@@ -91,7 +91,7 @@ export default function Perfil() {
 
         <View style={style.bioContainer}>
           <Text variant="bodyMedium" style={style.bioText}>
-            {usuario?.textoBio ?? "Sem biografia."}
+            Sem biografia
           </Text>
         </View>
       </View>
@@ -120,11 +120,7 @@ export default function Perfil() {
 
       {/* Feed */}
       <View style={style.posts}>
-        <FlatList
-          data={publicacoes}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <></>}
-        />
+        <FlatList data={[]} renderItem={({ item }) => <></>} />
       </View>
     </View>
   );

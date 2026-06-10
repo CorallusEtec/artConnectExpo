@@ -1,7 +1,6 @@
 import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
-
 import { Tabs } from "expo-router";
 import { memo } from "react";
 import {
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
   return <FontAwesome name={name} color={color} size={20} />;
@@ -23,7 +23,7 @@ const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
 
 export default function HomeLayout() {
   const { token } = useAuth();
-
+  const insets = useSafeAreaInsets();
   return (
     <>
       <StatusBar hidden />
@@ -70,9 +70,8 @@ export default function HomeLayout() {
             }}
           />
           <Tabs.Screen
-            name="(private)/profile"
+            name="profile"
             options={{
-              headerShown: false,
               title: "Perfil",
               tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
             }}

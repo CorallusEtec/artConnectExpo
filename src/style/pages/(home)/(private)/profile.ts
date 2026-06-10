@@ -6,37 +6,32 @@ export const style = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
-
+  navbar: {
+    backgroundColor: gStyles.azul[500],
+    justifyContent: "space-between",
+  },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  navbarMom: {
-    backgroundColor: gStyles.azul[500],
-    elevation: 0,
-    shadowOpacity: 0,
-    height: 56,
-    justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   profile: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   infosProfile: {
     flexDirection: "row",
     flex: 1,
     justifyContent: "space-around",
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   infoDuo: {
@@ -47,7 +42,7 @@ export const style = StyleSheet.create({
   infoLabel: {
     textAlign: "center",
     color: "white",
-    fontWeight: '400',
+    fontWeight: "400",
   },
 
   infoValue: {
@@ -60,8 +55,7 @@ export const style = StyleSheet.create({
   botaoEdit: {
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1,
-    marginTop: -20, 
+    marginTop: -20,
     marginBottom: 6,
   },
 
@@ -71,19 +65,18 @@ export const style = StyleSheet.create({
     borderColor: "white",
     borderRadius: 20,
     minWidth: 130,
-    elevation: 2,
   },
 
   paperButtonLabel: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   fundo: {
     backgroundColor: gStyles.azul[500],
     paddingTop: 10,
-    paddingBottom: 35, 
+    paddingBottom: 35,
     paddingHorizontal: 20,
   },
 
