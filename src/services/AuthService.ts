@@ -7,6 +7,13 @@ export interface UsuarioLoginRequest {
 }
 
 export class AuthService {
+  static async loginTeste(loginRequest: UsuarioLoginRequest) {
+    return await config.axiosClient.post(
+      `${config.apiUrl}/auth/login`,
+      loginRequest,
+    );
+  }
+
   static async login(
     loginRequest: UsuarioLoginRequest,
   ): Promise<AuthLoginResponse> {
