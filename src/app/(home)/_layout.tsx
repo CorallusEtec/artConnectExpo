@@ -29,7 +29,7 @@ export default function HomeLayout() {
       <StatusBar hidden />
       <Tabs
         detachInactiveScreens={true}
-        initialRouteName="index"
+        initialRouteName="home"
         backBehavior="initialRoute"
         screenOptions={{
           header: () => <Header />,
@@ -40,7 +40,7 @@ export default function HomeLayout() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name="home"
           options={{
             title: "Home",
             tabBarIcon: ({ color }) => <TabIcon name="home" color={color} />,

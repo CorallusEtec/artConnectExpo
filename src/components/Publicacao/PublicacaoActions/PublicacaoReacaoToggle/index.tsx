@@ -11,7 +11,7 @@ import { style } from "../style";
  */
 export type PublicacaoReacaoToggleProps = {
   /** Indice da curtida no array de reações do back-end */
-  index?: number;
+  index: number;
   key?: number;
   /** T */
   tipoReacao: TipoReacao;
