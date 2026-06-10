@@ -1,18 +1,16 @@
 import { usePublicacaoData } from "@/contexts/PublicacaoContext";
-import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
 import { Text, View } from "react-native";
-import { Card, IconButton } from "react-native-paper";
-import { ICON_SIZE } from "../style";
+import { Card, IconButton, useTheme } from "react-native-paper";
+import { ComentarioSection } from "../ComentarioSection";
 import { PublicacaoReacaoToggle } from "./PublicacaoReacaoToggle";
 import { style } from "./style";
 
 type ReacaoStateType = { [chave: string]: object };
 export function PublicacaoActions() {
   const { data } = usePublicacaoData();
-  const reacaoIconStates: ReacaoStateType = {
-    LIKE: { on: "thumb-up", off: "thumb-up-outline" },
-    DISLIKE: { on: "thumb-down", off: "thumb-down-outline" },
-  };
+  const [openComments, setOpenComments] = useState(false);
+  const theme = useTheme();
 
   return (
     <Card.Actions style={style.cardActionContainer}>
@@ -29,13 +27,15 @@ export function PublicacaoActions() {
         {/* COMMENT */}
         <View style={style.actionContainer}>
           <IconButton
-            icon={() => (
-              <Feather name="message-circle" size={ICON_SIZE} color="black" />
-            )}
+            icon="message-text-outline"
+            onPress={() => setOpenComments(true)}
           />
-          <Text style={style.actionInsight}>0</Text>
+          <Text style={style.actionInsight}>{data.totalComentarios}</Text>
         </View>
       </View>
+
+      <ComentarioSection setVisible={setOpenComments} visible={openComments} />
+
       {/* ACTIONS RIGHT 
       <View>
         <IconButton icon="bookmark-outline" />
