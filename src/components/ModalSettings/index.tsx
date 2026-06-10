@@ -1,12 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { View } from "react-native";
 import {
-    IconButton,
-    Menu,
-    Modal,
-    Portal,
-    Text,
-    useTheme,
+  IconButton,
+  Menu,
+  Modal,
+  Portal,
+  Text,
+  useTheme,
 } from "react-native-paper";
 import { style } from "./style";
 
@@ -34,8 +34,16 @@ export function ModalSettings({ modal, setModal }: ModalSettings) {
         </View>
         <Menu.Item
           leadingIcon="account-cog"
-          titleStyle={{ color: theme.colors.error }}
-          title="Sair"
+          titleStyle={{ color: theme.colors.primary }}
+          style={{ borderColor: theme.colors.primary }}
+          title="Preferências do usuários"
+          onPress={() => signOut()}
+        />
+        <Menu.Item
+          leadingIcon="message-question-outline"
+          titleStyle={{ color: theme.colors.primary }}
+          style={{ borderColor: theme.colors.primary }}
+          title="FAQ - Perguntas frenquêntes"
           onPress={() => signOut()}
         />
         <Menu.Item

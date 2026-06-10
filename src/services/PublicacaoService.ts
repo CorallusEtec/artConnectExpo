@@ -1,8 +1,9 @@
 import { PublicacaoRequest } from "@/models/request/PublicacaoRequest";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import { PagedResponse } from "@/models/response/PagedResponse";
 import {
-  PublicacaoPagedResponse,
-  PublicacaoResponse,
+  PublicacaoDetails,
+  PublicacaoResponse
 } from "@/models/response/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
@@ -40,7 +41,7 @@ class PublicacaoService {
    *
    */
   static async listar() {
-    return await config.axiosClient.get<PublicacaoPagedResponse>(
+    return await config.axiosClient.get<PagedResponse<PublicacaoDetails>>(
       `${config.apiUrl}/publicacao/findAll`,
     );
   }
