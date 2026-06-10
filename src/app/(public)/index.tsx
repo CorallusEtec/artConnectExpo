@@ -18,8 +18,8 @@ export default function Login() {
 
   const errorMessage = useRef("");
   const [showAlert, setShowAlert] = useState(false);
-  const { mutate, isPending, isError, error, isSuccess, data } =
-    useLoginMutate();
+  const { mutate, isPending, isError, error } = useLoginMutate();
+
   function login() {
     const result = schema.safeParse({ email, senha });
     // Validando campos
@@ -35,7 +35,9 @@ export default function Login() {
       }
     }
   }
-
+  function guest() {
+    (async () => {})();
+  }
   return (
     <SafeAreaView style={style.container}>
       <AlertMessage
@@ -45,7 +47,6 @@ export default function Login() {
       />
 
       <BannerLogo />
-      {isSuccess && <Text>logado</Text>}
       {/* resto da página */}
       <View style={style.view1}>
         <Text style={[style.titulo, { fontWeight: 500 }]}>Login</Text>

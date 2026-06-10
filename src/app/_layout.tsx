@@ -6,7 +6,6 @@ import { MD3LightTheme, PaperProvider } from "react-native-paper";
 
 function NavigationLayout() {
   const { isLoading, token } = useAuth();
-
   if (isLoading) return <ActivityIndicator />;
   return (
     <Stack

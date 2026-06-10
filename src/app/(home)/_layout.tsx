@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { Tabs } from "expo-router";
@@ -17,11 +18,12 @@ const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
 // SE O USUARIO TEM ROLE DE USUARIO (CONTA DE VERDADE)
 // LIBERA TODAS AS ROTAS
 // SE NÃO (se for convidado), LIBERA APENAS O FEED E PESQUISAR
-const guest = true;
 
 // Esconder barra de gestos do android
 
 export default function HomeLayout() {
+  const { token } = useAuth();
+
   return (
     <>
       <StatusBar hidden />
@@ -52,7 +54,7 @@ export default function HomeLayout() {
           }}
         />
 
-        <Tabs.Protected guard={!guest}>
+        <Tabs.Protected guard={token?.token != null}>
           <Tabs.Screen
             name="(private)/create"
             options={{
