@@ -1,5 +1,5 @@
 import { TipoMidia, TipoReacao } from "../enumeration/enumeration";
-import { TipoConta } from "./UsuarioResponse";
+import { AutorResponse } from "./AutorResponse";
 
 /** Dados das reações nas publicações */
 export interface ReacaoDetails {
@@ -23,27 +23,7 @@ export interface PublicacaoResponse {
   urlMidia: null | string;
   tipoMidia: null | TipoMidia;
   dataPublicacao: string;
-  autor: {
-    id: number;
-    nome: string;
-    tipoConta: TipoConta;
-  };
+  autor: AutorResponse;
 }
 
 /** Carrega o conteúdo das publicações e da paginação */
-export interface PublicacaoPagedResponse {
-  content: PublicacaoDetails[];
-
-  // Dados paginação
-  empty: boolean;
-  first: boolean;
-  last: boolean;
-  number: number;
-  numberOfElements: number;
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-  };
-  totalElements: number;
-  totalPages: number;
-}

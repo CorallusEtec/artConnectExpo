@@ -8,8 +8,8 @@ import { AlertMessage } from "@/components/AlertMessage";
 import { BannerLogo } from "@/components/BannerLogo";
 import { InputIcon } from "@/components/InputIcon";
 import { InputSenha } from "@/components/InputSenha";
-import { useLoginMutate } from "@/hooks/useLoginMutate";
 import { schema } from "@/schemas/loginSchema";
+import { useLoginMutate } from "@/services/AuthService";
 import { Button, Checkbox } from "react-native-paper";
 export default function Login() {
   const [checked, setChecked] = useState(false);
@@ -20,7 +20,7 @@ export default function Login() {
   const [showAlert, setShowAlert] = useState(false);
   const { mutate, isPending, isError, error } = useLoginMutate();
 
-  function login() {
+  async function login() {
     const result = schema.safeParse({ email, senha });
     // Validando campos
     if (!result.success) {

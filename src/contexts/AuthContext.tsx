@@ -11,18 +11,24 @@ import {
 
 type AuthContextType = {
   token: AuthLoginResponse | null;
-  isAuth: boolean;
   isLoading: boolean;
+  isAuth: boolean;
   signIn: (token: AuthLoginResponse) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>({
+  isAuth: true,
+  isLoading: true,
+  token: null,
+  signIn: async (token: AuthLoginResponse) => {},
+  signOut: async () => {},
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<AuthLoginResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const isAuth = useRef(false);
+  const isAuth = useRef(true);
 
   // Busca o token salvo ao abrir o aplicativo
   useEffect(() => {
@@ -30,6 +36,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const savedToken = await AsyncStorage.getItem("@artconnect:token");
         if (savedToken) setToken(JSON.parse(savedToken));
+        if (savedToken != null) {
+          isAuth.current = true;
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -45,12 +54,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await AsyncStorage.removeItem("@auth_token");
+    await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
   };
   return (
     <AuthContext.Provider
-      value={{ token, isLoading, signIn, signOut, isAuth: isAuth.current }}
+      value={{ token, isLoading, isAuth: isAuth.current, signIn, signOut }}
     >
       {children}
     </AuthContext.Provider>

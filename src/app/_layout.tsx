@@ -4,9 +4,13 @@ import { Stack } from "expo-router";
 import { ActivityIndicator } from "react-native";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 
-function NavigationLayout() {
-  const { isLoading, token } = useAuth();
-  if (isLoading) return <ActivityIndicator />;
+export function NavigationLayout() {
+  const { token, isLoading } = useAuth();
+  console.log(useAuth());
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
   return (
     <Stack
       screenOptions={{
@@ -19,6 +23,7 @@ function NavigationLayout() {
       <Stack.Protected guard={token != null}>
         <Stack.Screen name="(home)" />
       </Stack.Protected>
+
       <Stack.Protected guard={token == null}>
         <Stack.Screen name="(public)" />
       </Stack.Protected>

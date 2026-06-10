@@ -58,11 +58,7 @@ export function PublicacaoReacaoToggle({
         size={ICON_SIZE}
         onPress={() => toggleReagir()}
       />
-      <Text style={style.actionInsight}>
-        {data.reacaoUsuario == tipoReacao
-          ? insight.current + 1
-          : insight.current}
-      </Text>
+      <Text style={style.actionInsight}>{insight.current}</Text>
     </View>
   );
 }

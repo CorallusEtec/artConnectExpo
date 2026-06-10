@@ -1,16 +1,12 @@
-import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PublicacaoResponse } from "@/models/response/PublicacaoResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
-import PublicacoesService from "@/services/PublicacaoService";
-import UsuarioService from "@/services/UsuarioService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function usePerfil() {
   const [usuario, setUsuario] = useState<UsuarioResponse>();
   const [publicacoes, setPublicacoes] = useState<PublicacaoResponse[]>([]);
   const [loading, setLoading] = useState(true);
-
+  /*
   useEffect(() => {
     async function carregar() {
       try {
@@ -43,6 +39,6 @@ export function usePerfil() {
     }
     carregar();
   }, []);
-
+*/
   return { usuario, publicacoes, loading };
 }
