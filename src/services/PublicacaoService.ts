@@ -4,6 +4,7 @@ import {
   PublicacaoResponse,
 } from "@/models/response/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
@@ -14,11 +15,16 @@ interface CriarPublicacaoDTO {
 }
 
 export default class PublicacaoService {
-  static async listar(): Promise<PublicacaoPagedResponse> {
-    const response = await fetch(`${config.apiUrl}/publicacao/findAll`);
-    return await response.json();
+  static async listar() {
+    return await axios.get<PublicacaoPagedResponse>(
+      `${config.apiUrl}/publicacao/findAll`,
+      {
+        timeout: 5000,
+        timeoutErrorMessage:
+          "Falha na conexão com o servidor. Tente mais tarde",
+      },
+    );
   }
-
   static async save({ legenda, file, autorId }: CriarPublicacaoDTO) {
     try {
       const formData = new FormData();

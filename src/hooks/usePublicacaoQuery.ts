@@ -11,6 +11,6 @@ export function usePublicacaoQuery() {
   });
   return {
     ...query,
-    data: query?.data,
+    data: query.data,
   };
 }
