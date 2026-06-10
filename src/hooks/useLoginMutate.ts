@@ -6,7 +6,7 @@ import { router } from "expo-router";
 export function useLoginMutate() {
   const { signIn } = useAuth();
   const mutate = useMutation({
-    mutationFn: AuthService.loginTeste,
+    mutationFn: AuthService.login,
 
     onSuccess: (data) => {
       signIn(data.data);
