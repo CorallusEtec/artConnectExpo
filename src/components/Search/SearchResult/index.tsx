@@ -1,23 +1,24 @@
+import { Publicacao } from "@/components/Publicacao";
+import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { ActivityIndicator } from "react-native-paper"; // 
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper"; //
+import UserCard from "../UserCard";
 interface SearchResultProps {
   load: boolean;
   pesquisaRealizada: boolean;
   escopo: string;
-  usuarios: any[];      
-  publicacoes: any[];   
+  usuarios: any;
+  publicacoes: any;
 }
 
-export default function SearchResult({ 
-  load, 
-  pesquisaRealizada, 
-  escopo, 
-  usuarios, 
-  publicacoes 
+export default function SearchResult({
+  load,
+  pesquisaRealizada,
+  escopo,
+  usuarios,
+  publicacoes,
 }: SearchResultProps) {
-
-
   if (load) {
     return (
       <View style={styles.center}>
@@ -25,17 +26,47 @@ export default function SearchResult({
       </View>
     );
   }
-
+  console.log(publicacoes);
+  console.log(usuarios);
 
   return (
     <View style={styles.container}>
       {escopo === "publicacao" ? (
-        <Text style={styles.title}>Resultados para Publicações ({publicacoes.length})</Text>
+        <>
+          <Text style={styles.title}>
+            Resultados para Publicações ({publicacoes.content.length})
+          </Text>
+          {pesquisaRealizada && (
+            <FlatList
+              data={publicacoes.content}
+              renderItem={({ item }) => (
+                <PublicacaoProvider dadosPubli={item}>
+                  <Publicacao />
+                </PublicacaoProvider>
+              )}
+            />
+          )}
+        </>
       ) : (
-        <Text style={styles.title}>Resultados para Usuários ({usuarios.length})</Text>
+        <>
+          <Text style={styles.title}>
+            Resultados para Usuários ({usuarios.content.length})
+          </Text>
+          {pesquisaRealizada && (
+            <FlatList
+              data={usuarios.content}
+              renderItem={({ item }) => (
+                <UserCard
+                  nome={item.nome}
+                  tipo={item.tipoConta}
+                  localizacao={item.cidade ? `${item.cidade} - ${item.uf}` : ""}
+                  descricao={item.textoBio}
+                />
+              )}
+            />
+          )}
+        </>
       )}
-      
-
     </View>
   );
 }

@@ -66,7 +66,8 @@ export default function HomeLayout() {
             name="(private)/notify"
             options={{
               title: "Notificações",
-              tabBarIcon: ({ color }) => <TabIcon name="bell" color={color} />,
+              href: null, // Para essa prévia
+              //tabBarIcon: ({ color }) => <TabIcon name="bell" color={color} />,
             }}
           />
           <Tabs.Screen
