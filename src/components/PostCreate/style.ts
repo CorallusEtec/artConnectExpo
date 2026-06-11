@@ -105,9 +105,9 @@ export const style = StyleSheet.create({
     padding: 16,
     backgroundColor: "#f0f0f0",
     borderRadius: 12,
-    borderWidth: 1,
+    borderWidth: 2,
     borderStyle: "dashed",
-    borderColor: "#ccc",
+    borderColor: "#000000",
   },
 
   previewAudioName: {

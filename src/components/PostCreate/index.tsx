@@ -1,10 +1,12 @@
 import { Pressable, Text, TextInput, View } from "react-native";
+import { AlertMessage } from "../AlertMessage";
 import AttachBar from "./AttachBar";
 import MediaPreview from "./MediaPreview";
 import { style } from "./style";
 import { useCreate } from "./useCreate";
 
 export default function Create() {
+
   const {
     erro,
     legenda,
@@ -15,14 +17,18 @@ export default function Create() {
     escolherCamera,
     handlePublicar,
     escolherAudio,
-    nomeAudio
   } = useCreate();
+
 
   return (
     <View style={style.container}>
       <Text style={style.title}>Criar publicação</Text>
 
-      {erro ? <Text style={{ color: "red" }}>{erro}</Text> : null}
+      <AlertMessage
+        text={erro}          
+        visible={!!erro}      
+        onDismiss={() => {}}  
+      />
 
       <TextInput
         placeholder="Texto do post..."

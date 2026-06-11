@@ -1,8 +1,8 @@
 import { PublicacaoService } from "@/services/PublicacaoService";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { TipoMidia } from "./types";
 
 export function useCreate() {
@@ -84,6 +84,6 @@ export function useCreate() {
     escolherCamera,
     handlePublicar,
     nomeAudio,
-    escolherAudio
+    escolherAudio,
   };
 }
