@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
+import { Platform } from "react-native";
 
 /**
  * Hook que dá acesso aos estados da requisição e ações encapsuladas com o react query
@@ -54,17 +55,21 @@ export class PublicacaoService {
   static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
     try {
       const formData = new FormData();
-
+      const extensao = file.uri.split('.').pop() || 'png';
+      
       if (legenda) formData.append("legenda", legenda);
-
       if (file?.uri) {
-        /**
-         *  Na web, o expo-image-picker retorna uma blob URL — precisa converter pra Blob
-         *  antes de appendar no FormData para o backend receber corretamente
-         */
-        const response = await fetch(file.uri);
-        const blob = await response.blob();
-        formData.append("arquivo", blob, `upload-${Date.now()}.png`);
+        if (Platform.OS === "web") {
+          const response = await fetch(file.uri);
+          const blob = await response.blob();
+          formData.append("arquivo", blob, `upload-${Date.now()}.png`);
+        } else {
+          formData.append("arquivo", {
+            uri: file.uri,
+            name: file.name || `upload-${Date.now()}.${extensao}`,
+            type: file.mimeType || "video/mp4",
+          } as any);
+        }      
       }
 
       if (tipoMidia) formData.append("tipoMidia", tipoMidia);

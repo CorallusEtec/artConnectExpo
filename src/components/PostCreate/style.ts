@@ -115,4 +115,18 @@ export const style = StyleSheet.create({
     fontSize: 14,
     color: "#444",
   },
+  contentContainer: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 50,
+  },
+  video: {
+    width: 350,
+    height: 275,
+  },
+  controlsContainer: {
+    padding: 10,
+  },
 });

@@ -1,4 +1,4 @@
-import { ResizeMode, Video } from "expo-av";
+// import { ResizeMode, Video } from "expo-av";
 import { Platform, View, Image, useWindowDimensions } from "react-native";
 import { Card, Divider } from "react-native-paper";
 import { style } from "../style";
@@ -34,17 +34,17 @@ export function renderMidia(urlMidia: string, tipoMidia: string | null) {
           </>
         );
       }
-      return (
-        <>
-          <Video
-            source={{ uri: urlMidia }}
-            style={{ width: "100%", height: 250, backgroundColor: "#000" }}
-            useNativeControls
-            resizeMode={ResizeMode.CONTAIN}
-          />
-          <Divider />
-        </>
-      );
+      // return (
+      //   <>
+      //     <Video
+      //       source={{ uri: urlMidia }}
+      //       style={{ width: "100%", height: 250, backgroundColor: "#000" }}
+      //       useNativeControls
+      //       resizeMode={ResizeMode.CONTAIN}
+      //     />
+      //     <Divider />
+      //   </>
+      // );
 
     case "AUDIO":
     if (Platform.OS === "web") {
