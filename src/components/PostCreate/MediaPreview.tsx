@@ -61,14 +61,15 @@ function renderConteudo(midia: any, tipoMidia: TipoMidia | null, maxHeight: numb
   }
 }
 
-export default function MediaPreview({ midia, tipoMidia }: Props) {
-  const { height } = useWindowDimensions();
-  const maxHeight = height * 0.4;
+ //limita a altura pra não esconder o botão de publicar
+  export default function MediaPreview({ midia, tipoMidia }: Props) {
+    const { height } = useWindowDimensions();
+    const maxHeight = height * 0.4;
 
-  if (!midia) return null;
-  return (
-    <View style={style.previewWrapper}>
-      {renderConteudo(midia, tipoMidia, maxHeight)}
-    </View>
-  );
-}
+    if (!midia) return null;
+    return (
+      <View style={style.previewWrapper}>
+        {renderConteudo(midia, tipoMidia, maxHeight)}
+      </View>
+    );
+  }

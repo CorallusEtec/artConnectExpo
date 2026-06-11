@@ -6,7 +6,6 @@ import { style } from "./style";
 import { useCreate } from "./useCreate";
 
 export default function Create() {
-
   const {
     erro,
     legenda,
@@ -18,7 +17,6 @@ export default function Create() {
     handlePublicar,
     escolherAudio,
   } = useCreate();
-
 
   return (
     <View style={style.container}>

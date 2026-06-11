@@ -60,19 +60,20 @@ export class PublicacaoService {
     if (legenda) formData.append("legenda", legenda);
 
     if (file?.uri) {
+      /**
+       *  Na web, o expo-image-picker retorna uma blob URL — precisa converter pra Blob
+       *  antes de appendar no FormData para o backend receber corretamente
+       */
   const response = await fetch(file.uri);
   const blob = await response.blob();
   formData.append("arquivo", blob, `upload-${Date.now()}.png`);
 }
 
     if (tipoMidia) formData.append("tipoMidia", tipoMidia);
-
     const tk = await AsyncStorage.getItem("@artconnect:token");
-
     if (!tk) {
       return;
     }
-
     const tokenParse: AuthLoginResponse = JSON.parse(tk);
     
     return await config.axiosClient.post(
