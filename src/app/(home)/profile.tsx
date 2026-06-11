@@ -31,6 +31,20 @@ export default function Perfil() {
   if (isPending) return <ActivityIndicator />;
 
   console.log(data?.data);
+
+  function guestFotoRender() {
+    if (data?.data.nome) {
+      return <Avatar.Text label={data.data.nome.charAt(0)} size={92} />;
+    } else {
+      return (
+        <Avatar.Image
+          source={require("@/assets/template/avatar.png")}
+          size={92}
+        />
+      );
+    }
+  }
+
   return (
     <View style={style.container}>
       {/* Modal de configurações do aplicativo */}
@@ -58,10 +72,14 @@ export default function Perfil() {
       <View style={style.fundo}>
         <View style={style.headerRow}>
           <View style={style.profile}>
-            <Avatar.Image
-              size={92}
-              source={require("@/assets/template/avatar.png")}
-            />
+            {data?.data.fotoPerfilUrl ? (
+              <Avatar.Image
+                size={92}
+                source={{ uri: data.data.fotoPerfilUrl }}
+              />
+            ) : (
+              guestFotoRender()
+            )}
             <Text style={style.infoLabel}>{data?.data.nome}</Text>
           </View>
           <View style={style.infosProfile}>

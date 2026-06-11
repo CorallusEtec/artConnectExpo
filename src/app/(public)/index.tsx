@@ -105,6 +105,7 @@ export default function Login() {
           <View style={style.linhaOu} />
         </View>
 
+        {/*
         <Button
           onPress={() => router.navigate("/home")}
           mode="outlined"
@@ -112,6 +113,7 @@ export default function Login() {
         >
           Continuar sem Login
         </Button>
+        */}
 
         <Pressable onPress={() => router.navigate("/cadastro")}>
           <Text
