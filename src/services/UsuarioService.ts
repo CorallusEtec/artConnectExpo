@@ -30,6 +30,22 @@ export class UsuarioService {
 
     return await response.json();
   }
-}
 
+  async findById(id: number, token?: string): Promise<any> {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const response = await fetch(`${config.apiUrl}/usuario/${id}`, {
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error("Erro ao buscar usuário");
+    }
+ 
+    return await response.json();
+  }
+}
 export default new UsuarioService();

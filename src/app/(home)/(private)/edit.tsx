@@ -4,133 +4,123 @@ import ArtistaService, { ArtistaEditDTO } from "@/services/ArtistaService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/edit";
-import { FontAwesome6 } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
+import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
-export default function EditPerfil() {
-  const [user, setUsuario] = useState<UsuarioResponse>();
+const placeholder = "#888";
 
+export default function EditPerfil() {
+  const [user, setUser] = useState<UsuarioResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
-    nome: user?.nome || "",
-    textoBio: user?.textoBio || "",
-    nomeLog: user?.nomeLog || "",
-    numLog: user?.numLog ? String(user.numLog) : "",
-    cep: user?.cep || "",
-    bairro: user?.bairro || "",
-    complemento: user?.complemento || "",
-    cidade: user?.cidade || "",
-    uf: user?.uf || "",
+    nome: "",
+    textoBio: "",
+    nomeLog: "",
+    numLog: "",
+    cep: "",
+    bairro: "",
+    complemento: "",
+    cidade: "",
+    uf: "",
   });
-
-  const [contatosWhatsapp, setContatosWhatsapp] = useState(
-    mapearContatos(user?.contatos, 1),
-  );
-  const [contatosInstagram, setContatosInstagram] = useState(
-    mapearContatos(user?.contatos, 2),
-  );
 
   useEffect(() => {
     async function carregar() {
-      const tk = await AsyncStorage.getItem("@artconnect:token");
-      let model!: UsuarioResponse;
-      if (tk) {
+      try {
+        const tk = await AsyncStorage.getItem("@artconnect:token");
+        if (!tk) return router.navigate("/login");
+
         const tokenParse: AuthLoginResponse = JSON.parse(tk);
+        const model: UsuarioResponse = await UsuarioService.findById(
+          tokenParse.id,
+          tokenParse.token
+        );
+        setUser(model);
 
-        model = await UsuarioService.findById(tokenParse.id);
-        setUsuario(model);
+        setForm({
+          nome: model.nome ?? "",
+          textoBio: model.textoBio ?? "",
+          nomeLog: model.nomeLog ?? "",
+          numLog: model.numLog ? String(model.numLog) : "",
+          cep: model.cep ?? "",
+          bairro: model.bairro ?? "",
+          complemento: model.complemento ?? "",
+          cidade: model.cidade ?? "",
+          uf: model.uf ?? "",
+        });
+      } catch (error) {
+        console.error("Erro ao carregar perfil:", error);
+      } finally {
+        setLoading(false);
       }
-
-      if (!model) return;
-
-      setForm({
-        nome: model.nome || "",
-        textoBio: model.textoBio || "",
-        contatos: (model?.contatos || [])
-          .map((c: any) => c.valor || c)
-          .join(", "),
-
-        nomeLog: model.nomeLog || "",
-        numLog: model.numLog ? String(model.numLog) : "",
-        cep: model.cep || "",
-        bairro: model.bairro || "",
-        complemento: model.complemento || "",
-        cidade: model.cidade || "",
-        uf: model.uf || "",
-      });
-
-      setLoading(false);
     }
+
     carregar();
   }, []);
 
-  function alterarCampo(campo: string, valor: string) {
+  function alterarCampo(campo: keyof typeof form, valor: string) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
   }
 
   async function handleSalvar() {
+    if (!user) return;
+
     try {
-      setLoading(true);
+      setSaving(true);
 
       const tokenData = await AsyncStorage.getItem("@artconnect:token");
+      if (!tokenData) return router.navigate("/login");
 
-      if (!tokenData) {
-        return router.navigate("/login");
-      }
+      const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
 
+      // Monta o payload APENAS com os campos que foram preenchidos
       const payload: ArtistaEditDTO = {
-        nome: form.nome,
-        textoBio: form.textoBio,
-
-        contatos: form.contatos
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean)
-          .map((valor) => ({ valor })),
-
-        arte: (usuario as any).arte,
-        nomeArtistico: (usuario as any).nomeArtistico,
-        dataNasc: (usuario as any).dataNasc,
-
-        nomeLog: form.nomeLog,
+        nome: form.nome || undefined,
+        textoBio: form.textoBio || undefined,
+        nomeLog: form.nomeLog || undefined,
         numLog: form.numLog ? Number(form.numLog) : undefined,
-        cep: form.cep,
-        bairro: form.bairro,
-        complemento: form.complemento,
-        cidade: form.cidade,
-        uf: form.uf,
+        cep: form.cep || undefined,
+        bairro: form.bairro || undefined,
+        complemento: form.complemento || undefined,
+        cidade: form.cidade || undefined,
+        uf: form.uf || undefined,
       };
 
-      await ArtistaService.edit(user.id, payload);
-
-      setUsuario({
-        ...(user as any),
-        ...payload,
+      // Remove campos undefined para não enviar dados vazios
+      Object.keys(payload).forEach(key => {
+        if (payload[key as keyof ArtistaEditDTO] === undefined) {
+          delete payload[key as keyof ArtistaEditDTO];
+        }
       });
 
-      router.navigate("/home/perfil");
-    } catch (error) {
-      console.log(error);
+      await ArtistaService.edit(tokenParse.token, payload);
+      
+      router.navigate("/profile");
+    } catch (error: any) {
+      console.error("Erro detalhado ao salvar:", error);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
-  if (loading) return <ActivityIndicator size={"large"} />;
+
+  if (loading) return <ActivityIndicator size="large" />;
+
   return (
     <ScrollView style={style.container}>
-      <TouchableOpacity onPress={() => router.navigate("/home")}>
+      <TouchableOpacity onPress={() => router.back()}>
         <FontAwesome6
           name="circle-arrow-left"
           size={35}
@@ -147,7 +137,6 @@ export default function EditPerfil() {
             style={style.headerProfile}
           />
         </View>
-
         <TouchableOpacity style={style.editarAvatar}>
           <Feather name="edit-3" size={16} color="#fff" />
         </TouchableOpacity>
@@ -168,27 +157,12 @@ export default function EditPerfil() {
         placeholder="Fale sobre você"
         placeholderTextColor={placeholder}
         multiline
+        numberOfLines={4}
+        textAlignVertical="top"
         value={form.textoBio}
         onChangeText={(text) => alterarCampo("textoBio", text)}
       />
 
-      <ContatoInput
-        titulo="WhatsApp"
-        lista={contatosWhatsapp}
-        setLista={setContatosWhatsapp}
-        tipo={1}
-        placeholder="(00) 00000-0000"
-        maskFn={masks.telefone}
-        onMaskChange={masks.handleTelefone}
-      />
-
-      <ContatoInput
-        titulo="Instagram"
-        lista={contatosInstagram}
-        setLista={setContatosInstagram}
-        tipo={2}
-        placeholder="Digite seu instagram"
-      />
       <Text style={style.label}>Logradouro</Text>
       <TextInput
         style={style.input}
@@ -201,7 +175,6 @@ export default function EditPerfil() {
       <View style={style.linha}>
         <View style={{ flex: 2 }}>
           <Text style={style.label}>Número</Text>
-
           <TextInput
             style={style.input}
             placeholder="Número"
@@ -214,7 +187,6 @@ export default function EditPerfil() {
 
         <View style={{ flex: 1, marginLeft: 10 }}>
           <Text style={style.label}>CEP</Text>
-
           <TextInput
             style={style.input}
             placeholder="CEP"
@@ -247,7 +219,6 @@ export default function EditPerfil() {
       <View style={style.linha}>
         <View style={{ flex: 2 }}>
           <Text style={style.label}>Cidade</Text>
-
           <TextInput
             style={style.input}
             placeholder="Cidade"
@@ -259,7 +230,6 @@ export default function EditPerfil() {
 
         <View style={{ flex: 1, marginLeft: 10 }}>
           <Text style={style.label}>UF</Text>
-
           <TextInput
             style={style.input}
             placeholder="UF"
@@ -273,9 +243,9 @@ export default function EditPerfil() {
       <TouchableOpacity
         style={style.botaoSalvar}
         onPress={handleSalvar}
-        disabled={loading}
+        disabled={saving}
       >
-        {loading ? (
+        {saving ? (
           <ActivityIndicator color="#fff" />
         ) : (
           <Text style={style.textoSalvar}>Salvar alterações</Text>
