@@ -37,7 +37,6 @@ export default function Search() {
       {!search.pesquisaRealizada && <EmptyState />}
 
       <FilterModal
-        executarBusca={() => console.log("Oi")}
         visible={search.modalFiltroVisivel}
         onClose={() => search.setModalFiltroVisivel(false)}
         {...search}
