@@ -1,69 +1,46 @@
-import { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as ImagePicker from "expo-image-picker";
-import * as DocumentPicker from "expo-document-picker";
-import { router } from "expo-router";
-import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PublicacaoService } from "@/services/PublicacaoService";
+import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { useState } from "react";
+import { TipoMidia } from "./types";
 
 export function useCreate() {
   const [erro, setErro] = useState("");
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState<any>(null);
-//   const [documents, setDocuments] = useState<any[]>([]);
+  const [tipoMidia, setTipoMidia] = useState<TipoMidia | null>(null);
 
   async function escolherImagem() {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
     });
 
     if (!result.canceled) {
       setMidia(result.assets[0]);
+      setTipoMidia(result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE);
     }
   }
 
   async function escolherCamera() {
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
     });
 
     if (!result.canceled) {
       setMidia(result.assets[0]);
+      setTipoMidia(result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE);
     }
   }
 
-//   um teste apenas, vai mudar
-//   async function escolherDocumento() {
-//     const result = await DocumentPicker.getDocumentAsync({
-//       multiple: true,
-//       type: "*/*",
-//     });
-
-//     if (!result.canceled) {
-//       const assets = result.assets;
-
-//       setDocuments((prev) => [...prev, ...assets]);
-//     }
-//   }
-
   async function handlePublicar() {
-    const token = await AsyncStorage.getItem("@artconnect:token");
-
-    if (!token) {
-      router.navigate("/login");
-      return;
-    }
-
-    const tokenParse: AuthLoginResponse = JSON.parse(token);
-
     const res = {
       legenda,
       file: midia,
-      autorId: tokenParse.id,
+      tipoMidia,
     };
 
     const validacao = PublicacaoService.validarCriacao(res);
@@ -73,8 +50,12 @@ export function useCreate() {
       return;
     }
 
-    await PublicacaoService.save(res);
-    router.navigate("/home");
+    try {
+      await PublicacaoService.save(res);
+      router.navigate("/home");
+    } catch (e: any) {
+      setErro(e?.message ?? "Erro ao publicar");
+    }
   }
 
   return {
@@ -82,11 +63,9 @@ export function useCreate() {
     legenda,
     setLegenda,
     midia,
-    // documents,
-
+    tipoMidia,
     escolherImagem,
     escolherCamera,
-    // escolherDocumento,
     handlePublicar,
   };
 }

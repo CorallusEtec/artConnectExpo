@@ -53,56 +53,45 @@ export class PublicacaoService {
    * @param param0 Request params para a requisição
    * @returns Status da requisição
    */
-  static async save({ legenda, file, autorId }: PublicacaoRequest) {
-    try {
-      const formData = new FormData();
+  static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
+  try {
+    const formData = new FormData();
 
-      formData.append("legenda", legenda);
+    if (legenda) formData.append("legenda", legenda);
 
-      if (file?.uri) {
-        let blob: Blob;
+    if (file?.uri) {
+  const response = await fetch(file.uri);
+  const blob = await response.blob();
+  formData.append("arquivo", blob, `upload-${Date.now()}.png`);
+}
 
-        try {
-          const fileResponse = await fetch(file.uri);
+    if (tipoMidia) formData.append("tipoMidia", tipoMidia);
 
-          blob = await fileResponse.blob();
-        } catch (blobErr) {
-          throw blobErr;
-        }
+    const tk = await AsyncStorage.getItem("@artconnect:token");
 
-        formData.append("file", blob, `image-${Date.now()}.jpg`);
-      }
-
-      const tk = await AsyncStorage.getItem("@artconnect:token");
-
-      if (!tk) {
-        return;
-      }
-      const tokenParse: AuthLoginResponse = JSON.parse(tk);
-      const response = await fetch(
-        `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenParse.token}`,
-          },
-          body: formData,
-          method: "POST",
-        },
-      );
-
-      const text = await response.text();
-
-      if (!response.ok) {
-        throw new Error(text);
-      }
-
-      return "Publicação cadastrada com sucesso";
-    } catch (error) {
-      console.error("Erro ao salvar publicação:", error);
-
-      throw error;
+    if (!tk) {
+      return;
     }
+
+    const tokenParse: AuthLoginResponse = JSON.parse(tk);
+    
+    return await config.axiosClient.post(
+      `${config.apiUrl}/publicacao/save`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenParse.token}`,
+        },
+      }
+    );
+
+    
+
+  } catch (error: any) {
+    console.error("Erro ao salvar publicação:", error);
+    throw error;
   }
+}
 
   /**
    * Função anterior de listar

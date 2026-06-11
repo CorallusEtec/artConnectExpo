@@ -10,9 +10,9 @@ export default function Create() {
     legenda,
     setLegenda,
     midia,
+    tipoMidia,
     escolherImagem,
     escolherCamera,
-    // escolherDocumento,
     handlePublicar,
   } = useCreate();
 
@@ -30,13 +30,9 @@ export default function Create() {
         multiline
       />
 
-      <AttachBar
-        onImage={escolherImagem}
-        onCamera={escolherCamera}
-        // onFile={escolherDocumento}
-      />
+      <AttachBar onImage={escolherImagem} onCamera={escolherCamera} />
 
-      <MediaPreview midia={midia} />
+      <MediaPreview midia={midia} tipoMidia={tipoMidia} />
 
       <Pressable style={style.postar} onPress={handlePublicar}>
         <Text style={style.postarText}>Publicar</Text>

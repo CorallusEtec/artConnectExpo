@@ -1,5 +1,7 @@
+import { TipoMidia } from "@/components/PostCreate/types";
+
 export interface PublicacaoRequest {
   legenda: string;
   file: any;
-  autorId: number;
+  tipoMidia: TipoMidia | null;
 }
