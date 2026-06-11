@@ -31,6 +31,7 @@ export interface UsuarioResponse {
   cidade?: string;
   uf?: string;
   textoBio?: string;
+  fotoPerfilUrl?: string;
   contatos?: [];
   publicacaoes: PublicacaoResponse[];
 }

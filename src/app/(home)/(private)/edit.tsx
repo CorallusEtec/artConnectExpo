@@ -4,12 +4,14 @@ import ArtistaService, { ArtistaEditDTO } from "@/services/ArtistaService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/edit";
-import { FontAwesome6 } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
+import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -18,119 +20,178 @@ import {
   View,
 } from "react-native";
 
-export default function EditPerfil() {
-  const [user, setUsuario] = useState<UsuarioResponse>();
+const placeholder = gStyles.cinza[500];
 
+export default function EditPerfil() {
+  const [user, setUser] = useState<UsuarioResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [fotoUri, setFotoUri] = useState<string | null>(null);
+  const [uploadingFoto, setUploadingFoto] = useState(false);
 
   const [form, setForm] = useState({
-    nome: user?.nome || "",
-    textoBio: user?.textoBio || "",
-    nomeLog: user?.nomeLog || "",
-    numLog: user?.numLog ? String(user.numLog) : "",
-    cep: user?.cep || "",
-    bairro: user?.bairro || "",
-    complemento: user?.complemento || "",
-    cidade: user?.cidade || "",
-    uf: user?.uf || "",
+    nome: "",
+    textoBio: "",
+    nomeLog: "",
+    numLog: "",
+    cep: "",
+    bairro: "",
+    complemento: "",
+    cidade: "",
+    uf: "",
   });
 
-  const [contatosWhatsapp, setContatosWhatsapp] = useState(
-    mapearContatos(user?.contatos, 1),
-  );
-  const [contatosInstagram, setContatosInstagram] = useState(
-    mapearContatos(user?.contatos, 2),
-  );
-
   useEffect(() => {
-    async function carregar() {
-      const tk = await AsyncStorage.getItem("@artconnect:token");
-      let model!: UsuarioResponse;
-      if (tk) {
-        const tokenParse: AuthLoginResponse = JSON.parse(tk);
-
-        model = await UsuarioService.findById(tokenParse.id);
-        setUsuario(model);
-      }
-
-      if (!model) return;
-
-      setForm({
-        nome: model.nome || "",
-        textoBio: model.textoBio || "",
-        contatos: (model?.contatos || [])
-          .map((c: any) => c.valor || c)
-          .join(", "),
-
-        nomeLog: model.nomeLog || "",
-        numLog: model.numLog ? String(model.numLog) : "",
-        cep: model.cep || "",
-        bairro: model.bairro || "",
-        complemento: model.complemento || "",
-        cidade: model.cidade || "",
-        uf: model.uf || "",
-      });
-
-      setLoading(false);
-    }
-    carregar();
+    carregarDadosIniciais();
   }, []);
 
-  function alterarCampo(campo: string, valor: string) {
-    setForm((prev) => ({ ...prev, [campo]: valor }));
-  }
-
-  async function handleSalvar() {
+  async function carregarDadosIniciais() {
     try {
-      setLoading(true);
-
       const tokenData = await AsyncStorage.getItem("@artconnect:token");
+      if (!tokenData) return router.navigate("/login");
 
-      if (!tokenData) {
-        return router.navigate("/login");
-      }
-
-      const payload: ArtistaEditDTO = {
-        nome: form.nome,
-        textoBio: form.textoBio,
-
-        contatos: form.contatos
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean)
-          .map((valor) => ({ valor })),
-
-        arte: (usuario as any).arte,
-        nomeArtistico: (usuario as any).nomeArtistico,
-        dataNasc: (usuario as any).dataNasc,
-
-        nomeLog: form.nomeLog,
-        numLog: form.numLog ? Number(form.numLog) : undefined,
-        cep: form.cep,
-        bairro: form.bairro,
-        complemento: form.complemento,
-        cidade: form.cidade,
-        uf: form.uf,
-      };
-
-      await ArtistaService.edit(user.id, payload);
-
-      setUsuario({
-        ...(user as any),
-        ...payload,
-      });
-
-      router.navigate("/home/perfil");
+      const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+      const model: UsuarioResponse = await UsuarioService.findById(
+        tokenParse.id,
+        tokenParse.token
+      );
+      
+      setUser(model);
+      setFotoUri(model.fotoPerfilUrl ?? null);
+      preencherFormulario(model);
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao carregar perfil:", error);
+      Alert.alert("Erro", "Não foi possível carregar os dados do perfil");
     } finally {
       setLoading(false);
     }
   }
-  if (loading) return <ActivityIndicator size={"large"} />;
+
+  function preencherFormulario(model: UsuarioResponse) {
+    setForm({
+      nome: model.nome ?? "",
+      textoBio: model.textoBio ?? "",
+      nomeLog: model.nomeLog ?? "",
+      numLog: model.numLog ? String(model.numLog) : "",
+      cep: model.cep ?? "",
+      bairro: model.bairro ?? "",
+      complemento: model.complemento ?? "",
+      cidade: model.cidade ?? "",
+      uf: model.uf ?? "",
+    });
+  }
+
+  function alterarCampo(campo: keyof typeof form, valor: string) {
+    setForm((prev) => ({ ...prev, [campo]: valor }));
+  }
+
+  async function solicitarPermissaoGaleria(): Promise<boolean> {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert(
+        "Permissão necessária", 
+        "Precisamos de acesso à sua galeria para alterar a foto de perfil."
+      );
+      return false;
+    }
+    return true;
+  }
+
+  async function selecionarImagemGaleria() {
+    const resultado = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (resultado.canceled) return null;
+    return resultado.assets[0];
+  }
+
+  async function handleAlterarFoto() {
+    const temPermissao = await solicitarPermissaoGaleria();
+    if (!temPermissao) return;
+
+    const imagemSelecionada = await selecionarImagemGaleria();
+    if (!imagemSelecionada) return;
+
+    try {
+      setUploadingFoto(true);
+
+      const arquivo = {
+        uri: imagemSelecionada.uri,
+        name: imagemSelecionada.fileName || `foto-perfil-${Date.now()}.jpg`,
+        type: imagemSelecionada.mimeType || 'image/jpeg',
+      };
+
+      const mensagem = await UsuarioService.updateFotoPerfil(arquivo);
+      
+      setFotoUri(imagemSelecionada.uri);
+      
+      const usuarioAtualizado = await UsuarioService.getCurrentUser();
+      setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
+      
+      Alert.alert("Sucesso", mensagem);
+    } catch (error: any) {
+      console.error("Erro ao alterar foto:", error);
+      Alert.alert("Erro", error.message || "Não foi possível atualizar a foto de perfil");
+    } finally {
+      setUploadingFoto(false);
+    }
+  }
+
+  function prepararPayload() {
+    const payload: ArtistaEditDTO = {
+      nome: form.nome || undefined,
+      textoBio: form.textoBio || undefined,
+      nomeLog: form.nomeLog || undefined,
+      numLog: form.numLog ? Number(form.numLog) : undefined,
+      cep: form.cep || undefined,
+      bairro: form.bairro || undefined,
+      complemento: form.complemento || undefined,
+      cidade: form.cidade || undefined,
+      uf: form.uf || undefined,
+    };
+
+    Object.keys(payload).forEach((key) => {
+      if (payload[key as keyof ArtistaEditDTO] === undefined) {
+        delete payload[key as keyof ArtistaEditDTO];
+      }
+    });
+
+    return payload;
+  }
+
+  async function handleSalvar() {
+    if (!user) return;
+
+    try {
+      setSaving(true);
+
+      const tokenData = await AsyncStorage.getItem("@artconnect:token");
+      if (!tokenData) return router.navigate("/login");
+
+      const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+      const payload = prepararPayload();
+
+      await ArtistaService.edit(tokenParse.token, payload);
+      
+      Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+      router.navigate("/profile");
+    } catch (error: any) {
+      console.error("Erro ao salvar:", error);
+      Alert.alert("Erro", error.message || "Não foi possível salvar as alterações");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) return <ActivityIndicator size="large" />;
+
   return (
     <ScrollView style={style.container}>
-      <TouchableOpacity onPress={() => router.navigate("/home")}>
+      <TouchableOpacity onPress={() => router.back()}>
         <FontAwesome6
           name="circle-arrow-left"
           size={35}
@@ -142,13 +203,28 @@ export default function EditPerfil() {
 
       <View style={style.linhaAvatar}>
         <View style={style.avatarContainer}>
-          <Image
-            source={require("@/assets/template/avatar.png")}
-            style={style.headerProfile}
-          />
+          {uploadingFoto ? (
+            <ActivityIndicator
+              size="large"
+              color={gStyles.azul[200]}
+              style={style.headerProfile}
+            />
+          ) : (
+            <Image
+              source={
+                fotoUri
+                  ? { uri: fotoUri }
+                  : require("@/assets/template/avatar.png")
+              }
+              style={style.headerProfile}
+            />
+          )}
         </View>
-
-        <TouchableOpacity style={style.editarAvatar}>
+        <TouchableOpacity
+          style={style.editarAvatar}
+          onPress={handleAlterarFoto}
+          disabled={uploadingFoto}
+        >
           <Feather name="edit-3" size={16} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -168,27 +244,12 @@ export default function EditPerfil() {
         placeholder="Fale sobre você"
         placeholderTextColor={placeholder}
         multiline
+        numberOfLines={4}
+        textAlignVertical="top"
         value={form.textoBio}
         onChangeText={(text) => alterarCampo("textoBio", text)}
       />
 
-      <ContatoInput
-        titulo="WhatsApp"
-        lista={contatosWhatsapp}
-        setLista={setContatosWhatsapp}
-        tipo={1}
-        placeholder="(00) 00000-0000"
-        maskFn={masks.telefone}
-        onMaskChange={masks.handleTelefone}
-      />
-
-      <ContatoInput
-        titulo="Instagram"
-        lista={contatosInstagram}
-        setLista={setContatosInstagram}
-        tipo={2}
-        placeholder="Digite seu instagram"
-      />
       <Text style={style.label}>Logradouro</Text>
       <TextInput
         style={style.input}
@@ -201,7 +262,6 @@ export default function EditPerfil() {
       <View style={style.linha}>
         <View style={{ flex: 2 }}>
           <Text style={style.label}>Número</Text>
-
           <TextInput
             style={style.input}
             placeholder="Número"
@@ -214,7 +274,6 @@ export default function EditPerfil() {
 
         <View style={{ flex: 1, marginLeft: 10 }}>
           <Text style={style.label}>CEP</Text>
-
           <TextInput
             style={style.input}
             placeholder="CEP"
@@ -247,7 +306,6 @@ export default function EditPerfil() {
       <View style={style.linha}>
         <View style={{ flex: 2 }}>
           <Text style={style.label}>Cidade</Text>
-
           <TextInput
             style={style.input}
             placeholder="Cidade"
@@ -259,7 +317,6 @@ export default function EditPerfil() {
 
         <View style={{ flex: 1, marginLeft: 10 }}>
           <Text style={style.label}>UF</Text>
-
           <TextInput
             style={style.input}
             placeholder="UF"
@@ -273,9 +330,9 @@ export default function EditPerfil() {
       <TouchableOpacity
         style={style.botaoSalvar}
         onPress={handleSalvar}
-        disabled={loading}
+        disabled={saving}
       >
-        {loading ? (
+        {saving ? (
           <ActivityIndicator color="#fff" />
         ) : (
           <Text style={style.textoSalvar}>Salvar alterações</Text>

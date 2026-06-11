@@ -1,18 +1,8 @@
 import config from "./config";
 
-export interface ArtistaCadastroDTO {
-  nome: string;
-  email: string;
-  senha: string;
-}
-
 export interface ArtistaEditDTO {
   nome?: string;
   textoBio?: string;
-  contatos?: any[];
-  arte?: { id: number };
-  nomeArtistico?: string;
-  dataNasc?: string;
   nomeLog?: string;
   numLog?: number;
   cep?: string;
@@ -20,18 +10,31 @@ export interface ArtistaEditDTO {
   complemento?: string;
   cidade?: string;
   uf?: string;
-
-  tipoArtista?: string;
-  genero?: string;
-  estilo?: string;
 }
+
 export default class ArtistaService {
-  /**
-   *
-   * @param filtros
-   * @deprecated Use
-   * @returns
-   */
+  static async edit(token: string, payload: ArtistaEditDTO): Promise<void> {
+    try {
+      const response = await fetch(`${config.apiUrl}/artista/edit`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData?.message || await response.text() || "Erro ao editar artista";
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      console.error("Erro ao editar artista:", error);
+      throw error;
+    }
+  }
+
   static async listarAntigo(filtros?: {
     tipoArtista?: string;
     genero?: string;
