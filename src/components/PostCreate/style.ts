@@ -79,5 +79,40 @@ export const style = StyleSheet.create({
     borderRadius: 5,
     borderColor: gStyles.cinza[500],
     alignSelf: 'flex-start'
-  }
+  },
+  previewWrapper: {
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "#f5f5f5",
+  },
+
+  previewImage: {
+    width: "100%",
+    aspectRatio: 1
+  },
+
+  previewVideo: {
+    width: "100%",
+    height: 200,
+    backgroundColor: "#000",
+    borderRadius: 12,
+  },
+
+  previewAudio: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 16,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: "#ccc",
+  },
+
+  previewAudioName: {
+    flex: 1,
+    fontSize: 14,
+    color: "#444",
+  },
 });

@@ -1,5 +1,6 @@
 import { ResizeMode, Video } from "expo-av";
-import { Image, Text, View } from "react-native";
+import { Image, Platform, Text, View, useWindowDimensions } from "react-native";
+import { style } from './style';
 import { TipoMidia } from "./types";
 
 interface Props {
@@ -7,37 +8,67 @@ interface Props {
   tipoMidia: TipoMidia | null;
 }
 
-function renderConteudo(midia: any, tipoMidia: TipoMidia | null) {
+function renderConteudo(midia: any, tipoMidia: TipoMidia | null, maxHeight: number) {
   switch (tipoMidia) {
-    case TipoMidia.IMAGE:
+    // volta como imagem
+    case TipoMidia.IMAGE: {
+      const height = Math.min(midia.height ?? 300, maxHeight);
       return (
         <Image
           source={{ uri: midia.uri }}
-          style={{ width: "100%", height: 200, borderRadius: 10 }}
-          resizeMode="cover"
+          style={{ width: "100%", height, borderRadius: 12 }}
+          resizeMode="contain"
         />
       );
-    case TipoMidia.VIDEO:
+    }
+
+    // volta como video
+    case TipoMidia.VIDEO: {
+      /**  é pra mostrar direitinho na web, pq na web a forma de mostrar é diferente, 
+      e se não fizer isso fica todo quebrado todo ruim, só pra esclarecer 
+      */
+      if (Platform.OS === "web") {
+        return (
+          <video
+            src={midia.uri}
+            controls
+            style={{ width: "100%", maxHeight, objectFit: "contain", backgroundColor: "#000", borderRadius: 12 }}
+          />
+        );
+      }
       return (
         <Video
           source={{ uri: midia.uri }}
-          style={{ width: "100%", height: '50%', borderRadius: 10 }}
+          style={{ width: "100%", height: 200, backgroundColor: "#000" }}
           useNativeControls
           resizeMode={ResizeMode.CONTAIN}
         />
       );
+    }
+
+    // volta como audio
     case TipoMidia.AUDIO:
       return (
-        <View style={{ padding: 14, borderRadius: 10, backgroundColor: "#f0f0f0", alignItems: "center", borderWidth: 1, borderStyle:"dashed" }}>
-          <Text>{midia?.name ?? "Áudio selecionado"}</Text>
+        <View style={style.previewAudio}>
+          <Text style={style.previewAudioName} numberOfLines={1}>
+            {midia?.name ?? "Áudio selecionado"}
+          </Text>
         </View>
       );
+
     default:
       return null;
   }
 }
 
 export default function MediaPreview({ midia, tipoMidia }: Props) {
+  const { height } = useWindowDimensions();
+  const maxHeight = height * 0.4;
+
   if (!midia) return null;
-  return <View>{renderConteudo(midia, tipoMidia)}</View>;
+  return (
+    <View style={style.previewWrapper}>
+      {renderConteudo(midia, tipoMidia, maxHeight)}
+    </View>
+  );
 }
