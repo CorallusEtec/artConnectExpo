@@ -6,24 +6,28 @@ import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/edit";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
-const placeholder = "#888";
+const placeholder = gStyles.cinza[500];
 
 export default function EditPerfil() {
   const [user, setUser] = useState<UsuarioResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [fotoUri, setFotoUri] = useState<string | null>(null);
+  const [uploadingFoto, setUploadingFoto] = useState(false);
 
   const [form, setForm] = useState({
     nome: "",
@@ -38,41 +42,125 @@ export default function EditPerfil() {
   });
 
   useEffect(() => {
-    async function carregar() {
-      try {
-        const tk = await AsyncStorage.getItem("@artconnect:token");
-        if (!tk) return router.navigate("/login");
-
-        const tokenParse: AuthLoginResponse = JSON.parse(tk);
-        const model: UsuarioResponse = await UsuarioService.findById(
-          tokenParse.id,
-          tokenParse.token
-        );
-        setUser(model);
-
-        setForm({
-          nome: model.nome ?? "",
-          textoBio: model.textoBio ?? "",
-          nomeLog: model.nomeLog ?? "",
-          numLog: model.numLog ? String(model.numLog) : "",
-          cep: model.cep ?? "",
-          bairro: model.bairro ?? "",
-          complemento: model.complemento ?? "",
-          cidade: model.cidade ?? "",
-          uf: model.uf ?? "",
-        });
-      } catch (error) {
-        console.error("Erro ao carregar perfil:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    carregar();
+    carregarDadosIniciais();
   }, []);
+
+  async function carregarDadosIniciais() {
+    try {
+      const tokenData = await AsyncStorage.getItem("@artconnect:token");
+      if (!tokenData) return router.navigate("/login");
+
+      const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+      const model: UsuarioResponse = await UsuarioService.findById(
+        tokenParse.id,
+        tokenParse.token
+      );
+      
+      setUser(model);
+      setFotoUri(model.fotoPerfilUrl ?? null);
+      preencherFormulario(model);
+    } catch (error) {
+      console.error("Erro ao carregar perfil:", error);
+      Alert.alert("Erro", "Não foi possível carregar os dados do perfil");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function preencherFormulario(model: UsuarioResponse) {
+    setForm({
+      nome: model.nome ?? "",
+      textoBio: model.textoBio ?? "",
+      nomeLog: model.nomeLog ?? "",
+      numLog: model.numLog ? String(model.numLog) : "",
+      cep: model.cep ?? "",
+      bairro: model.bairro ?? "",
+      complemento: model.complemento ?? "",
+      cidade: model.cidade ?? "",
+      uf: model.uf ?? "",
+    });
+  }
 
   function alterarCampo(campo: keyof typeof form, valor: string) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
+  }
+
+  async function solicitarPermissaoGaleria(): Promise<boolean> {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert(
+        "Permissão necessária", 
+        "Precisamos de acesso à sua galeria para alterar a foto de perfil."
+      );
+      return false;
+    }
+    return true;
+  }
+
+  async function selecionarImagemGaleria() {
+    const resultado = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (resultado.canceled) return null;
+    return resultado.assets[0];
+  }
+
+  async function handleAlterarFoto() {
+    const temPermissao = await solicitarPermissaoGaleria();
+    if (!temPermissao) return;
+
+    const imagemSelecionada = await selecionarImagemGaleria();
+    if (!imagemSelecionada) return;
+
+    try {
+      setUploadingFoto(true);
+
+      const arquivo = {
+        uri: imagemSelecionada.uri,
+        name: imagemSelecionada.fileName || `foto-perfil-${Date.now()}.jpg`,
+        type: imagemSelecionada.mimeType || 'image/jpeg',
+      };
+
+      const mensagem = await UsuarioService.updateFotoPerfil(arquivo);
+      
+      setFotoUri(imagemSelecionada.uri);
+      
+      const usuarioAtualizado = await UsuarioService.getCurrentUser();
+      setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
+      
+      Alert.alert("Sucesso", mensagem);
+    } catch (error: any) {
+      console.error("Erro ao alterar foto:", error);
+      Alert.alert("Erro", error.message || "Não foi possível atualizar a foto de perfil");
+    } finally {
+      setUploadingFoto(false);
+    }
+  }
+
+  function prepararPayload() {
+    const payload: ArtistaEditDTO = {
+      nome: form.nome || undefined,
+      textoBio: form.textoBio || undefined,
+      nomeLog: form.nomeLog || undefined,
+      numLog: form.numLog ? Number(form.numLog) : undefined,
+      cep: form.cep || undefined,
+      bairro: form.bairro || undefined,
+      complemento: form.complemento || undefined,
+      cidade: form.cidade || undefined,
+      uf: form.uf || undefined,
+    };
+
+    Object.keys(payload).forEach((key) => {
+      if (payload[key as keyof ArtistaEditDTO] === undefined) {
+        delete payload[key as keyof ArtistaEditDTO];
+      }
+    });
+
+    return payload;
   }
 
   async function handleSalvar() {
@@ -85,32 +173,15 @@ export default function EditPerfil() {
       if (!tokenData) return router.navigate("/login");
 
       const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
-
-      // Monta o payload APENAS com os campos que foram preenchidos
-      const payload: ArtistaEditDTO = {
-        nome: form.nome || undefined,
-        textoBio: form.textoBio || undefined,
-        nomeLog: form.nomeLog || undefined,
-        numLog: form.numLog ? Number(form.numLog) : undefined,
-        cep: form.cep || undefined,
-        bairro: form.bairro || undefined,
-        complemento: form.complemento || undefined,
-        cidade: form.cidade || undefined,
-        uf: form.uf || undefined,
-      };
-
-      // Remove campos undefined para não enviar dados vazios
-      Object.keys(payload).forEach(key => {
-        if (payload[key as keyof ArtistaEditDTO] === undefined) {
-          delete payload[key as keyof ArtistaEditDTO];
-        }
-      });
+      const payload = prepararPayload();
 
       await ArtistaService.edit(tokenParse.token, payload);
       
+      Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
       router.navigate("/profile");
     } catch (error: any) {
-      console.error("Erro detalhado ao salvar:", error);
+      console.error("Erro ao salvar:", error);
+      Alert.alert("Erro", error.message || "Não foi possível salvar as alterações");
     } finally {
       setSaving(false);
     }
@@ -132,12 +203,28 @@ export default function EditPerfil() {
 
       <View style={style.linhaAvatar}>
         <View style={style.avatarContainer}>
-          <Image
-            source={require("@/assets/template/avatar.png")}
-            style={style.headerProfile}
-          />
+          {uploadingFoto ? (
+            <ActivityIndicator
+              size="large"
+              color={gStyles.azul[200]}
+              style={style.headerProfile}
+            />
+          ) : (
+            <Image
+              source={
+                fotoUri
+                  ? { uri: fotoUri }
+                  : require("@/assets/template/avatar.png")
+              }
+              style={style.headerProfile}
+            />
+          )}
         </View>
-        <TouchableOpacity style={style.editarAvatar}>
+        <TouchableOpacity
+          style={style.editarAvatar}
+          onPress={handleAlterarFoto}
+          disabled={uploadingFoto}
+        >
           <Feather name="edit-3" size={16} color="#fff" />
         </TouchableOpacity>
       </View>
