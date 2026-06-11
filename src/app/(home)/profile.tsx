@@ -31,6 +31,7 @@ export default function Perfil() {
           onPress={router.back}
           color="white"
         />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Seu Perfil" />
         <Appbar.Action
           onPress={() => setModal(true)}
           icon="cog"
@@ -100,7 +101,7 @@ export default function Perfil() {
       <View style={style.botaoEdit}>
         <Button
           mode="contained"
-          onPress={() => router.navigate("/home/perfil/editar")}
+          onPress={() => router.navigate("/edit")}
           style={style.paperButton}
           labelStyle={style.paperButtonLabel}
         >

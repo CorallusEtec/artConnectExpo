@@ -17,16 +17,11 @@ export default function Create() {
     handlePublicar,
     escolherAudio,
   } = useCreate();
-
   return (
     <View style={style.container}>
       <Text style={style.title}>Criar publicação</Text>
 
-      <AlertMessage
-        text={erro}          
-        visible={!!erro}      
-        onDismiss={() => {}}  
-      />
+      <AlertMessage text={erro} visible={!!erro} onDismiss={() => {}} />
 
       <TextInput
         placeholder="Texto do post..."
@@ -36,7 +31,11 @@ export default function Create() {
         multiline
       />
 
-      <AttachBar onImage={escolherGaleria} onCamera={escolherCamera} onFile={escolherAudio}/>
+      <AttachBar
+        onImage={escolherGaleria}
+        onCamera={escolherCamera}
+        onFile={escolherAudio}
+      />
 
       <MediaPreview midia={midia} tipoMidia={tipoMidia} />
 

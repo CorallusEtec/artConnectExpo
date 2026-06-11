@@ -3,7 +3,7 @@ import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PagedResponse } from "@/models/response/PagedResponse";
 import {
   PublicacaoDetails,
-  PublicacaoResponse
+  PublicacaoResponse,
 } from "@/models/response/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
@@ -48,47 +48,45 @@ export class PublicacaoService {
   /**
    * requisição de salvamento de imagem
    *
-   * @deprecated
-   *
    * @param param0 Request params para a requisição
    * @returns Status da requisição
    */
   static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
-  try {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    if (legenda) formData.append("legenda", legenda);
+      if (legenda) formData.append("legenda", legenda);
 
-    if (file?.uri) {
-      /**
-       *  Na web, o expo-image-picker retorna uma blob URL — precisa converter pra Blob
-       *  antes de appendar no FormData para o backend receber corretamente
-       */
-  const response = await fetch(file.uri);
-  const blob = await response.blob();
-  formData.append("arquivo", blob, `upload-${Date.now()}.png`);
-}
-
-    if (tipoMidia) formData.append("tipoMidia", tipoMidia);
-    const tk = await AsyncStorage.getItem("@artconnect:token");
-    if (!tk) {
-      return;
-    }
-    const tokenParse: AuthLoginResponse = JSON.parse(tk);
-    
-    return await config.axiosClient.post(
-      `${config.apiUrl}/publicacao/save`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenParse.token}`,
-        },
+      if (file?.uri) {
+        /**
+         *  Na web, o expo-image-picker retorna uma blob URL — precisa converter pra Blob
+         *  antes de appendar no FormData para o backend receber corretamente
+         */
+        const response = await fetch(file.uri);
+        const blob = await response.blob();
+        formData.append("arquivo", blob, `upload-${Date.now()}.png`);
       }
-    );
-  } catch (error: any) {
-    throw error;
+
+      if (tipoMidia) formData.append("tipoMidia", tipoMidia);
+      const tk = await AsyncStorage.getItem("@artconnect:token");
+      if (!tk) {
+        return;
+      }
+      const tokenParse: AuthLoginResponse = JSON.parse(tk);
+
+      return await config.axiosClient.post(
+        `${config.apiUrl}/publicacao/save`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenParse.token}`,
+          },
+        },
+      );
+    } catch (error: any) {
+      throw error;
+    }
   }
-}
 
   /**
    * Função anterior de listar
