@@ -32,7 +32,7 @@ export function usePublicacaoQuery() {
 /**
  * Classe que agrega as consultas diretas à API
  */
-class PublicacaoService {
+export class PublicacaoService {
   /**
    * Faz a requisição das publicações no sistema, com parâmetros de busca
    * @see http://localhost:8080/swagger-ui/index.html Documentação da API
@@ -53,56 +53,42 @@ class PublicacaoService {
    * @param param0 Request params para a requisição
    * @returns Status da requisição
    */
-  static async save({ legenda, file, autorId }: PublicacaoRequest) {
-    try {
-      const formData = new FormData();
+  static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
+  try {
+    const formData = new FormData();
 
-      formData.append("legenda", legenda);
+    if (legenda) formData.append("legenda", legenda);
 
-      if (file?.uri) {
-        let blob: Blob;
+    if (file?.uri) {
+      /**
+       *  Na web, o expo-image-picker retorna uma blob URL — precisa converter pra Blob
+       *  antes de appendar no FormData para o backend receber corretamente
+       */
+  const response = await fetch(file.uri);
+  const blob = await response.blob();
+  formData.append("arquivo", blob, `upload-${Date.now()}.png`);
+}
 
-        try {
-          const fileResponse = await fetch(file.uri);
-
-          blob = await fileResponse.blob();
-        } catch (blobErr) {
-          throw blobErr;
-        }
-
-        formData.append("file", blob, `image-${Date.now()}.jpg`);
-      }
-
-      const tk = await AsyncStorage.getItem("@artconnect:token");
-
-      if (!tk) {
-        return;
-      }
-      const tokenParse: AuthLoginResponse = JSON.parse(tk);
-      const response = await fetch(
-        `${config.apiUrl}/publicacao/save?autorId=${autorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenParse.token}`,
-          },
-          body: formData,
-          method: "POST",
-        },
-      );
-
-      const text = await response.text();
-
-      if (!response.ok) {
-        throw new Error(text);
-      }
-
-      return "Publicação cadastrada com sucesso";
-    } catch (error) {
-      console.error("Erro ao salvar publicação:", error);
-
-      throw error;
+    if (tipoMidia) formData.append("tipoMidia", tipoMidia);
+    const tk = await AsyncStorage.getItem("@artconnect:token");
+    if (!tk) {
+      return;
     }
+    const tokenParse: AuthLoginResponse = JSON.parse(tk);
+    
+    return await config.axiosClient.post(
+      `${config.apiUrl}/publicacao/save`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenParse.token}`,
+        },
+      }
+    );
+  } catch (error: any) {
+    throw error;
   }
+}
 
   /**
    * Função anterior de listar

@@ -1,7 +1,7 @@
 import { usePublicacaoData } from "@/contexts/PublicacaoContext";
 import { Text } from "react-native";
-import { Card, Divider } from "react-native-paper";
-import { style } from "./style";
+import { Card } from "react-native-paper";
+import { renderMidia } from "./Midias/RenderMidia";
 
 export function PublicacaoContent() {
   const publicacao = usePublicacaoData().data.publicacao;
@@ -11,18 +11,8 @@ export function PublicacaoContent() {
         {/* LEGENDA */}
         <Text>{publicacao.legenda}</Text>
       </Card.Content>
-      {/* IMAGEM SE TIVER */}
-      {publicacao.urlMidia && (
-        <>
-          <Card.Cover
-            style={style.img}
-            source={{
-              uri: "https://dummyimage.com/800x430/FFFFFF/lorem-ipsum.png&text=jsonplaceholder.org",
-            }}
-          />
-          <Divider />
-        </>
-      )}
+      {/*MIDIA*/}
+        {publicacao.urlMidia && (renderMidia(publicacao.urlMidia!, publicacao.tipoMidia))}
     </>
   );
 }
