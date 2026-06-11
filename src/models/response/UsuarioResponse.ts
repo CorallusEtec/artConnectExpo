@@ -1,5 +1,7 @@
-export type TipoConta = 'ARTISTA' | 'CONTRATANTE' | 'ADMIN';
-export type NomeTipoStatus = 'ATIVO' | 'INATIVO' | 'BLOQUEADO' | 'PENDENTE';
+import { PublicacaoResponse } from "./PublicacaoResponse";
+
+export type TipoConta = "ARTISTA" | "CONTRATANTE" | "ADMIN";
+export type NomeTipoStatus = "ATIVO" | "INATIVO" | "BLOQUEADO" | "PENDENTE";
 
 export interface TipoStatus {
   id: number;
@@ -15,7 +17,7 @@ export interface Status {
 }
 
 export interface UsuarioResponse {
-   id: number;
+  id: number;
   nome: string;
   email: string;
   tipoConta: TipoConta;
@@ -30,5 +32,6 @@ export interface UsuarioResponse {
   uf?: string;
   textoBio?: string;
   fotoPerfilUrl?: string;
-  contatos?: []
+  contatos?: [];
+  publicacaoes: PublicacaoResponse[];
 }

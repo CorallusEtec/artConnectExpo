@@ -1,6 +1,22 @@
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import { UsuarioResponse } from "@/models/response/UsuarioResponse";
+import { useQuery } from "@tanstack/react-query";
 import config from "./config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export function useUsuarioByIdQuery(id: number) {
+  const query = useQuery({
+    queryKey: ["profileData"],
+    queryFn: () => UsuarioService.findById(id),
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnMount: false,
+  });
+  return {
+    ...query,
+    data: query.data,
+  };
+}
 
 export class UsuarioService {
   async listar(params?: any) {
@@ -32,6 +48,14 @@ export class UsuarioService {
 
     return await response.json();
   }
+  static async findById(id: number) {
+    const reponse = await config.axiosClient.get<UsuarioResponse>(
+      `${config.apiUrl}/usuario/${id}`,
+    );
+
+    return reponse;
+  }
+}
 
   async findById(id: number, token?: string): Promise<any> {
     const headers: HeadersInit = {
