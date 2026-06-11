@@ -1,27 +1,39 @@
-import { AuthLoginRequest } from "@/models/request/AuthLoginRequest";
-import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
-import config from "./config";
+import { useAuth } from "@/contexts/AuthContext";
 import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
-import { useQuery } from "@/hooks/useQuery";
+import { UsuarioLoginRequest } from "@/models/response/UsuarioLoginResponse";
+import { useMutation } from "@tanstack/react-query";
+import { router } from "expo-router";
+import config from "./config";
+
+export function useLoginMutate() {
+  const { signIn, token } = useAuth();
+  const mutate = useMutation({
+    mutationFn: (data: UsuarioLoginRequest) => AuthService.login(data),
+
+    onSuccess: (data) => {
+      (async () => {
+        await signIn(data.data);
+        router.replace("/home");
+      })();
+    },
+  });
+  return mutate;
+}
 
 export class AuthService {
-    static async login(loginRequest: AuthLoginRequest): Promise<AuthLoginResponse> {
-        const request = await useQuery({
-            method: "POST", 
-            url:`${config.apiUrl}/auth/login`, 
-            body:JSON.stringify(loginRequest)
-        })
-        
-       
-        return request.json()
-    }
+  static async login(loginRequest: UsuarioLoginRequest) {
+    return await config.axiosClient.post(
+      `${config.apiUrl}/auth/login`,
+      loginRequest,
+    );
+  }
 
-    static async register(registerRequest: AuthRegisterRequest) {
-        await useQuery({
-            url: `${config.apiUrl}/auth/register`,
-            body: JSON.stringify(registerRequest),
-            method: "POST",
-        });
+  static async register(cadastroRequest: AuthRegisterRequest) {
+    const response = await config.axiosClient.post(
+      `${config.apiUrl}/auth/register`,
+      cadastroRequest,
+    );
 
-    }
+    return response;
+  }
 }

@@ -1,18 +1,16 @@
+import { AutorResponse } from "./AutorResponse";
+import { PublicacaoResponse } from "./PublicacaoResponse";
+
 export interface ComentarioResponse {
-    id: number,
-    statusComentario: {
-        id: number,
-        tipoStatus: {
-            id: number,
-            nomeTipoStatus: string
-        },
-        descricao: string | null,
-        dataModificacao: string
-    },
-    dataComentario: string | null,
-    mensagem: string,
-    autor: {
-        nome: string
-    },
-    idPublicacao: number,
+  id: number;
+  status: {
+    id: number;
+    tipoStatus: string;
+    descricao: string | null;
+    dataModificacao: string;
+  };
+  dataComentario: string;
+  mensagem: string;
+  usuario: AutorResponse;
+  publicacao: PublicacaoResponse;
 }

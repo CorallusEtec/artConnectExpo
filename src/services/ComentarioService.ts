@@ -1,38 +1,26 @@
 import { ComentarioResponse } from "@/models/response/ComentarioResponse";
-import { ComentarioRequest } from "@/models/request/ComentarioRequest";
+import { PagedResponse } from "@/models/response/PagedResponse";
+import { useQuery } from "@tanstack/react-query";
 import config from "./config";
-import { useQuery } from "@/hooks/useQuery";
 
-export class ComentarioService {
-    static domain = `${config.apiUrl}/comentario`
+export function useComentarioQuery(id: number, token: string) {
+  const query = useQuery({
+    queryKey: ["comments"],
+    queryFn: () => ComentarioService.findByPostId(id, token),
+  });
 
-    static async findByPost(postId: number | undefined): Promise<ComentarioResponse[] | null> {
-        try {
-            if(typeof postId == "undefined") {
-                return null;
-            } 
-                const data = await useQuery({
-                    url: `${this.domain}/findByPost/${postId}`
-                });
-                return data.json();
+  return query;
+}
 
-
-        } catch (erro) {
-            throw Error("Erro ao buscar os posts");
-        }
-    }
-
-    static async comment(comentario: ComentarioRequest): Promise<void> {
-        try {
-            await useQuery({
-                url:`${this.domain}/comment`,
-                method: 'POST',
-                body: JSON.stringify(comentario),
-            });
-
-        } catch (e) {
-            console.error(e)
-            throw new Error("Erro ao postar comentario");
-        }
-    }
+class ComentarioService {
+  static async findByPostId(postId: number, token: string) {
+    return await config.axiosClient.get<PagedResponse<ComentarioResponse>>(
+      `${config.apiUrl}/comentario/findByPost/${postId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  }
 }
