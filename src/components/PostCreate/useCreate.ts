@@ -1,4 +1,5 @@
 import { PublicacaoService } from "@/services/PublicacaoService";
+import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -9,8 +10,10 @@ export function useCreate() {
   const [legenda, setLegenda] = useState("");
   const [midia, setMidia] = useState<any>(null);
   const [tipoMidia, setTipoMidia] = useState<TipoMidia | null>(null);
+  const [nomeAudio, setNomeAudio] = useState<string | null>(null);
 
-  async function escolherImagem() {
+  // aqui escolhe a imagem/video da galeria
+  async function escolherGaleria() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -23,6 +26,7 @@ export function useCreate() {
     }
   }
 
+  // aqui abre a camera
   async function escolherCamera() {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -58,14 +62,28 @@ export function useCreate() {
     }
   }
 
+  async function escolherAudio() {
+  const result = await DocumentPicker.getDocumentAsync({
+    type: "audio/*",
+  });
+
+  if (!result.canceled) {
+    setMidia(result.assets[0]);
+    setNomeAudio(result.assets[0].name);
+    setTipoMidia(TipoMidia.AUDIO);
+  }
+}
+
   return {
     erro,
     legenda,
     setLegenda,
     midia,
     tipoMidia,
-    escolherImagem,
+    escolherGaleria,
     escolherCamera,
     handlePublicar,
+    nomeAudio,
+    escolherAudio
   };
 }

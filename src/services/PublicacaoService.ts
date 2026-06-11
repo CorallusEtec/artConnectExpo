@@ -84,10 +84,10 @@ export class PublicacaoService {
         },
       }
     );
-
-    
-
   } catch (error: any) {
+    console.log("ERRO RAW:", error.response?.status);
+    console.log("ERRO DATA:", JSON.stringify(error.response?.data));
+    console.log("ERRO MSG:", error.message);    
     console.error("Erro ao salvar publicação:", error);
     throw error;
   }

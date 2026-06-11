@@ -1,8 +1,8 @@
-import { View, Text, TextInput, Pressable } from "react-native";
-import { style } from "./style";
-import { useCreate } from "./useCreate";
+import { Pressable, Text, TextInput, View } from "react-native";
 import AttachBar from "./AttachBar";
 import MediaPreview from "./MediaPreview";
+import { style } from "./style";
+import { useCreate } from "./useCreate";
 
 export default function Create() {
   const {
@@ -11,9 +11,11 @@ export default function Create() {
     setLegenda,
     midia,
     tipoMidia,
-    escolherImagem,
+    escolherGaleria,
     escolherCamera,
     handlePublicar,
+    escolherAudio,
+    nomeAudio
   } = useCreate();
 
   return (
@@ -30,7 +32,7 @@ export default function Create() {
         multiline
       />
 
-      <AttachBar onImage={escolherImagem} onCamera={escolherCamera} />
+      <AttachBar onImage={escolherGaleria} onCamera={escolherCamera} onFile={escolherAudio}/>
 
       <MediaPreview midia={midia} tipoMidia={tipoMidia} />
 

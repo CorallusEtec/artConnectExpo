@@ -21,13 +21,17 @@ function renderConteudo(midia: any, tipoMidia: TipoMidia | null) {
       return (
         <Video
           source={{ uri: midia.uri }}
-          style={{ width: "100%", height: 200, borderRadius: 10 }}
+          style={{ width: "100%", height: '50%', borderRadius: 10 }}
           useNativeControls
           resizeMode={ResizeMode.CONTAIN}
         />
       );
     case TipoMidia.AUDIO:
-      return <Text>🎵 Áudio selecionado</Text>;
+      return (
+        <View style={{ padding: 14, borderRadius: 10, backgroundColor: "#f0f0f0", alignItems: "center", borderWidth: 1, borderStyle:"dashed" }}>
+          <Text>{midia?.name ?? "Áudio selecionado"}</Text>
+        </View>
+      );
     default:
       return null;
   }
