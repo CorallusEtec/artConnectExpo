@@ -22,7 +22,9 @@ export function useCreate() {
 
     if (!result.canceled) {
       setMidia(result.assets[0]);
-      setTipoMidia(result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE);
+      setTipoMidia(
+        result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE,
+      );
     }
   }
 
@@ -36,7 +38,9 @@ export function useCreate() {
 
     if (!result.canceled) {
       setMidia(result.assets[0]);
-      setTipoMidia(result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE);
+      setTipoMidia(
+        result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE,
+      );
     }
   }
 
@@ -54,7 +58,7 @@ export function useCreate() {
       return;
     }
     try {
-      await PublicacaoService.save(res);
+      const response = await PublicacaoService.save(res);
       router.navigate("/home");
     } catch (e: any) {
       setErro(e?.message ?? "Erro ao publicar");
@@ -62,16 +66,16 @@ export function useCreate() {
   }
 
   async function escolherAudio() {
-  const result = await DocumentPicker.getDocumentAsync({
-    type: "audio/*",
-  });
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "audio/*",
+    });
 
-  if (!result.canceled) {
-    setMidia(result.assets[0]);
-    setNomeAudio(result.assets[0].name);
-    setTipoMidia(TipoMidia.AUDIO);
+    if (!result.canceled) {
+      setMidia(result.assets[0]);
+      setNomeAudio(result.assets[0].name);
+      setTipoMidia(TipoMidia.AUDIO);
+    }
   }
-}
 
   return {
     erro,

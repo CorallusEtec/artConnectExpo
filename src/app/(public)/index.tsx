@@ -18,7 +18,7 @@ export default function Login() {
 
   const errorMessage = useRef("");
   const [showAlert, setShowAlert] = useState(false);
-  const { mutate, isPending, isError, error } = useLoginMutate();
+  const { mutate, isPending, isError, error, data } = useLoginMutate();
 
   async function login() {
     const result = schema.safeParse({ email, senha });
@@ -38,6 +38,7 @@ export default function Login() {
   function guest() {
     (async () => {})();
   }
+  console.log(data?.status);
   return (
     <SafeAreaView style={style.container}>
       <AlertMessage
