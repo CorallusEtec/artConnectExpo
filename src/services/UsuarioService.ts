@@ -1,8 +1,8 @@
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import config from "./config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useUsuarioByIdQuery(id: number) {
   const query = useQuery({
@@ -55,7 +55,6 @@ export class UsuarioService {
 
     return reponse;
   }
-}
 
   async findById(id: number, token?: string): Promise<any> {
     const headers: HeadersInit = {
@@ -70,13 +69,13 @@ export class UsuarioService {
     if (!response.ok) {
       throw new Error("Erro ao buscar usuário");
     }
- 
+
     return await response.json();
   }
 
-    async updateFotoPerfil(file: { 
-    uri: string; 
-    name?: string; 
+  async updateFotoPerfil(file: {
+    uri: string;
+    name?: string;
     type?: string;
   }): Promise<string> {
     try {
@@ -89,7 +88,7 @@ export class UsuarioService {
 
       const blobResponse = await fetch(file.uri);
       const blob = await blobResponse.blob();
-      
+
       const mimeType = file.type || blob.type || "image/jpeg";
       const extensao = mimeType.split("/")[1] ?? "jpg";
       const fileName = file.name || `foto-perfil-${Date.now()}.${extensao}`;
@@ -107,13 +106,13 @@ export class UsuarioService {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        const errorMessage = errorData?.message || "Erro ao atualizar foto de perfil";
+        const errorMessage =
+          errorData?.message || "Erro ao atualizar foto de perfil";
         throw new Error(errorMessage);
       }
 
       const data = await response.json();
       return data.message || "Foto de perfil atualizada com sucesso!";
-      
     } catch (error) {
       console.error("Erro no service de upload:", error);
       throw error;
@@ -132,7 +131,5 @@ export class UsuarioService {
     const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
     return await this.findById(tokenParse.id, tokenParse.token);
   }
-  
-  
 }
 export default new UsuarioService();

@@ -14,11 +14,31 @@ export function PublicacaoHeader() {
   const [menu, setMenu] = useState(false);
   const publicacao = usePublicacaoData().data.publicacao;
 
+  function guestFotoRender() {
+    if (publicacao.autor.nome) {
+      return <Avatar.Text label={publicacao.autor.nome.charAt(0)} size={35} />;
+    } else {
+      return (
+        <Avatar.Image
+          source={require("@/assets/template/avatar.png")}
+          size={35}
+        />
+      );
+    }
+  }
+
   return (
     <Card.Content style={style.headerContainer}>
       <View style={style.headerContent}>
         {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
-        <Avatar.Text label={publicacao.autor.nome.charAt(0)} size={32} />
+        {publicacao.autor.fotoPerfilUrl ? (
+          <Avatar.Image
+            size={35}
+            source={{ uri: publicacao.autor.fotoPerfilUrl }}
+          />
+        ) : (
+          guestFotoRender()
+        )}
         <View style={style.metadataPubli}>
           <Text style={style.autorLabel}>{publicacao.autor.nome}</Text>
           <Text style={style.publishDateLabel}>

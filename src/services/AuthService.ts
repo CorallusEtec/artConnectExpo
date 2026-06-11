@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
 import { UsuarioLoginRequest } from "@/models/response/UsuarioLoginResponse";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -25,5 +26,14 @@ export class AuthService {
       `${config.apiUrl}/auth/login`,
       loginRequest,
     );
+  }
+
+  static async register(cadastroRequest: AuthRegisterRequest) {
+    const response = await config.axiosClient.post(
+      `${config.apiUrl}/auth/register`,
+      cadastroRequest,
+    );
+
+    return response;
   }
 }
