@@ -1,4 +1,4 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { TipoReacao } from "@/models/enumeration/enumeration";
 import { useRef } from "react";
 import { Text, View } from "react-native";
@@ -32,7 +32,7 @@ export function PublicacaoReacaoToggle({
   index,
 }: PublicacaoReacaoToggleProps) {
   // Contexto
-  const { data, setData } = usePublicacaoData();
+  const { data, setData } = usePublicacao();
   /** Estado que carrega o total da reacao*/
   const insight = useRef(data.reacoes[index].total);
 
@@ -42,7 +42,10 @@ export function PublicacaoReacaoToggle({
   function toggleReagir() {
     setData((prevState) => ({
       ...prevState,
-      ["reacaoUsuario"]: tipoReacao != data.reacaoUsuario ? tipoReacao : null,
+      publicacao: {
+        ...prevState.publicacao,
+        ["reacaoUsuario"]: tipoReacao != data.reacaoUsuario ? tipoReacao : null,
+      },
     }));
     // Código de reagir no banco de dados
   }

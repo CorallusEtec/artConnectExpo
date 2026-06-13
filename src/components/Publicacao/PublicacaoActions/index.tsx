@@ -1,16 +1,15 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { Card, IconButton } from "react-native-paper";
 import { ComentarioSection } from "../ComentarioSection";
 import { PublicacaoReacaoToggle } from "./PublicacaoReacaoToggle";
 import { style } from "./style";
 
 type ReacaoStateType = { [chave: string]: object };
 export function PublicacaoActions() {
-  const { data } = usePublicacaoData();
+  const { data } = usePublicacao();
   const [openComments, setOpenComments] = useState(false);
-  const theme = useTheme();
 
   return (
     <Card.Actions style={style.cardActionContainer}>
@@ -30,7 +29,7 @@ export function PublicacaoActions() {
             icon="message-text-outline"
             onPress={() => setOpenComments(true)}
           />
-          <Text style={style.actionInsight}>{data.totalComentarios}</Text>
+          <Text style={style.actionInsight}>{0}</Text>
         </View>
       </View>
 

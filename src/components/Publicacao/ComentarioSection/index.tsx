@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { ComentarioProvider } from "@/contexts/ComentarioContext";
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { useComentarioQuery } from "@/services/ComentarioService";
 import { useState } from "react";
 import { ActivityIndicator, FlatList, Modal, View } from "react-native";
@@ -19,7 +19,7 @@ export function ComentarioSection({
   setVisible,
 }: ComentarioSectionProps) {
   // ID da publicação
-  const { id } = usePublicacaoData().data.publicacao;
+  const { id } = usePublicacao().data;
   const auth = useAuth();
   let tokenValidado = "";
   if (auth.token != null) {

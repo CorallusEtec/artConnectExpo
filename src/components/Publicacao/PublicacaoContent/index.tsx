@@ -1,10 +1,10 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { Text } from "react-native";
 import { Card } from "react-native-paper";
 import { renderMidia } from "./Midias/RenderMidia";
 
 export function PublicacaoContent() {
-  const publicacao = usePublicacaoData().data.publicacao;
+  const { publicacao } = usePublicacao().data;
   return (
     <>
       <Card.Content>
@@ -12,7 +12,8 @@ export function PublicacaoContent() {
         <Text>{publicacao.legenda}</Text>
       </Card.Content>
       {/*MIDIA*/}
-        {publicacao.urlMidia && (renderMidia(publicacao.urlMidia!, publicacao.tipoMidia))}
+      {publicacao.urlMidia &&
+        renderMidia(publicacao.urlMidia!, publicacao.tipoMidia)}
     </>
   );
 }

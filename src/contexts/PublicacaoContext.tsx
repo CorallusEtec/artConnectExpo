@@ -11,15 +11,20 @@ import {
 /**
  * Tipagem do contexto
  */
-export interface PublicacaoContextType {
+type PublicacaoContextType = {
   data: PublicacaoDetails;
   setData: Dispatch<SetStateAction<PublicacaoDetails>>;
-}
+};
 
 // CONTEXTO CRIADO
 const PublicacaoContext = createContext<PublicacaoContextType>(
   {} as PublicacaoContextType,
 );
+
+type PublicacaoProviderProps = {
+  children: ReactNode;
+  dataInicial: PublicacaoDetails;
+};
 
 /**
  *
@@ -28,15 +33,12 @@ const PublicacaoContext = createContext<PublicacaoContextType>(
  */
 export function PublicacaoProvider({
   children,
-  dadosPubli,
-}: {
-  children: ReactNode;
-  dadosPubli: PublicacaoDetails;
-}) {
-  const [data, setData] = useState<PublicacaoDetails>(dadosPubli);
+  dataInicial,
+}: PublicacaoProviderProps) {
+  const [data, setData] = useState<PublicacaoDetails>(dataInicial);
 
   return (
-    <PublicacaoContext.Provider value={{ data: data, setData: setData }}>
+    <PublicacaoContext.Provider value={{ data, setData }}>
       {children}
     </PublicacaoContext.Provider>
   );
@@ -46,7 +48,7 @@ export function PublicacaoProvider({
  *
  * @returns Dados da publicação para árvore de componentes de Publicação.
  */
-export function usePublicacaoData(): PublicacaoContextType {
+export function usePublicacao(): PublicacaoContextType {
   const context = useContext(PublicacaoContext);
 
   return context;

@@ -19,7 +19,7 @@ import {
 
 export default function Perfil() {
   //const { usuario, publicacoes, loading } = usePerfil();
-  const { isAuth, token } = useAuth();
+  const { token } = useAuth();
   const [modal, setModal] = useState(false);
   let id!: number;
   if (token) {

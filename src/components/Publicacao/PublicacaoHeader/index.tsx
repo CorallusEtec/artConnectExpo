@@ -1,4 +1,4 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { style } from "./style";
  */
 export function PublicacaoHeader() {
   const [menu, setMenu] = useState(false);
-  const publicacao = usePublicacaoData().data.publicacao;
+  const { publicacao } = usePublicacao().data;
 
   function guestFotoRender() {
     if (publicacao.autor.nome) {
