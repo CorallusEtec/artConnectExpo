@@ -1,19 +1,19 @@
 import { ComentarioResponse } from "@/models/response/ComentarioResponse";
 import { createContext, ReactNode, useContext, useState } from "react";
 
-type ComentarioProviderProps = {
-  children: ReactNode;
-  initialData: ComentarioResponse;
-};
-
+/** Contexto para listagem */
 type ComentarioContextType = {
   data: ComentarioResponse;
   setData: (data: ComentarioResponse) => void;
 };
-
 const ComentarioContext = createContext<ComentarioContextType>(
   {} as ComentarioContextType,
 );
+
+type ComentarioProviderProps = {
+  children: ReactNode;
+  initialData: ComentarioResponse;
+};
 
 export function ComentarioProvider({
   children,

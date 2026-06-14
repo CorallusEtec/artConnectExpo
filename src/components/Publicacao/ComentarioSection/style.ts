@@ -12,12 +12,4 @@ export const style = StyleSheet.create({
     flex: 1,
     marginTop: 400,
   },
-  headerContainer: {
-    padding: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  headerTitle: {
-    fontWeight: "medium",
-  },
 });

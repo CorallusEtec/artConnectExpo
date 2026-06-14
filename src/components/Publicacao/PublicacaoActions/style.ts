@@ -5,6 +5,12 @@ export const style = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+
+  actionsLeftContainer: {
+    flexDirection: "row",
+    gap: 5,
+  },
+
   actionInsight: {
     fontSize: 17,
     fontWeight: "600",

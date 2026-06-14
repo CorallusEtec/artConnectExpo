@@ -15,6 +15,7 @@ type AuthContextType = {
   isAuth: boolean;
   signIn: (token: AuthLoginResponse) => Promise<void>;
   signOut: () => Promise<void>;
+  getValidateToken: () => string;
 };
 
 const AuthContext = createContext<AuthContextType | null>({
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType | null>({
   token: null,
   signIn: async (token: AuthLoginResponse) => {},
   signOut: async () => {},
+  getValidateToken: () => "",
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -48,18 +50,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadToken();
   }, []);
 
-  const signIn = async (login: AuthLoginResponse) => {
+  async function signIn(login: AuthLoginResponse) {
     await AsyncStorage.setItem("@artconnect:token", JSON.stringify(login));
     setToken(login); // Muda o estado global
-  };
+  }
 
-  const signOut = async () => {
+  async function signOut() {
     await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
-  };
+  }
+
+  function getValidateToken(): string {
+    if (token) {
+      return token.token;
+    } else {
+      return "";
+    }
+  }
+
   return (
     <AuthContext.Provider
-      value={{ token, isLoading, isAuth: isAuth.current, signIn, signOut }}
+      value={{
+        token,
+        isLoading,
+        isAuth: isAuth.current,
+        signIn,
+        signOut,
+        getValidateToken,
+      }}
     >
       {children}
     </AuthContext.Provider>
