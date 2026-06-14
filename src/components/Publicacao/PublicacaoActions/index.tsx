@@ -17,13 +17,13 @@ export function PublicacaoActions() {
       {/* ACTIONS LEFT */}
       <View style={{ flexDirection: "row", gap: 5 }}>
         {/* RENDERIZA AS REAÇÕES */}
-        {data.reacoes.map((r, index) => (
-          <PublicacaoReacaoToggle
-            key={index}
-            index={index}
-            tipoReacao={r.tipoReacao}
-          />
-        ))}
+        {data.reacoes?.map((r, index) => (
+        <PublicacaoReacaoToggle
+          key={index}
+          index={index}
+          tipoReacao={r.tipoReacao}
+        />
+      ))}
         {/* COMMENT */}
         <View style={style.actionContainer}>
           <IconButton

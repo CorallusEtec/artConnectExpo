@@ -1,13 +1,21 @@
-// import { ResizeMode, Video } from "expo-av";
 import { Platform, View, Image, useWindowDimensions } from "react-native";
-import { Card, Divider } from "react-native-paper";
-import { style } from "../style";
+import { Divider } from "react-native-paper";
+import { VideoView, useVideoPlayer } from "expo-video";
 import { AudioPlayer } from "./AudioPlayer";
-import { maxSize } from "zod";
 
-export function renderMidia(urlMidia: string, tipoMidia: string | null) {
-    const { height } = useWindowDimensions();
-    const maxHeight = height * 0.5;
+type Props = {
+  urlMidia: string;
+  tipoMidia: string | null;
+};
+
+export function RenderMidia({ urlMidia, tipoMidia }: Props) {
+  const { height } = useWindowDimensions();
+  const maxHeight = height * 0.5;
+
+  const player = useVideoPlayer(tipoMidia === "VIDEO" ? urlMidia : null, (p) => {
+    p.loop = false;
+  });
+
   switch (tipoMidia) {
     case "IMAGEM":
       return (
@@ -28,43 +36,36 @@ export function renderMidia(urlMidia: string, tipoMidia: string | null) {
             <video
               src={urlMidia}
               controls
-              style={{ width: "100%", maxHeight: 400, objectFit: "contain", backgroundColor: "#000" }}
+              style={{
+                width: "100%",
+                maxHeight: 400,
+                objectFit: "contain",
+                backgroundColor: "#000",
+              }}
             />
             <Divider />
           </>
         );
       }
-      // return (
-      //   <>
-      //     <Video
-      //       source={{ uri: urlMidia }}
-      //       style={{ width: "100%", height: 250, backgroundColor: "#000" }}
-      //       useNativeControls
-      //       resizeMode={ResizeMode.CONTAIN}
-      //     />
-      //     <Divider />
-      //   </>
-      // );
-
-    case "AUDIO":
-    if (Platform.OS === "web") {
       return (
         <>
-          <View style={style.audioCard}>
-            <audio src={urlMidia} controls style={{ width: "100%" }} />
-          </View>
+          <VideoView
+            player={player}
+            style={{ width: "100%", height: 250, backgroundColor: "#000" }}
+            allowsFullscreen
+            nativeControls
+          />
           <Divider />
         </>
       );
-    }
-    
-    return (
-      <>
-        <AudioPlayer uri={urlMidia} />
-        <Divider />
-      </>
-    );
-    
+
+    case "AUDIO":
+      return (
+        <>
+          <AudioPlayer uri={urlMidia} />
+          <Divider />
+        </>
+      );
 
     default:
       return null;

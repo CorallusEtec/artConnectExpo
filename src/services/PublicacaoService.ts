@@ -5,11 +5,12 @@ import {
   PublicacaoDetails,
   PublicacaoResponse,
 } from "@/models/response/PublicacaoResponse";
+import { getExtensaoPorMimeType } from "@/utils/Extensoes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
+import { Platform } from "react-native";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
-import { Platform } from "react-native";
 
 /**
  * Hook que dá acesso aos estados da requisição e ações encapsuladas com o react query
@@ -55,15 +56,18 @@ export class PublicacaoService {
   static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
     try {
       const formData = new FormData();
-      const extensao = file.uri.split('.').pop() || 'png';
       
       if (legenda) formData.append("legenda", legenda);
       if (file?.uri) {
         if (Platform.OS === "web") {
           const response = await fetch(file.uri);
           const blob = await response.blob();
+          const extensao = getExtensaoPorMimeType(blob.type) 
+          || file.uri.split('.').pop() 
+          || 'bin';
           formData.append("arquivo", blob, `upload-${Date.now()}.png`);
         } else {
+          const extensao = file.uri.split('.').pop() || 'bin';
           formData.append("arquivo", {
             uri: file.uri,
             name: file.name || `upload-${Date.now()}.${extensao}`,
