@@ -9,9 +9,14 @@ import config from "./config";
  * @param token token do usuário autenticado
  * @returns Response da requisição dos comentarios do post com o id.
  */
-export function useComentarioQuery(id: number, token: string) {
+export function useComentarioQuery(
+  id: number,
+  token: string,
+  buscar: boolean = false,
+) {
   const query = useQuery({
     queryKey: ["post", id, "comments"],
+    enabled: buscar,
     queryFn: () => ComentarioService.findByPostId(id, token),
   });
 

@@ -8,9 +8,6 @@ export function useUsuarioByIdQuery(id: number) {
   const query = useQuery({
     queryKey: ["profileData"],
     queryFn: () => UsuarioService.findById(id),
-    staleTime: Infinity,
-    gcTime: Infinity,
-    refetchOnMount: false,
   });
   return {
     ...query,

@@ -1,0 +1,61 @@
+import { ModalSettings } from "@/components/ModalSettings";
+import { HeaderPerfil } from "@/components/Perfil/HeaderPerfil";
+import { PainelUsuarioPerfil } from "@/components/Perfil/PainelUsuarioPerfil";
+import { PublicacoesUsuarioPerfil } from "@/components/Perfil/PublicacoesUsuarioPerfil";
+import { useAuth } from "@/contexts/AuthContext";
+import { PerfilProvider } from "@/contexts/PerfilContext";
+import { useUsuarioByIdQuery } from "@/services/UsuarioService";
+import { gStyles } from "@/style/gStyle";
+import { style } from "@/style/pages/(home)/(private)/profile";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
+import { Button, TouchableRipple } from "react-native-paper";
+
+export default function Perfil() {
+  const { getValidateId } = useAuth();
+  const { data, isLoading } = useUsuarioByIdQuery(getValidateId());
+
+  if (isLoading) return <ActivityIndicator />;
+  console.log(data?.data);
+  return (
+    <View style={style.container}>
+      <PerfilProvider dataInicial={data?.data}>
+        {/* Modal de configurações do aplicativo */}
+        <ModalSettings />
+
+        {/* Navbar */}
+        <HeaderPerfil />
+
+        {/* painel de Informações do usuário */}
+        <PainelUsuarioPerfil />
+
+        {/* Botão de Ação */}
+        <View style={style.botaoEditContainer}>
+          <Button
+            mode="contained"
+            onPress={() => router.navigate("/edit")}
+            style={style.paperButton}
+            labelStyle={style.paperButtonLabel}
+          >
+            Editar ...
+          </Button>
+        </View>
+
+        {/* Abas/Ícones de Navegação Interna */}
+        <View style={style.icons}>
+          <TouchableRipple onPress={() => {}}>
+            <Feather name="camera" color={gStyles.cinza[600]} size={32.5} />
+          </TouchableRipple>
+          <TouchableRipple onPress={() => {}}>
+            <Feather name="bookmark" color={gStyles.cinza[600]} size={35} />
+          </TouchableRipple>
+        </View>
+
+        {/* Feed */}
+        <PublicacoesUsuarioPerfil />
+      </PerfilProvider>
+    </View>
+  );
+}

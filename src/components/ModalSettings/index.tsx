@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { usePerfil } from "@/contexts/PerfilContext";
 import { View } from "react-native";
 import {
   IconButton,
@@ -10,13 +11,9 @@ import {
 } from "react-native-paper";
 import { style } from "./style";
 
-type ModalSettings = {
-  modal: boolean;
-  setModal: (value: boolean) => void;
-};
-
-export function ModalSettings({ modal, setModal }: ModalSettings) {
+export function ModalSettings() {
   const { signOut } = useAuth();
+  const { modalConfig, setModalConfig } = usePerfil();
 
   const theme = useTheme();
   return (
@@ -24,13 +21,13 @@ export function ModalSettings({ modal, setModal }: ModalSettings) {
       <Modal
         dismissable={false}
         style={{ paddingHorizontal: 20 }}
-        visible={modal}
+        visible={modalConfig}
         dismissableBackButton={false}
         contentContainerStyle={style.modal}
       >
         <View style={style.headerContainer}>
           <Text variant="titleMedium">Configurações</Text>
-          <IconButton icon="close" onPress={() => setModal(false)} />
+          <IconButton icon="close" onPress={() => setModalConfig(false)} />
         </View>
         <Menu.Item
           leadingIcon="account-cog"

@@ -10,6 +10,5 @@ export const style = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginTop: 400,
   },
 });

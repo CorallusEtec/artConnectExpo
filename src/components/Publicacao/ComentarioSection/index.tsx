@@ -17,9 +17,8 @@ export function ComentarioSection() {
   const { data: comentarioData, isLoading } = useComentarioQuery(
     data.publicacao.id,
     getValidateToken(),
+    comentarioSection,
   );
-
-  if (isLoading) return <ActivityIndicator />;
 
   return (
     <Modal
@@ -33,15 +32,19 @@ export function ComentarioSection() {
         <ComentarioSender />
         <Divider />
 
-        <FlatList
-          data={comentarioData?.data.content}
-          keyExtractor={(id) => id.id.toString()}
-          renderItem={({ item }) => (
-            <ComentarioProvider initialData={item}>
-              <Comentario />
-            </ComentarioProvider>
-          )}
-        />
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={comentarioData?.data.content}
+            keyExtractor={(id) => id.id.toString()}
+            renderItem={({ item }) => (
+              <ComentarioProvider initialData={item}>
+                <Comentario />
+              </ComentarioProvider>
+            )}
+          />
+        )}
       </Card>
     </Modal>
   );

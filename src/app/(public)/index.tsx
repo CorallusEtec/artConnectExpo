@@ -1,16 +1,12 @@
+import { AlertMessage, BannerLogo, InputIcon, InputSenha } from "@/components";
+import { schema } from "@/schemas/loginSchema";
+import { useLoginMutate } from "@/services/AuthService";
 import { style } from "@/style/pages/login";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-import { AlertMessage } from "@/components/AlertMessage";
-import { BannerLogo } from "@/components/BannerLogo";
-import { InputIcon } from "@/components/InputIcon";
-import { InputSenha } from "@/components/InputSenha";
-import { schema } from "@/schemas/loginSchema";
-import { useLoginMutate } from "@/services/AuthService";
 import { Button, Checkbox } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login() {
   const [checked, setChecked] = useState(false);
   const [email, setEmail] = useState("");
@@ -35,10 +31,6 @@ export default function Login() {
       }
     }
   }
-  function guest() {
-    (async () => {})();
-  }
-  console.log(data?.status);
   return (
     <SafeAreaView style={style.container}>
       <AlertMessage
@@ -61,6 +53,7 @@ export default function Login() {
             keyboardType="email-address"
             autoCapitalize="none"
             icon="email-outline"
+            outlineStyle={{ borderRadius: 8 }}
           />
         </View>
 

@@ -6,7 +6,7 @@ import {
   SetStateAction,
   useContext,
   useReducer,
-  useState,
+  useState
 } from "react";
 
 /** Tipagem do contexto
@@ -81,7 +81,6 @@ export function PublicacaoProvider({
   dataInicial,
 }: PublicacaoProviderProps) {
   const [comentarioSection, setComentarioSection] = useState(false); // Modal de comentários
-
   const [data, dispatch] = useReducer(reducer, dataInicial);
 
   return (
