@@ -71,7 +71,7 @@ export default function HomeLayout() {
             }}
           />
           <Tabs.Screen
-            name="profile"
+            name="perfil"
             options={{
               title: "Perfil",
               tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,

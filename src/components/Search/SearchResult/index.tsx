@@ -26,8 +26,6 @@ export default function SearchResult({
       </View>
     );
   }
-  console.log(publicacoes);
-  console.log(usuarios);
 
   return (
     <View style={styles.container}>

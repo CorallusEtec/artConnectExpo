@@ -50,12 +50,12 @@ export default function RootLayout() {
   // SE NÃO, ATIVA /login E DESATIVA (home)
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={client}>
+    <QueryClientProvider client={client}>
+      <AuthProvider>
         <PaperProvider theme={theme}>
           <NavigationLayout />
         </PaperProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

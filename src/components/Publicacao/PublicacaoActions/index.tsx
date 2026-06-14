@@ -1,40 +1,31 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
-import { useState } from "react";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { Text, View } from "react-native";
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { Card, IconButton } from "react-native-paper";
 import { ComentarioSection } from "../ComentarioSection";
 import { PublicacaoReacaoToggle } from "./PublicacaoReacaoToggle";
 import { style } from "./style";
 
 type ReacaoStateType = { [chave: string]: object };
 export function PublicacaoActions() {
-  const { data } = usePublicacaoData();
-  const [openComments, setOpenComments] = useState(false);
-  const theme = useTheme();
+  const { data, setComentarioSection, comentarioSection } = usePublicacao();
 
   return (
     <Card.Actions style={style.cardActionContainer}>
       {/* ACTIONS LEFT */}
-      <View style={{ flexDirection: "row", gap: 5 }}>
-        {/* RENDERIZA AS REAÇÕES */}
-        {data.reacoes.map((r, index) => (
-          <PublicacaoReacaoToggle
-            key={index}
-            index={index}
-            tipoReacao={r.tipoReacao}
-          />
-        ))}
+      <View style={style.actionsLeftContainer}>
+        <PublicacaoReacaoToggle tipoReacao="LIKE" />
+        <PublicacaoReacaoToggle tipoReacao="DISLIKE" />
         {/* COMMENT */}
         <View style={style.actionContainer}>
           <IconButton
             icon="message-text-outline"
-            onPress={() => setOpenComments(true)}
+            onPress={() => setComentarioSection(true)}
           />
           <Text style={style.actionInsight}>{data.totalComentarios}</Text>
         </View>
       </View>
 
-      <ComentarioSection setVisible={setOpenComments} visible={openComments} />
+      <ComentarioSection />
 
       {/* ACTIONS RIGHT 
       <View>

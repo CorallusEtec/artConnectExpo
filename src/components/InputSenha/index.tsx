@@ -23,7 +23,7 @@ export function InputSenha({ ...props }: PaperInputSenhaProps) {
         />
       }
       style={{ fontSize: 16, backgroundColor: "#ffffff" }}
-      outlineStyle={{ borderRadius: 8, borderColor: "#c6c6c6" }}
+      outlineStyle={{ borderRadius: 8 }}
       {...props}
     />
   );

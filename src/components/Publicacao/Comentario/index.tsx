@@ -6,7 +6,6 @@ import { ComentarioHeader } from "./ComentarioHeader";
 export function Comentario() {
   const { data } = useComentarioList();
 
-  console.log(data);
   return (
     <>
       <ComentarioHeader />

@@ -1,6 +1,5 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { TipoReacao } from "@/models/enumeration/enumeration";
-import { useRef } from "react";
 import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { ICON_SIZE } from "../../style";
@@ -10,12 +9,8 @@ import { style } from "../style";
  * Props do componente
  */
 export type PublicacaoReacaoToggleProps = {
-  /** Indice da curtida no array de reações do back-end */
-  index: number;
-  key?: number;
-  /** T */
-  tipoReacao: TipoReacao;
   /** Carrega os icones com os estados reagido e não reagido da reação */
+  tipoReacao: TipoReacao;
 };
 
 const reacaoStateIcons = {
@@ -29,21 +24,14 @@ const reacaoStateIcons = {
  */
 export function PublicacaoReacaoToggle({
   tipoReacao,
-  index,
 }: PublicacaoReacaoToggleProps) {
   // Contexto
-  const { data, setData } = usePublicacaoData();
-  /** Estado que carrega o total da reacao*/
-  const insight = useRef(data.reacoes[index].total);
+  const { data, dispatch } = usePublicacao();
 
-  /**
-   * Ao reagir altera a reação feita pelo usuário
+  /** Ao reagir altera a reação feita pelo usuário
    */
   function toggleReagir() {
-    setData((prevState) => ({
-      ...prevState,
-      ["reacaoUsuario"]: tipoReacao != data.reacaoUsuario ? tipoReacao : null,
-    }));
+    dispatch({ type: tipoReacao });
     // Código de reagir no banco de dados
   }
 
@@ -56,12 +44,10 @@ export function PublicacaoReacaoToggle({
             : reacaoStateIcons[tipoReacao].off
         }
         size={ICON_SIZE}
-        onPress={() => toggleReagir()}
+        onPress={toggleReagir}
       />
       <Text style={style.actionInsight}>
-        {tipoReacao == data.reacaoUsuario
-          ? insight.current + 1
-          : insight.current}
+        {tipoReacao == "LIKE" ? data.likes : data.dislikes}
       </Text>
     </View>
   );

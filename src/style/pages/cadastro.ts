@@ -2,11 +2,8 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
-    paddingTop: 50,
     flex: 1,
-    gap: 35,
     backgroundColor: "white",
-    height: "100%",
   },
 
   titleContainer: {

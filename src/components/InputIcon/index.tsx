@@ -11,9 +11,12 @@ export function InputIcon({ icon, ...props }: PaperInputProps) {
   return (
     <TextInput
       mode="outlined"
-      left={icon ? <TextInput.Icon icon={icon} color={gStyles.azul[500]} /> : undefined}
+      left={
+        icon ? (
+          <TextInput.Icon icon={icon} color={gStyles.azul[500]} />
+        ) : undefined
+      }
       style={{ fontSize: 16, backgroundColor: "#ffffff" }}
-      outlineStyle={{ borderRadius: 8, borderColor: "#c6c6c6" }}
       {...props}
     />
   );
