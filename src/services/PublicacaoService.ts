@@ -16,12 +16,9 @@ import config from "./config";
  *
  * @returns Objeto `useQuery` que gerencia o comportamento e ações da request
  */
-export function usePublicacaoQuery(
-  key = "feed",
-  params: PublicacaoPageParams = {},
-) {
+export function usePublicacaoQuery(params: PublicacaoPageParams = {}) {
   const query = useQuery({
-    queryKey: [key],
+    queryKey: [params.idUsuario, "feed"],
     queryFn: () => PublicacaoService.listar(params),
     staleTime: Infinity,
     gcTime: Infinity,
@@ -65,24 +62,25 @@ export class PublicacaoService {
   static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
     try {
       const formData = new FormData();
-      
+
       if (legenda) formData.append("legenda", legenda);
       if (file?.uri) {
         if (Platform.OS === "web") {
           const response = await fetch(file.uri);
           const blob = await response.blob();
-          const extensao = getExtensaoPorMimeType(blob.type) 
-          || file.uri.split('.').pop() 
-          || 'bin';
+          const extensao =
+            getExtensaoPorMimeType(blob.type) ||
+            file.uri.split(".").pop() ||
+            "bin";
           formData.append("arquivo", blob, `upload-${Date.now()}.png`);
         } else {
-          const extensao = file.uri.split('.').pop() || 'bin';
+          const extensao = file.uri.split(".").pop() || "bin";
           formData.append("arquivo", {
             uri: file.uri,
             name: file.name || `upload-${Date.now()}.${extensao}`,
             type: file.mimeType || "video/mp4",
           } as any);
-        }      
+        }
       }
 
       if (tipoMidia) formData.append("tipoMidia", tipoMidia);

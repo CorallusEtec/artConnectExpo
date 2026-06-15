@@ -8,18 +8,21 @@ import { style } from "./style";
 export function PublicacoesUsuarioPerfil() {
   const { getValidateId } = useAuth();
 
-  const { data, isLoading } = usePublicacaoQuery("", {
+  const { data, isLoading } = usePublicacaoQuery({
     idUsuario: getValidateId(),
   });
 
   if (isLoading) return <ActivityIndicator />;
 
   return (
-    <View style={style.posts}>
+    <View style={style.container}>
       <FlatList
+        style={style.postFlatContainer}
+        contentContainerStyle={style.postContentContainer}
+        nestedScrollEnabled
         data={data?.data.content}
         renderItem={({ item }) => (
-          <PublicacaoProvider dataInicial={item}>
+          <PublicacaoProvider key={getValidateId()} dataInicial={item}>
             <Publicacao />
           </PublicacaoProvider>
         )}
