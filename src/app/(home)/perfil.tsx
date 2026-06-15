@@ -10,7 +10,7 @@ import { style } from "@/style/pages/(home)/(private)/profile";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import { Button, TouchableRipple } from "react-native-paper";
 
 export default function Perfil() {
@@ -18,10 +18,10 @@ export default function Perfil() {
   const { data, isLoading } = useUsuarioByIdQuery(getValidateId());
 
   if (isLoading) return <ActivityIndicator />;
-  console.log(data?.data);
+
   return (
-    <View style={style.container}>
-      <PerfilProvider dataInicial={data?.data}>
+    <ScrollView style={style.container}>
+      <PerfilProvider key={getValidateId()} dataInicial={data?.data}>
         {/* Modal de configurações do aplicativo */}
         <ModalSettings />
 
@@ -56,6 +56,6 @@ export default function Perfil() {
         {/* Feed */}
         <PublicacoesUsuarioPerfil />
       </PerfilProvider>
-    </View>
+    </ScrollView>
   );
 }

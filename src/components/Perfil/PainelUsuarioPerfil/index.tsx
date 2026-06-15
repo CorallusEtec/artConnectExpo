@@ -6,8 +6,6 @@ import { style } from "./style";
 export function PainelUsuarioPerfil() {
   const { dataPerfil } = usePerfil();
 
-  console.log(dataPerfil);
-
   function guestFotoRender() {
     if (dataPerfil?.nome) {
       return <Avatar.Text label={dataPerfil.nome.charAt(0)} size={92} />;
@@ -40,7 +38,7 @@ export function PainelUsuarioPerfil() {
               Posts
             </Text>
             <Text variant="titleMedium" style={style.infoValue}>
-              {0}
+              {dataPerfil?.publicacaoes ? dataPerfil.publicacaoes.length : 0}
             </Text>
           </View>
 
