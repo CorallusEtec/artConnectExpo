@@ -1,10 +1,10 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { Text } from "react-native";
 import { Card } from "react-native-paper";
 import { RenderMidia } from "./Midias/RenderMidia";
 
 export function PublicacaoContent() {
-  const publicacao = usePublicacaoData().data.publicacao;
+  const { publicacao } = usePublicacao().data;
   return (
     <>
       <Card.Content>

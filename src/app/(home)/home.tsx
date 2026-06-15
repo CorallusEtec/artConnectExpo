@@ -23,7 +23,7 @@ export default function Home() {
         data={data?.data.content}
         keyExtractor={(publi) => publi.publicacao.id.toString()}
         renderItem={({ item }) => (
-          <PublicacaoProvider dadosPubli={item}>
+          <PublicacaoProvider dataInicial={item}>
             <Publicacao />
           </PublicacaoProvider>
         )}

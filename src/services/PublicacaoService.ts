@@ -1,11 +1,10 @@
 import { PublicacaoRequest } from "@/models/request/PublicacaoRequest";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PagedResponse } from "@/models/response/PagedResponse";
-import {
-  PublicacaoDetails,
-  PublicacaoResponse,
-} from "@/models/response/PublicacaoResponse";
 import { getExtensaoPorMimeType } from "@/utils/Extensoes";
+
+import { PublicacaoPageParams } from "@/models/request/pageable/PublicacaoPageParams";
+import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { Platform } from "react-native";
@@ -17,10 +16,13 @@ import config from "./config";
  *
  * @returns Objeto `useQuery` que gerencia o comportamento e ações da request
  */
-export function usePublicacaoQuery() {
+export function usePublicacaoQuery(
+  key = "feed",
+  params: PublicacaoPageParams = {},
+) {
   const query = useQuery({
-    queryKey: ["feed"],
-    queryFn: () => PublicacaoService.listar(),
+    queryKey: [key],
+    queryFn: () => PublicacaoService.listar(params),
     staleTime: Infinity,
     gcTime: Infinity,
     refetchOnMount: false,
@@ -42,9 +44,16 @@ export class PublicacaoService {
    * @returns Promise de uma lista paginada com as publicações
    *
    */
-  static async listar() {
-    return await config.axiosClient.get<PagedResponse<PublicacaoDetails>>(
+  static async listar(params: PublicacaoPageParams = {}) {
+    const filtrosLimpos = Object.fromEntries(
+      Object.entries(params).filter(
+        ([_, value]) => value !== "" && value != null,
+      ),
+    );
+
+    return await config.axiosClient.get<PagedResponse<PublicacaoResponse>>(
       `${config.apiUrl}/publicacao/findAll`,
+      { params: filtrosLimpos },
     );
   }
   /**
