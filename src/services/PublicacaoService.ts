@@ -1,11 +1,13 @@
 import { PublicacaoRequest } from "@/models/request/PublicacaoRequest";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PagedResponse } from "@/models/response/PagedResponse";
+import { getExtensaoPorMimeType } from "@/utils/Extensoes";
 
 import { PublicacaoPageParams } from "@/models/request/pageable/PublicacaoPageParams";
 import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
+import { Platform } from "react-native";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
@@ -63,17 +65,24 @@ export class PublicacaoService {
   static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
     try {
       const formData = new FormData();
-
+      
       if (legenda) formData.append("legenda", legenda);
-
       if (file?.uri) {
-        /**
-         *  Na web, o expo-image-picker retorna uma blob URL — precisa converter pra Blob
-         *  antes de appendar no FormData para o backend receber corretamente
-         */
-        const response = await fetch(file.uri);
-        const blob = await response.blob();
-        formData.append("arquivo", blob, `upload-${Date.now()}.png`);
+        if (Platform.OS === "web") {
+          const response = await fetch(file.uri);
+          const blob = await response.blob();
+          const extensao = getExtensaoPorMimeType(blob.type) 
+          || file.uri.split('.').pop() 
+          || 'bin';
+          formData.append("arquivo", blob, `upload-${Date.now()}.png`);
+        } else {
+          const extensao = file.uri.split('.').pop() || 'bin';
+          formData.append("arquivo", {
+            uri: file.uri,
+            name: file.name || `upload-${Date.now()}.${extensao}`,
+            type: file.mimeType || "video/mp4",
+          } as any);
+        }      
       }
 
       if (tipoMidia) formData.append("tipoMidia", tipoMidia);
