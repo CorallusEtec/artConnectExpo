@@ -1,19 +1,17 @@
-import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import {
   createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
   useContext,
-  useReducer,
-  useState
+  useRef,
+  useState,
 } from "react";
 
 /** Tipagem do contexto
  */
 type PublicacaoContextType = {
-  data: PublicacaoResponse;
-  dispatch: Dispatch<PublicacaoReducerActions>;
+  idPublicacao: number;
   comentarioSection: boolean; // Modal da seção de comentários
   setComentarioSection: Dispatch<SetStateAction<boolean>>;
 };
@@ -23,52 +21,9 @@ const PublicacaoContext = createContext<PublicacaoContextType>(
   {} as PublicacaoContextType,
 );
 
-/** Função reducer e ações */
-type PublicacaoReducerActions = { type: "LIKE" } | { type: "DISLIKE" };
-
-function reducer(
-  data: PublicacaoResponse,
-  action: PublicacaoReducerActions,
-): PublicacaoResponse {
-  switch (action.type) {
-    case "LIKE":
-      if (data.reacaoUsuario == "LIKE") {
-        return { ...data, likes: data.likes - 1, reacaoUsuario: null };
-      } else if (data.reacaoUsuario == "DISLIKE") {
-        return {
-          ...data,
-          dislikes: data.dislikes - 1,
-          likes: data.likes + 1,
-          reacaoUsuario: "LIKE",
-        };
-      } else {
-        return { ...data, likes: data.likes + 1, reacaoUsuario: "LIKE" };
-      }
-    case "DISLIKE":
-      if (data.reacaoUsuario == "DISLIKE") {
-        return { ...data, dislikes: data.dislikes - 1, reacaoUsuario: null };
-      } else if (data.reacaoUsuario == "LIKE") {
-        return {
-          ...data,
-          dislikes: data.dislikes + 1,
-          likes: data.likes - 1,
-          reacaoUsuario: "DISLIKE",
-        };
-      } else {
-        return {
-          ...data,
-          dislikes: data.dislikes + 1,
-          reacaoUsuario: "DISLIKE",
-        };
-      }
-    default:
-      throw new Error("Ação não suportada");
-  }
-}
-
 type PublicacaoProviderProps = {
   children: ReactNode;
-  dataInicial: PublicacaoResponse;
+  idPublicacaoInit: number;
 };
 
 /**
@@ -78,14 +33,18 @@ type PublicacaoProviderProps = {
  */
 export function PublicacaoProvider({
   children,
-  dataInicial,
+  idPublicacaoInit,
 }: PublicacaoProviderProps) {
   const [comentarioSection, setComentarioSection] = useState(false); // Modal de comentários
-  const [data, dispatch] = useReducer(reducer, dataInicial);
+  const idPublicacao = useRef(idPublicacaoInit);
 
   return (
     <PublicacaoContext.Provider
-      value={{ data, dispatch, setComentarioSection, comentarioSection }}
+      value={{
+        idPublicacao: idPublicacao.current,
+        setComentarioSection,
+        comentarioSection,
+      }}
     >
       {children}
     </PublicacaoContext.Provider>

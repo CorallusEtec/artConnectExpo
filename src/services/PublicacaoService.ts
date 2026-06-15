@@ -3,6 +3,7 @@ import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PagedResponse } from "@/models/response/PagedResponse";
 import { getExtensaoPorMimeType } from "@/utils/Extensoes";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { PublicacaoPageParams } from "@/models/request/pageable/PublicacaoPageParams";
 import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,19 +12,28 @@ import { Platform } from "react-native";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
-/**
- * Hook que dá acesso aos estados da requisição e ações encapsuladas com o react query
- *
- * @returns Objeto `useQuery` que gerencia o comportamento e ações da request
- */
-export function usePublicacaoQuery(params: PublicacaoPageParams = {}) {
+export function useFeedQuery(
+  params: PublicacaoPageParams = {},
+  page: "feed" | "perfil",
+) {
   const query = useQuery({
-    queryKey: [params.idUsuario, "feed"],
+    queryKey: [page],
     queryFn: () => PublicacaoService.listar(params),
-    staleTime: Infinity,
-    gcTime: Infinity,
-    refetchOnMount: false,
   });
+  return {
+    ...query,
+    data: query.data,
+  };
+}
+
+export function usePublicacaoQuery(idPublicacao: number) {
+  const { getValidateToken } = useAuth();
+  const query = useQuery({
+    queryKey: [idPublicacao, "publicacao"],
+    queryFn: () =>
+      PublicacaoService.findById({ idPublicacao, token: getValidateToken() }),
+  });
+
   return {
     ...query,
     data: query.data,
@@ -53,8 +63,29 @@ export class PublicacaoService {
       { params: filtrosLimpos },
     );
   }
-  /**
-   * requisição de salvamento de imagem
+
+  /** Busca uma publicacao pelo ID
+   *
+   * @param param0 Request da requisição.
+   * @returns Publicação do Id correnspondente.
+   */
+  static async findById({
+    idPublicacao,
+    token,
+  }: {
+    idPublicacao: number;
+    token: string;
+  }) {
+    const response = await config.axiosClient.get<PublicacaoResponse>(
+      `${config.apiUrl}/publicacao/${idPublicacao}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    return response;
+  }
+
+  /** requisição de salvamento de imagem
+   *
    *
    * @param param0 Request params para a requisição
    * @returns Status da requisição
