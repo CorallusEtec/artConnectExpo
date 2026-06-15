@@ -1,14 +1,17 @@
-import { usePerfil } from "@/contexts/PerfilContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useUsuarioByIdQuery } from "@/services/UsuarioService";
 import { View } from "react-native";
 import { Avatar, Text, TouchableRipple } from "react-native-paper";
 import { style } from "./style";
 
 export function PainelUsuarioPerfil() {
-  const { dataPerfil } = usePerfil();
+  const { getValidateId } = useAuth();
+
+  const { data } = useUsuarioByIdQuery(getValidateId());
 
   function guestFotoRender() {
-    if (dataPerfil?.nome) {
-      return <Avatar.Text label={dataPerfil.nome.charAt(0)} size={92} />;
+    if (data?.data.nome) {
+      return <Avatar.Text label={data?.data.nome.charAt(0)} size={92} />;
     } else {
       return (
         <Avatar.Image
@@ -18,19 +21,18 @@ export function PainelUsuarioPerfil() {
       );
     }
   }
+
+  console.log(data?.data.publicacoes);
   return (
     <View style={style.fundo}>
       <View style={style.headerRow}>
         <View style={style.profile}>
-          {dataPerfil?.fotoPerfilUrl ? (
-            <Avatar.Image
-              size={92}
-              source={{ uri: dataPerfil.fotoPerfilUrl }}
-            />
+          {data?.data.fotoPerfilUrl ? (
+            <Avatar.Image size={92} source={{ uri: data.data.fotoPerfilUrl }} />
           ) : (
             guestFotoRender()
           )}
-          <Text style={style.infoLabel}>{dataPerfil?.nome}</Text>
+          <Text style={style.infoLabel}>{data?.data.nome}</Text>
         </View>
         <View style={style.infosProfile}>
           <View style={style.infoDuo}>
@@ -38,7 +40,7 @@ export function PainelUsuarioPerfil() {
               Posts
             </Text>
             <Text variant="titleMedium" style={style.infoValue}>
-              {dataPerfil?.publicacaoes ? dataPerfil.publicacaoes.length : 0}
+              {(data?.data.publicacoes && data.data.publicacoes.length) || 0}
             </Text>
           </View>
 
@@ -74,7 +76,7 @@ export function PainelUsuarioPerfil() {
 
       <View style={style.bioContainer}>
         <Text variant="bodyMedium" style={style.bioText}>
-          {dataPerfil?.textoBio || "Sem biografia"}
+          {data?.data.textoBio || "Sem biografia"}
         </Text>
       </View>
     </View>

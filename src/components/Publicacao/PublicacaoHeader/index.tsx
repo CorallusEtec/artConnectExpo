@@ -1,4 +1,5 @@
 import { usePublicacao } from "@/contexts/PublicacaoContext";
+import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
@@ -12,11 +13,17 @@ import { style } from "./style";
  */
 export function PublicacaoHeader() {
   const [menu, setMenu] = useState(false);
-  const { publicacao } = usePublicacao().data;
+  const { idPublicacao } = usePublicacao();
+  const { data, isLoading } = usePublicacaoQuery(idPublicacao);
 
   function guestFotoRender() {
-    if (publicacao.autor.nome) {
-      return <Avatar.Text label={publicacao.autor.nome.charAt(0)} size={35} />;
+    if (data?.data.publicacao.autor.nome) {
+      return (
+        <Avatar.Text
+          label={data?.data.publicacao.autor.nome.charAt(0)}
+          size={35}
+        />
+      );
     } else {
       return (
         <Avatar.Image
@@ -26,24 +33,27 @@ export function PublicacaoHeader() {
       );
     }
   }
-
   return (
     <Card.Content style={style.headerContainer}>
       <View style={style.headerContent}>
         {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
-        {publicacao.autor.fotoPerfilUrl ? (
+        {data?.data.publicacao.autor.fotoPerfilUrl ? (
           <Avatar.Image
             size={35}
-            source={{ uri: publicacao.autor.fotoPerfilUrl }}
+            source={{ uri: data?.data.publicacao.autor.fotoPerfilUrl }}
           />
         ) : (
           guestFotoRender()
         )}
         <View style={style.metadataPubli}>
-          <Text style={style.autorLabel}>{publicacao.autor.nome}</Text>
+          <Text style={style.autorLabel}>
+            {data?.data.publicacao.autor.nome}
+          </Text>
           <Text style={style.publishDateLabel}>
             {AppUtils.labelData(
-              AppUtils.converterData(new Date(publicacao.dataPublicacao)),
+              AppUtils.converterData(
+                new Date(data!.data.publicacao.dataPublicacao),
+              ),
             )}
           </Text>
         </View>

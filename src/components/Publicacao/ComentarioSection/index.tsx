@@ -1,4 +1,3 @@
-import { useAuth } from "@/contexts/AuthContext";
 import { ComentarioProvider } from "@/contexts/ComentarioContext";
 import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { useComentarioQuery } from "@/services/ComentarioService";
@@ -11,12 +10,10 @@ import { style } from "./style";
 
 export function ComentarioSection() {
   // ID da publicação
-  const { data, comentarioSection } = usePublicacao();
-  const { getValidateToken } = useAuth();
+  const { idPublicacao, comentarioSection } = usePublicacao();
 
   const { data: comentarioData, isLoading } = useComentarioQuery(
-    data.publicacao.id,
-    getValidateToken(),
+    idPublicacao,
     comentarioSection,
   );
 

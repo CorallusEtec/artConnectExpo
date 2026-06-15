@@ -57,13 +57,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signIn(login: AuthLoginResponse) {
     await AsyncStorage.setItem("@artconnect:token", JSON.stringify(login));
     setToken(login); // Muda o estado global
-    queryClient.invalidateQueries({ queryKey: ["profileData"] });
+    queryClient.invalidateQueries();
   }
 
   async function signOut() {
     await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
-    queryClient.invalidateQueries({ queryKey: ["profileData"] });
+    queryClient.invalidateQueries();
   }
 
   function getValidateToken(): string {
