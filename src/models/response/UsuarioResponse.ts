@@ -19,5 +19,5 @@ export interface UsuarioResponse {
   textoBio?: string;
   fotoPerfilUrl?: string;
   contatos?: [];
-  publicacaoes: PublicacaoDetailsResponse[];
+  publicacoes: PublicacaoDetailsResponse[];
 }

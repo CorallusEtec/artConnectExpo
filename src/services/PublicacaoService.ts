@@ -26,6 +26,18 @@ export function useFeedQuery(
   };
 }
 
+export function usePerfilPublicacaoQuery(usuarioId: number) {
+  const query = useQuery({
+    queryKey: [usuarioId, "publicacaoPerfil"],
+    queryFn: () => PublicacaoService.listar({ idUsuario: usuarioId }),
+  });
+
+  return {
+    ...query,
+    data: query.data?.data,
+  };
+}
+
 export function usePublicacaoQuery(idPublicacao: number) {
   const { getValidateToken } = useAuth();
   const query = useQuery({
