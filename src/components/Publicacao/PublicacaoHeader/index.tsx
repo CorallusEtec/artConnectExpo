@@ -33,6 +33,7 @@ export function PublicacaoHeader() {
       );
     }
   }
+  if(isLoading) return <></>
   return (
     <Card.Content style={style.headerContainer}>
       <View style={style.headerContent}>

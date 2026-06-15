@@ -8,7 +8,7 @@ import { ActivityIndicator, FlatList, View } from "react-native";
 import { style } from "./style";
 
 export function PublicacoesUsuarioPerfil() {
-  const { getValidateId } = useAuth();
+  const { getValidateId, isAuth } = useAuth();
 
   const { data, isLoading } = usePerfilPublicacaoQuery(getValidateId());
 
