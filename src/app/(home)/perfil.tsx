@@ -1,9 +1,6 @@
 import { ModalSettings } from "@/components/ModalSettings";
-import { HeaderPerfil } from "@/components/Perfil/HeaderPerfil";
-import { PainelUsuarioPerfil } from "@/components/Perfil/PainelUsuarioPerfil";
-import { PublicacoesUsuarioPerfil } from "@/components/Perfil/PublicacoesUsuarioPerfil";
-import { useAuth } from "@/contexts/AuthContext";
-import { PerfilProvider } from "@/contexts/PerfilContext";
+import { HeaderPerfil, PainelUsuarioPerfil, PublicacoesUsuarioPerfil } from "@/components/Perfil";
+import { PerfilProvider, useAuth } from "@/contexts";
 import { useUsuarioByIdQuery } from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/profile";
