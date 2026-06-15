@@ -1,6 +1,9 @@
+// ------------SE VER ESSE CODIGO, SEI QUE TA GRANDE, PRETENDO SEPARAR EM UM COMPONENTE PRA FICAR MELHOR-----------------
+
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import ArtistaService, { ArtistaEditDTO } from "@/services/ArtistaService";
+import ContratanteService, { ContratanteEditDTO } from "@/services/ContratanteService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/edit";
@@ -24,6 +27,7 @@ const placeholder = gStyles.cinza[500];
 
 export default function EditPerfil() {
   const [user, setUser] = useState<UsuarioResponse | null>(null);
+  const [tipoUsuario, setTipoUsuario] = useState<"artista" | "contratante" | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [fotoUri, setFotoUri] = useState<string | null>(null);
@@ -39,6 +43,7 @@ export default function EditPerfil() {
     complemento: "",
     cidade: "",
     uf: "",
+    razaoSocial: "",
   });
 
   useEffect(() => {
@@ -55,9 +60,10 @@ export default function EditPerfil() {
         tokenParse.id,
         tokenParse.token
       );
-      
+
       setUser(model);
       setFotoUri(model.fotoPerfilUrl ?? null);
+      setTipoUsuario(model.tipoConta === "CONTRATANTE" ? "contratante" : "artista");
       preencherFormulario(model);
     } catch (error) {
       console.error("Erro ao carregar perfil:", error);
@@ -78,6 +84,7 @@ export default function EditPerfil() {
       complemento: model.complemento ?? "",
       cidade: model.cidade ?? "",
       uf: model.uf ?? "",
+      razaoSocial: (model as any).razaoSocial ?? "",
     });
   }
 
@@ -89,7 +96,7 @@ export default function EditPerfil() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
-        "Permissão necessária", 
+        "Permissão necessária",
         "Precisamos de acesso à sua galeria para alterar a foto de perfil."
       );
       return false;
@@ -126,12 +133,12 @@ export default function EditPerfil() {
       };
 
       const mensagem = await UsuarioService.updateFotoPerfil(arquivo);
-      
+
       setFotoUri(imagemSelecionada.uri);
-      
+
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
-      
+
       Alert.alert("Sucesso", mensagem);
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);
@@ -141,7 +148,7 @@ export default function EditPerfil() {
     }
   }
 
-  function prepararPayload() {
+  function prepararPayloadArtista(): ArtistaEditDTO {
     const payload: ArtistaEditDTO = {
       nome: form.nome || undefined,
       textoBio: form.textoBio || undefined,
@@ -163,8 +170,31 @@ export default function EditPerfil() {
     return payload;
   }
 
+  function prepararPayloadContratante(): ContratanteEditDTO {
+    const payload: ContratanteEditDTO = {
+      nome: form.nome || undefined,
+      textoBio: form.textoBio || undefined,
+      nomeLog: form.nomeLog || undefined,
+      numLog: form.numLog ? Number(form.numLog) : undefined,
+      cep: form.cep || undefined,
+      bairro: form.bairro || undefined,
+      complemento: form.complemento || undefined,
+      cidade: form.cidade || undefined,
+      uf: form.uf || undefined,
+      razaoSocial: form.razaoSocial || undefined,
+    };
+
+    Object.keys(payload).forEach((key) => {
+      if (payload[key as keyof ContratanteEditDTO] === undefined) {
+        delete payload[key as keyof ContratanteEditDTO];
+      }
+    });
+
+    return payload;
+  }
+
   async function handleSalvar() {
-    if (!user) return;
+    if (!user || !tipoUsuario) return;
 
     try {
       setSaving(true);
@@ -173,12 +203,17 @@ export default function EditPerfil() {
       if (!tokenData) return router.navigate("/login");
 
       const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
-      const payload = prepararPayload();
 
-      await ArtistaService.edit(tokenParse.token, payload);
-      
+      if (tipoUsuario === "artista") {
+        const payload = prepararPayloadArtista();
+        await ArtistaService.edit(tokenParse.token, payload);
+      } else {
+        const payload = prepararPayloadContratante();
+        await ContratanteService.edit(tokenParse.token, payload);
+      }
+
       Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
-      router.navigate("/profile");
+      router.navigate("/perfil");
     } catch (error: any) {
       console.error("Erro ao salvar:", error);
       Alert.alert("Erro", error.message || "Não foi possível salvar as alterações");
@@ -237,6 +272,19 @@ export default function EditPerfil() {
         value={form.nome}
         onChangeText={(text) => alterarCampo("nome", text)}
       />
+
+      {tipoUsuario === "contratante" && (
+        <>
+          <Text style={style.label}>Razão Social</Text>
+          <TextInput
+            style={style.input}
+            placeholder="Razão social"
+            placeholderTextColor={placeholder}
+            value={form.razaoSocial}
+            onChangeText={(text) => alterarCampo("razaoSocial", text)}
+          />
+        </>
+      )}
 
       <Text style={style.label}>Biografia</Text>
       <TextInput

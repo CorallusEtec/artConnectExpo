@@ -24,6 +24,8 @@ export default class ArtistaService {
         body: JSON.stringify(payload),
       });
 
+      console.log(token);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         const errorMessage = errorData?.message || await response.text() || "Erro ao editar artista";
