@@ -11,8 +11,8 @@ export function PublicacaoContent() {
         <Text>{publicacao.legenda}</Text>
       </Card.Content>
 
-      {publicacao.urlMidia && (
-        <RenderMidia urlMidia={publicacao.urlMidia} tipoMidia={publicacao.tipoMidia} />
+      {publicacao.urlMidia &&(
+        <RenderMidia urlMidia={publicacao.urlMidia} tipoMidia={publicacao.tipoMidia}/>
       )}
     </>
   );

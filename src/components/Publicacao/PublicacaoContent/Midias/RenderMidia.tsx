@@ -1,6 +1,6 @@
-import { Platform, View, Image, useWindowDimensions } from "react-native";
-import { Divider } from "react-native-paper";
 import { VideoView, useVideoPlayer } from "expo-video";
+import { Image, Platform, useWindowDimensions } from "react-native";
+import { Divider } from "react-native-paper";
 import { AudioPlayer } from "./AudioPlayer";
 
 type Props = {
