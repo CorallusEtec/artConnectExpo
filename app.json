@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "artConnectExpo",
-    "slug": "artConnectExpo",
+    "name": "Art Connect",
+    "slug": "artConnect",
     "version": "1.4.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
