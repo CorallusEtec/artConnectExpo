@@ -1,4 +1,5 @@
-import { useComentarioList } from "@/contexts/ComentarioContext";
+import { useComentario } from "@/contexts/ComentarioContext";
+import { useComentarioQuery } from "@/services/ComentarioService";
 import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
@@ -8,17 +9,18 @@ import { style } from "./style";
 
 export function ComentarioHeader() {
   const [menu, setMenu] = useState(false);
-  const { data } = useComentarioList();
+  const { comentarioId } = useComentario()
+  const { data } = useComentarioQuery(comentarioId);
   return (
     <Card.Content style={style.headerContainer}>
       <View style={style.headerContent}>
         {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
-        <Avatar.Text label={data.usuario.nome.charAt(0)} size={32} />
+        <Avatar.Text label={data?.data.usuario.nome.charAt(0) || ""} size={32} />
         <View style={style.metadataPubli}>
-          <Text style={style.autorLabel}>{data.usuario.nome}</Text>
+          <Text style={style.autorLabel}>{data?.data.usuario.nome}</Text>
           <Text style={style.publishDateLabel}>
-            {AppUtils.labelData(
-              AppUtils.converterData(new Date(data.dataComentario)),
+            { data?.data.dataComentario && AppUtils.labelData(
+              AppUtils.converterData(new Date(data.data.dataComentario)),
             )}
           </Text>
         </View>

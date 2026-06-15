@@ -1,6 +1,6 @@
 import { ComentarioProvider } from "@/contexts/ComentarioContext";
 import { usePublicacao } from "@/contexts/PublicacaoContext";
-import { useComentarioQuery } from "@/services/ComentarioService";
+import { useComentarioListQuery } from "@/services/ComentarioService";
 import { ActivityIndicator, FlatList, Modal } from "react-native";
 import { Card, Divider } from "react-native-paper";
 import { Comentario } from "../Comentario";
@@ -12,7 +12,7 @@ export function ComentarioSection() {
   // ID da publicação
   const { idPublicacao, comentarioSection } = usePublicacao();
 
-  const { data: comentarioData, isLoading } = useComentarioQuery(
+  const { data: comentarioData, isLoading } = useComentarioListQuery(
     idPublicacao,
     comentarioSection,
   );
@@ -36,7 +36,7 @@ export function ComentarioSection() {
             data={comentarioData?.data.content}
             keyExtractor={(id) => id.id.toString()}
             renderItem={({ item }) => (
-              <ComentarioProvider initialData={item}>
+              <ComentarioProvider comentarioIdInitial={item.id}>
                 <Comentario />
               </ComentarioProvider>
             )}
