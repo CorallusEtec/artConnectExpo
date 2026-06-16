@@ -6,14 +6,26 @@ import { style } from "./style";
 
 export default function SearchBar() {
   const [input, setInput] = useState("");
-  const { setModalFiltro } = useSearch();
+  const { setModalFiltro, tipoFiltro, form } = useSearch();
+
+
+  function handleInput(text: string) {
+    if(tipoFiltro.current == "Publicacao") {
+      form.current.legenda = text
+    } else {
+      form.current.nome = text;
+    }
+    setInput(text);
+  }
+
+
   return (
     <View style={style.row}>
       <TextInput
         mode="outlined"
         placeholder="Pesquisar"
         value={input}
-        onChangeText={setInput}
+        onChangeText={handleInput}
         style={style.input}
       />
       <IconButton

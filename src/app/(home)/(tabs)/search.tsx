@@ -11,7 +11,7 @@ import { View } from "react-native";
 import { Button } from "react-native-paper";
 export default function Search() {
   return (
-    <SearchProvider>
+    <SearchProvider initialState={false}>
       <Header />
       <View style={style.container}>
         <SearchBar />

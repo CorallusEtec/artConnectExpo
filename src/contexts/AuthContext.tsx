@@ -2,6 +2,7 @@ import { TipoConta } from "@/models/enumeration/enumeration";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 import {
   createContext,
   ReactNode,
@@ -67,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
     queryClient.invalidateQueries();
+    router.dismissTo("/")
   }
 
   function getValidateToken(): string {

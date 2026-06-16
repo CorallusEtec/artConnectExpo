@@ -5,14 +5,7 @@ import { style } from "./style";
 export function FilterArtistaForm() {
   return (
     <View>
-      <Text style={style.label}>Nome do Usuário</Text>
-      <TextInput
-        mode="outlined"
-        placeholder="Ex: Samuel"
-        style={style.input}
-        outlineColor="#E0E0E0"
-        activeOutlineColor="#0B31A3"
-      />
+ 
       <Text style={style.label}>Cidade</Text>
       <TextInput
         mode="outlined"

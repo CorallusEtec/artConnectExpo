@@ -1,28 +1,33 @@
+import { SearchFiltroParams } from "@/models/request/pageable/SearchFiltroParams";
 import {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useState,
+  createContext,
+  ReactNode,
+  RefObject,
+  useContext,
+  useRef,
+  useState
 } from "react";
 
 type SearchContextType = {
   modalFiltro: boolean;
-  setModalFiltro: Dispatch<SetStateAction<boolean>>;
+  setModalFiltro: (value: boolean) => void;
+  tipoFiltro: RefObject<"Publicacao" | "Usuario">,
+  form: RefObject<SearchFiltroParams>
 };
 
 const SearchContext = createContext<SearchContextType>({} as SearchContextType);
 
 type SearchProviderProps = {
   children: ReactNode;
+  initialState: boolean
 };
 
-export function SearchProvider({ children }: SearchProviderProps) {
-  const [modalFiltro, setModalFiltro] = useState(false);
-
+export function SearchProvider({ children, initialState }: SearchProviderProps) {
+  const [modalFiltro, setModalFiltro] = useState(initialState);
+  const form = useRef({} as SearchFiltroParams);
+  const tipoFiltro = useRef<"Publicacao" | "Usuario">("Usuario");
   return (
-    <SearchContext.Provider value={{ modalFiltro, setModalFiltro }}>
+    <SearchContext.Provider value={{ tipoFiltro, modalFiltro, setModalFiltro, form }}>
       {children}
     </SearchContext.Provider>
   );
@@ -31,8 +36,5 @@ export function SearchProvider({ children }: SearchProviderProps) {
 export function useSearch() {
   const context = useContext(SearchContext);
 
-  if (context == undefined) {
-    throw new Error("Usar o contexto em um Search provider");
-  }
   return context;
 }
