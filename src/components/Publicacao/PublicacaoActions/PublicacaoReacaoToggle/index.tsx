@@ -31,9 +31,9 @@ export function PublicacaoReacaoToggle({
   tipoReacao,
   insigth,
 }: PublicacaoReacaoToggleProps) {
-  const { getValidateToken } = useAuth();
-  const { idPublicacao } = usePublicacao(); // Contexto
-  const { data } = usePublicacaoQuery(idPublicacao);
+  const { getValidateToken } = useAuth(); // Pega o token do contexto de autenticação
+  const { idPublicacao } = usePublicacao(); // Contexto com dados da publicação
+  const { data } = usePublicacaoQuery(idPublicacao); // Busca as reações atuais
   const { mutate } = useReagir(); // Mutate para perssistir reação
 
   /** Ao reagir altera a reação feita pelo usuário

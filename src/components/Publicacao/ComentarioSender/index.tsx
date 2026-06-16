@@ -9,8 +9,8 @@ export function ComentarioSender() {
 
   function handleInputComentario(inputValue: string) {
     setInput(inputValue);
-    if(inputValue.trim() == "") {
-        setValid(false)
+    if (inputValue.trim() == "") {
+      setValid(false);
     } else {
       setValid(true);
     }
@@ -18,11 +18,16 @@ export function ComentarioSender() {
 
   return (
     <View style={style.container}>
-      <TextInput mode="outlined"  value={input} onChangeText={handleInputComentario} placeholder="Escreva seu comentário" outlineStyle={style.borderInput} style={style.input} maxLength={100} />
-      <View style={style.actionContainer}>
-        <IconButton icon="sticker-emoji" />
-        <IconButton icon="send" mode="contained" disabled={!valid} />
-      </View>
+      <TextInput
+        mode="outlined"
+        value={input}
+        onChangeText={handleInputComentario}
+        placeholder="Escreva seu comentário"
+        outlineStyle={style.borderInput}
+        style={style.input}
+        maxLength={100}
+      />
+      <IconButton icon="send" mode="contained" disabled={!valid} />
     </View>
   );
 }

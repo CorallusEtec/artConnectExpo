@@ -1,6 +1,6 @@
 export type TipoMidia = "IMAGEM" | "VIDEO" | "AUDIO";
 
-export type TipoConta = "ARTISTA" | "CONTRATANTE" | "ADMIN";
+export type TipoConta = "ARTISTA" | "CONTRATANTE" | "CONVIDADO";
 
 export type TipoReacao = "LIKE" | "DISLIKE";
 

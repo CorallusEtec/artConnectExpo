@@ -64,4 +64,20 @@ export class AppUtils {
     }
     return `${numerosLimitados.slice(0, 2)}/${numerosLimitados.slice(2, 4)}/${numerosLimitados.slice(4, 8)}`;
   };
+
+  /** Deixa uma string capitalizada.
+   *
+   * @example
+   * TEXTO => Texto
+   * texto => Texto
+   * tExTo => Texto
+   * ...
+   *
+   * @param texto string que será capitalizada
+   * @returns texto capitalizada
+   */
+  static capitalize(texto: string): string {
+    if (!texto) return "";
+    return texto.charAt(0).toLocaleUpperCase() + texto.slice(1).toLowerCase();
+  }
 }

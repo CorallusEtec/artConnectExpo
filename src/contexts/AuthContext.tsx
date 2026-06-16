@@ -1,3 +1,4 @@
+import { TipoConta } from "@/models/enumeration/enumeration";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,6 +18,7 @@ type AuthContextType = {
   signIn: (token: AuthLoginResponse) => Promise<void>;
   signOut: () => Promise<void>;
   getValidateToken: () => string;
+  getTipoConta: () => TipoConta;
   getValidateId: () => number;
 };
 
@@ -27,6 +29,7 @@ const AuthContext = createContext<AuthContextType | null>({
   signIn: async (token: AuthLoginResponse) => {},
   signOut: async () => {},
   getValidateToken: () => "",
+  getTipoConta: () => "ARTISTA",
   getValidateId: () => 0,
 });
 
@@ -82,6 +85,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function getTipoConta(): TipoConta {
+    return token ? token.tipoConta : "CONVIDADO";
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -92,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         getValidateToken,
         getValidateId,
+        getTipoConta,
       }}
     >
       {children}
