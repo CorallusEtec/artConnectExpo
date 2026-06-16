@@ -1,13 +1,21 @@
+import { useAuth } from "@/contexts";
 import { ReacaoSaveRequest } from "@/models/request/ReacaoSaveRequest";
+import { ComentarioResponse } from "@/models/response/ComentarioResponse";
 import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import config from "@/services/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 
-export function useReagir() {
+/** Reagir a um comentário
+ *
+ * @returns useMutate para reação de comentário
+ */
+export function useReagirPublicacao() {
   const queryClient = useQueryClient();
+  const { getValidateToken } = useAuth();
   const mutate = useMutation({
-    mutationFn: (request: ReacaoSaveRequest) => ReacaoService.reagir(request),
+    mutationFn: (request: ReacaoSaveRequest) =>
+      ReacaoService.reagir(request, getValidateToken()),
 
     /** Roda antes da requisição para salvar o estado anterior das reações */
     onMutate: async ({ idRecurso, nomeTipoReacao }) => {
@@ -109,12 +117,69 @@ export function useReagir() {
   return mutate;
 }
 
+export function useReagirComentario() {
+  const { getValidateToken } = useAuth();
+  const queryClient = useQueryClient();
+  const mutate = useMutation({
+    mutationFn: (request: ReacaoSaveRequest) =>
+      ReacaoService.reagir(request, getValidateToken()),
+
+    onMutate: async ({ idRecurso, nomeTipoReacao }) => {
+      await queryClient.cancelQueries({ queryKey: [idRecurso, "comentario"] });
+
+      const previousState: AxiosResponse<ComentarioResponse> | undefined =
+        queryClient.getQueryData([idRecurso, "comentario"]);
+
+      queryClient.setQueryData([idRecurso, "comentario"], () => {
+        if (!previousState) {
+          return;
+        }
+        if (previousState.data.reacaoUsuario == "LIKE") {
+          return {
+            ...previousState,
+            data: {
+              ...previousState.data,
+              likes: previousState.data.likes - 1,
+              reacaoUsuario: null,
+            },
+          };
+        } else {
+          return {
+            ...previousState,
+            data: {
+              ...previousState.data,
+              likes: previousState.data.likes + 1,
+              reacaoUsuario: "LIKE",
+            },
+          };
+        }
+      });
+
+      return { previousState };
+    },
+
+    onError: (err, { idRecurso }, context) => {
+      if (context) {
+        queryClient.setQueryData(
+          [idRecurso, "comentario"],
+          context.previousState,
+        );
+      }
+    },
+
+    onSettled: (data, err, { idRecurso }) => {
+      queryClient.invalidateQueries({ queryKey: [idRecurso, "comentario"] });
+    },
+  });
+  return mutate;
+}
+
 class ReacaoService {
-  static async reagir(request: ReacaoSaveRequest) {
+  static async reagir(request: ReacaoSaveRequest, token: string) {
     const response = await config.axiosClient.post<ReacaoSaveRequest>(
       `${config.apiUrl}/reacao/reagir`,
       request,
-      { headers: { Authorization: `Bearer ${request.token}` } },
+      { headers: { Authorization: `Bearer ${token}` } },
     );
 
     return response;

@@ -6,7 +6,7 @@ import { ComentarioHeader } from "./ComentarioHeader";
 
 export function Comentario() {
   const { comentarioId } = useComentario();
-  const { data } = useComentarioQuery(comentarioId)
+  const { data } = useComentarioQuery(comentarioId);
 
   return (
     <>
