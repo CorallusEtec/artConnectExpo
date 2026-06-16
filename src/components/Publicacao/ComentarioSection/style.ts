@@ -5,10 +5,9 @@ export const style = StyleSheet.create({
     padding: 5,
     borderTopLeftRadius: 7,
     borderTopRightRadius: 7,
-
-    backgroundColor: "white",
   },
   contentContainer: {
+    marginTop: 70,
     flex: 1,
   },
 });

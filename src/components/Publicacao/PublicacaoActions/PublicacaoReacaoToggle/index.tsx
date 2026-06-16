@@ -1,8 +1,7 @@
-import { useAuth } from "@/contexts/AuthContext";
 import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { TipoReacao } from "@/models/enumeration/enumeration";
 import { usePublicacaoQuery } from "@/services/PublicacaoService";
-import { useReagir } from "@/services/ReacaoService";
+import { useReagirPublicacao } from "@/services/ReacaoService";
 import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { ICON_SIZE } from "../../style";
@@ -31,10 +30,9 @@ export function PublicacaoReacaoToggle({
   tipoReacao,
   insigth,
 }: PublicacaoReacaoToggleProps) {
-  const { getValidateToken } = useAuth(); // Pega o token do contexto de autenticação
   const { idPublicacao } = usePublicacao(); // Contexto com dados da publicação
   const { data } = usePublicacaoQuery(idPublicacao); // Busca as reações atuais
-  const { mutate } = useReagir(); // Mutate para perssistir reação
+  const { mutate } = useReagirPublicacao(); // Mutate para perssistir reação
 
   /** Ao reagir altera a reação feita pelo usuário
    */
@@ -44,7 +42,6 @@ export function PublicacaoReacaoToggle({
       idRecurso: idPublicacao,
       nomeTipoReacao: tipoReacao,
       tipoRecurso: "PUBLICACAO",
-      token: getValidateToken(),
     });
   }
 

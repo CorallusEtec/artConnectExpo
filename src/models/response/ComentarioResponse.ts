@@ -22,7 +22,7 @@ export interface ComentarioResponse {
   likes: number;
 
   /** Reação do usuário autenticado */
-  recaoUsuario: TipoReacao | null;
+  reacaoUsuario: TipoReacao | null;
 
   /** Detalhes da publicação desse comentário */
   publicacao: PublicacaoDetailsResponse;
