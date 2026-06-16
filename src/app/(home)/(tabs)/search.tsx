@@ -1,63 +1,31 @@
 import { Header } from "@/components";
 import EmptyState from "@/components/Search/EmptyState";
 import FilterModal from "@/components/Search/FilterModal";
-import ScopeTabs from "@/components/Search/ScopeTabs";
+import { ScopeTabs } from "@/components/Search/ScopeTabs";
 import SearchBar from "@/components/Search/SearchBar";
-import SearchResult from "@/components/Search/SearchResult";
-import { useSearch } from "@/hooks/useSearch";
+import { SearchResult } from "@/components/Search/SearchResult";
+import { SearchProvider } from "@/contexts/SearchContext";
+import { style } from "@/style/pages/search";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Button } from "react-native-paper";
 export default function Search() {
-  const search = useSearch();
   return (
-    <>
+    <SearchProvider>
       <Header />
-      <View style={styles.container}>
-        <SearchBar
-          value={search.pesquisaPrincipal}
-          onChangeText={search.setPesquisaPrincipal}
-          onFilterPress={() => search.setModalFiltroVisivel(true)}
-        />
+      <View style={style.container}>
+        <SearchBar />
 
-        <ScopeTabs escopo={search.escopo} onChange={search.setEscopo} />
-        <Button
-          mode="contained"
-          style={styles.button}
-          buttonColor="#0B31A3"
-          textColor="#FFF"
-        >
+        <ScopeTabs />
+        <Button mode="contained" style={style.button}>
           Buscar
         </Button>
-        <SearchResult
-          load={search.load}
-          pesquisaRealizada={search.pesquisaRealizada}
-          escopo={search.escopo}
-          usuarios={search.usuarios}
-          publicacoes={search.publicacoes}
-        />
+        <SearchResult />
 
-        {!search.pesquisaRealizada && <EmptyState />}
+        <EmptyState />
 
-        <FilterModal
-          visible={search.modalFiltroVisivel}
-          onClose={() => search.setModalFiltroVisivel(false)}
-          {...search}
-        />
+        <FilterModal />
       </View>
-    </>
+    </SearchProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#FFF",
-  },
-  button: {
-    marginTop: 16,
-    borderRadius: 8,
-    paddingVertical: 4,
-  },
-});

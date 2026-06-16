@@ -1,17 +1,13 @@
-import React from "react"; 
+import React, { useState } from "react";
 import { SegmentedButtons } from "react-native-paper";
 
-interface ScopeTabsProps {
-  escopo: string;
-  
-  onChange: (value: any) => void; 
-}
+export function ScopeTabs() {
+  const [escopo, setEscopo] = useState("");
 
-export default function ScopeTabs({ escopo, onChange }: ScopeTabsProps) {
   return (
     <SegmentedButtons
       value={escopo}
-      onValueChange={onChange} 
+      onValueChange={setEscopo}
       buttons={[
         {
           value: "publicacao",
