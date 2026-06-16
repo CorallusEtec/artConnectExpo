@@ -14,8 +14,7 @@ export function NavigationLayout() {
     <Stack
       screenOptions={{
         statusBarHidden: true,
-        headerTitle: "",
-        headerTransparent: true,
+        header: () => null,
         headerBackButtonDisplayMode: "minimal",
       }}
     >

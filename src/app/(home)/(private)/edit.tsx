@@ -3,7 +3,7 @@ import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
-import { style } from "@/style/pages/(home)/(private)/edit";
+import { style } from "@/style/pages/edit";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";

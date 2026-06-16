@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  timeout: 7000,
+  timeout: 5000,
   timeoutErrorMessage: "Falha na conexão com o servidor. Tente mais tarde",
 });
 
