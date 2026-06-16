@@ -1,3 +1,4 @@
+import { TipoConta } from "@/models/enumeration/enumeration";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,6 +18,7 @@ type AuthContextType = {
   signIn: (token: AuthLoginResponse) => Promise<void>;
   signOut: () => Promise<void>;
   getValidateToken: () => string;
+  getTipoConta: () => TipoConta;
   getValidateId: () => number;
 };
 
@@ -27,6 +29,7 @@ const AuthContext = createContext<AuthContextType | null>({
   signIn: async (token: AuthLoginResponse) => {},
   signOut: async () => {},
   getValidateToken: () => "",
+  getTipoConta: () => "ARTISTA",
   getValidateId: () => 0,
 });
 
@@ -57,13 +60,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signIn(login: AuthLoginResponse) {
     await AsyncStorage.setItem("@artconnect:token", JSON.stringify(login));
     setToken(login); // Muda o estado global
-    queryClient.invalidateQueries({ queryKey: ["profileData"] });
+    queryClient.invalidateQueries();
   }
 
   async function signOut() {
     await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
-    queryClient.invalidateQueries({ queryKey: ["profileData"] });
+    queryClient.invalidateQueries();
   }
 
   function getValidateToken(): string {
@@ -82,6 +85,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function getTipoConta(): TipoConta {
+    return token ? token.tipoConta : "CONVIDADO";
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -92,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         getValidateToken,
         getValidateId,
+        getTipoConta,
       }}
     >
       {children}

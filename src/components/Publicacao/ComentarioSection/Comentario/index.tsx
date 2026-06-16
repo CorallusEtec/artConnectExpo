@@ -1,16 +1,18 @@
-import { useComentarioList } from "@/contexts/ComentarioContext";
+import { useComentario } from "@/contexts/ComentarioContext";
+import { useComentarioQuery } from "@/services/ComentarioService";
 import { Text } from "react-native";
 import { Card } from "react-native-paper";
 import { ComentarioHeader } from "./ComentarioHeader";
 
 export function Comentario() {
-  const { data } = useComentarioList();
+  const { comentarioId } = useComentario();
+  const { data } = useComentarioQuery(comentarioId);
 
   return (
     <>
       <ComentarioHeader />
       <Card.Content>
-        <Text>{data.mensagem}</Text>
+        <Text>{data?.data.mensagem}</Text>
       </Card.Content>
     </>
   );

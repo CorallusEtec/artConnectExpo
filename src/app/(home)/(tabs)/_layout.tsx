@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
@@ -8,7 +7,6 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
   return <FontAwesome name={name} color={color} size={20} />;
@@ -21,9 +19,8 @@ const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
 
 // Esconder barra de gestos do android
 
-export default function HomeLayout() {
-  const { token } = useAuth();
-  const insets = useSafeAreaInsets();
+export default function TabLayout() {
+  const { isAuth } = useAuth();
   return (
     <>
       <StatusBar hidden />
@@ -32,7 +29,8 @@ export default function HomeLayout() {
         initialRouteName="home"
         backBehavior="initialRoute"
         screenOptions={{
-          header: () => <Header />,
+          headerShown: false,
+          animation: "shift",
           lazy: true,
           tabBarButton: (props) => (
             <TouchableOpacity {...(props as TouchableOpacityProps)} />
@@ -54,16 +52,16 @@ export default function HomeLayout() {
           }}
         />
 
-        <Tabs.Protected guard={token?.token != null}>
+        <Tabs.Protected guard={isAuth}>
           <Tabs.Screen
-            name="(private)/create"
+            name="create"
             options={{
               title: "Criar",
               tabBarIcon: ({ color }) => <TabIcon name="plus" color={color} />,
             }}
           />
           <Tabs.Screen
-            name="(private)/notify"
+            name="notify"
             options={{
               title: "Notificações",
               href: null, // Para essa prévia
@@ -78,19 +76,6 @@ export default function HomeLayout() {
             }}
           />
         </Tabs.Protected>
-
-        <Tabs.Screen
-          name="(private)/edit"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="[id]"
-          options={{
-            href: null,
-          }}
-        />
       </Tabs>
     </>
   );

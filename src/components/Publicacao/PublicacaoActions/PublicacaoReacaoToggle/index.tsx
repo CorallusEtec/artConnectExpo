@@ -1,5 +1,7 @@
 import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { TipoReacao } from "@/models/enumeration/enumeration";
+import { usePublicacaoQuery } from "@/services/PublicacaoService";
+import { useReagirPublicacao } from "@/services/ReacaoService";
 import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { ICON_SIZE } from "../../style";
@@ -11,6 +13,8 @@ import { style } from "../style";
 export type PublicacaoReacaoToggleProps = {
   /** Carrega os icones com os estados reagido e não reagido da reação */
   tipoReacao: TipoReacao;
+  /** Traz o total da reação */
+  insigth: number;
 };
 
 const reacaoStateIcons = {
@@ -24,31 +28,35 @@ const reacaoStateIcons = {
  */
 export function PublicacaoReacaoToggle({
   tipoReacao,
+  insigth,
 }: PublicacaoReacaoToggleProps) {
-  // Contexto
-  const { data, dispatch } = usePublicacao();
+  const { idPublicacao } = usePublicacao(); // Contexto com dados da publicação
+  const { data } = usePublicacaoQuery(idPublicacao); // Busca as reações atuais
+  const { mutate } = useReagirPublicacao(); // Mutate para perssistir reação
 
   /** Ao reagir altera a reação feita pelo usuário
    */
   function toggleReagir() {
-    dispatch({ type: tipoReacao });
     // Código de reagir no banco de dados
+    mutate({
+      idRecurso: idPublicacao,
+      nomeTipoReacao: tipoReacao,
+      tipoRecurso: "PUBLICACAO",
+    });
   }
 
   return (
     <View style={style.actionContainer}>
       <IconButton
         icon={
-          tipoReacao == data.reacaoUsuario
+          data?.data.reacaoUsuario == tipoReacao
             ? reacaoStateIcons[tipoReacao].on
             : reacaoStateIcons[tipoReacao].off
         }
         size={ICON_SIZE}
         onPress={toggleReagir}
       />
-      <Text style={style.actionInsight}>
-        {tipoReacao == "LIKE" ? data.likes : data.dislikes}
-      </Text>
+      <Text style={style.actionInsight}>{insigth}</Text>
     </View>
   );
 }

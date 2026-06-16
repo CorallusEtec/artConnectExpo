@@ -1,5 +1,5 @@
 import { gStyles } from "@/style/gStyle";
-import { style } from "@/style/pages/(home)/(private)/edit";
+import { style } from "./edit";
 import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 

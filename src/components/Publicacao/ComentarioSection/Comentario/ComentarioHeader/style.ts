@@ -6,7 +6,9 @@ export const style = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-
+  actionContainer: {
+    flexDirection: "row",
+  },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",

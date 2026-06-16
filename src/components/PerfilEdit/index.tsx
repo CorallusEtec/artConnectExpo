@@ -1,5 +1,5 @@
 import { gStyles } from "@/style/gStyle";
-import { style } from "@/style/pages/(home)/(private)/edit";
+import { style } from "./edit";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity } from "react-native";

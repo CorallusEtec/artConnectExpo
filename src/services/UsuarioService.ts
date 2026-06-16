@@ -4,10 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import config from "./config";
 
-export function useUsuarioByIdQuery(id: number) {
+export function useUsuarioByIdQuery(usuarioId: number) {
   const query = useQuery({
-    queryKey: ["profileData"],
-    queryFn: () => UsuarioService.findById(id),
+    queryKey: [usuarioId, "profileData"],
+    queryFn: () => UsuarioService.findById(usuarioId),
   });
   return {
     ...query,

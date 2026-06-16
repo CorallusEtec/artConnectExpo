@@ -1,10 +1,8 @@
-import { ComentarioResponse } from "@/models/response/ComentarioResponse";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useRef } from "react";
 
 /** Contexto para listagem */
 type ComentarioContextType = {
-  data: ComentarioResponse;
-  setData: (data: ComentarioResponse) => void;
+  comentarioId: number;
 };
 const ComentarioContext = createContext<ComentarioContextType>(
   {} as ComentarioContextType,
@@ -12,23 +10,23 @@ const ComentarioContext = createContext<ComentarioContextType>(
 
 type ComentarioProviderProps = {
   children: ReactNode;
-  initialData: ComentarioResponse;
+  comentarioIdInitial: number;
 };
 
 export function ComentarioProvider({
   children,
-  initialData,
+  comentarioIdInitial,
 }: ComentarioProviderProps) {
-  const [data, setData] = useState(initialData);
+  const comentarioId = useRef(comentarioIdInitial);
 
   return (
-    <ComentarioContext.Provider value={{ data, setData }}>
+    <ComentarioContext.Provider value={{ comentarioId: comentarioId.current }}>
       {children}
     </ComentarioContext.Provider>
   );
 }
 
-export function useComentarioList() {
+export function useComentario() {
   const comentarioContext = useContext(ComentarioContext);
 
   return comentarioContext;

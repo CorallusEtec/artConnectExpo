@@ -1,5 +1,5 @@
 import { gStyles } from "@/style/gStyle";
-import { style } from "@/style/pages/(home)/(private)/edit";
+import { style } from "./edit";
 import { Text, TextInput, TextInputProps } from "react-native";
 
 type Props = TextInputProps & {

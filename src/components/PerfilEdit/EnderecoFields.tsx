@@ -1,4 +1,4 @@
-import { style } from "@/style/pages/(home)/(private)/edit";
+import { style } from "./edit";
 import { View } from "react-native";
 import { FormField } from "./FormField";
 import { FormPerfil } from "./useEditPerfil";

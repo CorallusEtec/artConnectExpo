@@ -1,22 +1,19 @@
-import { useAuth } from "@/contexts/AuthContext";
-import { ComentarioProvider } from "@/contexts/ComentarioContext";
-import { usePublicacao } from "@/contexts/PublicacaoContext";
-import { useComentarioQuery } from "@/services/ComentarioService";
-import { ActivityIndicator, FlatList, Modal } from "react-native";
-import { Card, Divider } from "react-native-paper";
-import { Comentario } from "../Comentario";
-import { ComentarioSender } from "../ComentarioSender";
+import { ComentarioProvider, usePublicacao } from "@/contexts";
+import { useComentarioListQuery } from "@/services/ComentarioService";
+import { FlatList, Modal } from "react-native";
+import { Card, Divider, PaperProvider, useTheme } from "react-native-paper";
+import { Comentario } from "./Comentario";
 import { ComentarioSectionHeader } from "./ComentarioSectionHeader";
+import { ComentarioSender } from "./ComentarioSender";
 import { style } from "./style";
 
 export function ComentarioSection() {
   // ID da publicação
-  const { data, comentarioSection } = usePublicacao();
-  const { getValidateToken } = useAuth();
+  const { idPublicacao, comentarioSection } = usePublicacao();
+  const theme = useTheme();
 
-  const { data: comentarioData, isLoading } = useComentarioQuery(
-    data.publicacao.id,
-    getValidateToken(),
+  const { data: comentarioData, isLoading } = useComentarioListQuery(
+    idPublicacao,
     comentarioSection,
   );
 
@@ -27,25 +24,27 @@ export function ComentarioSection() {
       visible={comentarioSection}
       style={style.container}
     >
-      <Card style={style.contentContainer} mode="elevated">
-        <ComentarioSectionHeader />
-        <ComentarioSender />
-        <Divider />
+      <PaperProvider theme={theme}>
+        <Card style={style.contentContainer} mode="elevated">
+          <ComentarioSectionHeader />
+          <ComentarioSender />
+          <Divider />
 
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <FlatList
-            data={comentarioData?.data.content}
-            keyExtractor={(id) => id.id.toString()}
-            renderItem={({ item }) => (
-              <ComentarioProvider initialData={item}>
-                <Comentario />
-              </ComentarioProvider>
-            )}
-          />
-        )}
-      </Card>
+          {isLoading ? (
+            <></>
+          ) : (
+            <FlatList
+              data={comentarioData?.data.content}
+              keyExtractor={(id) => id.id.toString()}
+              renderItem={({ item }) => (
+                <ComentarioProvider comentarioIdInitial={item.id}>
+                  <Comentario />
+                </ComentarioProvider>
+              )}
+            />
+          )}
+        </Card>
+      </PaperProvider>
     </Modal>
   );
 }

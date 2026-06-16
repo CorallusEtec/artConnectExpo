@@ -1,3 +1,4 @@
+import { ContratanteResponse } from "@/models/response/ContratanteResponse";
 import config from "./config";
 import { ErroValidacao } from "./ErroValidacao";
 import { ValidationService } from "./ValidacaoService";
@@ -25,28 +26,42 @@ interface ContratanteCadastroDTO {
   tipo: "cnpj" | "cpf";
 }
 
-export default class ContratanteService {
-   static async edit(token: string, payload: ContratanteEditDTO): Promise<void> {
-      try {
-        const response = await fetch(`${config.apiUrl}/contratante/edit`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        });
+export class ContratanteService {
+  static async findById(idContratante: number) {
+    const response = await config.axiosClient.get<ContratanteResponse>(
+      `${config.apiUrl}/contratante/${idContratante}`,
+    );
+    return response;
+  }
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          const errorMessage = errorData?.message || await response.text() || "Erro ao editar contratante";
-          throw new Error(errorMessage);
-        }
-      } catch (error) {
-        console.error("Erro ao editar contratante:", error);
-        throw error;
+  static async edit(
+    token: string,
+    payload: ContratanteEditDTO,
+  ): Promise<void> {
+    try {
+      const response = await fetch(`${config.apiUrl}/contratante/edit`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage =
+          errorData?.message ||
+          (await response.text()) ||
+          "Erro ao editar contratante";
+
+        throw new Error(errorMessage);
       }
+    } catch (error) {
+      console.error("Erro ao editar contratante:", error);
+      throw error;
     }
+  }
 
   static async save(contratante: ContratanteCadastroDTO) {
     try {
@@ -95,6 +110,7 @@ export default class ContratanteService {
     if (dados.senha !== dados.confirmaSenha) {
       return erro.invalido("As senhas não conferem");
     }
+
     return erro;
   }
 }

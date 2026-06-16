@@ -1,7 +1,7 @@
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
-import ArtistaService, { ArtistaEditDTO } from "@/services/ArtistaService";
-import ContratanteService, { ContratanteEditDTO } from "@/services/ContratanteService";
+import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
+import { ContratanteEditDTO, ContratanteService } from "@/services/ContratanteService";
 import UsuarioService from "@/services/UsuarioService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
