@@ -1,6 +1,6 @@
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
-import ArtistaService, { ArtistaEditDTO } from "@/services/ArtistaService";
+import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
 import UsuarioService from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/(home)/(private)/edit";
@@ -53,9 +53,9 @@ export default function EditPerfil() {
       const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
       const model: UsuarioResponse = await UsuarioService.findById(
         tokenParse.id,
-        tokenParse.token
+        tokenParse.token,
       );
-      
+
       setUser(model);
       setFotoUri(model.fotoPerfilUrl ?? null);
       preencherFormulario(model);
@@ -87,10 +87,10 @@ export default function EditPerfil() {
 
   async function solicitarPermissaoGaleria(): Promise<boolean> {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
+    if (status !== "granted") {
       Alert.alert(
-        "Permissão necessária", 
-        "Precisamos de acesso à sua galeria para alterar a foto de perfil."
+        "Permissão necessária",
+        "Precisamos de acesso à sua galeria para alterar a foto de perfil.",
       );
       return false;
     }
@@ -122,20 +122,23 @@ export default function EditPerfil() {
       const arquivo = {
         uri: imagemSelecionada.uri,
         name: imagemSelecionada.fileName || `foto-perfil-${Date.now()}.jpg`,
-        type: imagemSelecionada.mimeType || 'image/jpeg',
+        type: imagemSelecionada.mimeType || "image/jpeg",
       };
 
       const mensagem = await UsuarioService.updateFotoPerfil(arquivo);
-      
+
       setFotoUri(imagemSelecionada.uri);
-      
+
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
-      
+
       Alert.alert("Sucesso", mensagem);
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);
-      Alert.alert("Erro", error.message || "Não foi possível atualizar a foto de perfil");
+      Alert.alert(
+        "Erro",
+        error.message || "Não foi possível atualizar a foto de perfil",
+      );
     } finally {
       setUploadingFoto(false);
     }
@@ -176,12 +179,15 @@ export default function EditPerfil() {
       const payload = prepararPayload();
 
       await ArtistaService.edit(tokenParse.token, payload);
-      
+
       Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
       router.navigate("/profile");
     } catch (error: any) {
       console.error("Erro ao salvar:", error);
-      Alert.alert("Erro", error.message || "Não foi possível salvar as alterações");
+      Alert.alert(
+        "Erro",
+        error.message || "Não foi possível salvar as alterações",
+      );
     } finally {
       setSaving(false);
     }

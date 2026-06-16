@@ -1,7 +1,7 @@
 import { ComentarioProvider } from "@/contexts/ComentarioContext";
 import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { useComentarioListQuery } from "@/services/ComentarioService";
-import { ActivityIndicator, FlatList, Modal } from "react-native";
+import { FlatList, Modal } from "react-native";
 import { Card, Divider } from "react-native-paper";
 import { Comentario } from "../Comentario";
 import { ComentarioSender } from "../ComentarioSender";
@@ -30,7 +30,7 @@ export function ComentarioSection() {
         <Divider />
 
         {isLoading ? (
-          <ActivityIndicator />
+          <></>
         ) : (
           <FlatList
             data={comentarioData?.data.content}

@@ -6,7 +6,7 @@ export const style = StyleSheet.create({
     width: "100%",
   },
   postFlatContainer: {
-    padding: 5,
+    padding: 10,
   },
   postContentContainer: {
     gap: 10,

@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useUsuarioByIdQuery } from "@/services/UsuarioService";
+import { AppUtils } from "@/utils/AppUtils";
 import { View } from "react-native";
 import { Avatar, Text, TouchableRipple } from "react-native-paper";
 import { style } from "./style";
@@ -22,7 +23,6 @@ export function PainelUsuarioPerfil() {
     }
   }
 
-  console.log(data?.data.publicacoes);
   return (
     <View style={style.fundo}>
       <View style={style.headerRow}>
@@ -33,6 +33,11 @@ export function PainelUsuarioPerfil() {
             guestFotoRender()
           )}
           <Text style={style.infoLabel}>{data?.data.nome}</Text>
+          {data?.data && (
+            <Text style={style.infoLabel}>
+              {AppUtils.capitalize(data.data.tipoConta)}
+            </Text>
+          )}
         </View>
         <View style={style.infosProfile}>
           <View style={style.infoDuo}>

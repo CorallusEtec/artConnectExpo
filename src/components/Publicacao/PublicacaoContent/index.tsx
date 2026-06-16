@@ -11,7 +11,7 @@ export function PublicacaoContent() {
   return (
     <>
       <Card.Content>
-        <Text>{data?.data.publicacao.legenda}</Text>
+        <Text>{data?.data.publicacao.legenda || ""}</Text>
       </Card.Content>
 
       {data?.data.publicacao.urlMidia && (
