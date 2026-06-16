@@ -1,8 +1,9 @@
+import { Header } from "@/components";
 import { Publicacao } from "@/components/Publicacao";
 import { RetryFetch } from "@/components/RetryFetch";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import { useFeedQuery } from "@/services/PublicacaoService";
-import { style } from "@/style/pages/(home)/home";
+import { style } from "@/style/pages/home";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function Home() {
@@ -15,17 +16,20 @@ export default function Home() {
       </RetryFetch>
     );
   return (
-    <View style={style.container}>
-      <FlatList
-        contentContainerStyle={style.listaContainer}
-        data={data?.data.content}
-        keyExtractor={(publi) => publi.publicacao.id.toString()}
-        renderItem={({ item }) => (
-          <PublicacaoProvider idPublicacaoInit={item.publicacao.id}>
-            <Publicacao />
-          </PublicacaoProvider>
-        )}
-      />
-    </View>
+    <>
+      <Header />
+      <View style={style.container}>
+        <FlatList
+          contentContainerStyle={style.listaContainer}
+          data={data?.data.content}
+          keyExtractor={(publi) => publi.publicacao.id.toString()}
+          renderItem={({ item }) => (
+            <PublicacaoProvider idPublicacaoInit={item.publicacao.id}>
+              <Publicacao />
+            </PublicacaoProvider>
+          )}
+        />
+      </View>
+    </>
   );
 }

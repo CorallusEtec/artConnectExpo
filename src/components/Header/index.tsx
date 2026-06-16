@@ -1,6 +1,6 @@
-import { gStyles } from "@/style/gStyle";
-import { AntDesign } from "@expo/vector-icons";
-import { Image, TouchableOpacity, View, ViewProps } from "react-native";
+import { router } from "expo-router";
+import { Image, View, ViewProps } from "react-native";
+import { IconButton } from "react-native-paper";
 import { style } from "./style";
 
 export type HeaderProps = ViewProps & {};
@@ -15,9 +15,10 @@ export function Header() {
           gap: 16,
         }}
       >
-        <TouchableOpacity>
-          <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
-        </TouchableOpacity>
+        <IconButton
+          icon="message-text-outline"
+          onPress={() => router.push("/chat/contacts")}
+        />
       </View>
     </View>
   );
