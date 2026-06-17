@@ -7,8 +7,7 @@ import { style } from "@/style/pages/home";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function Home() {
-  const { data, error, isError, isPending, refetch } = useFeedQuery({}, "feed");
-  if (isPending) return <ActivityIndicator />;
+  const { data, error, isError, refetch, isLoading } = useFeedQuery({}, "feed");
   if (isError)
     return (
       <RetryFetch onRetry={() => refetch()}>
@@ -19,16 +18,20 @@ export default function Home() {
     <>
       <Header />
       <View style={style.container}>
-        <FlatList
-          contentContainerStyle={style.listaContainer}
-          data={data?.data.content}
-          keyExtractor={(publi) => publi.publicacao.id.toString()}
-          renderItem={({ item }) => (
-            <PublicacaoProvider idPublicacaoInit={item.publicacao.id}>
-              <Publicacao />
-            </PublicacaoProvider>
-          )}
-        />
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            contentContainerStyle={style.listaContainer}
+            data={data?.data.content}
+            keyExtractor={(publi) => publi.publicacao.id.toString()}
+            renderItem={({ item }) => (
+              <PublicacaoProvider idPublicacaoInit={item.publicacao.id}>
+                <Publicacao />
+              </PublicacaoProvider>
+            )}
+          />
+        )}
       </View>
     </>
   );

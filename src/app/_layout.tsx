@@ -5,11 +5,11 @@ import { ActivityIndicator } from "react-native";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 
 export function NavigationLayout() {
-  const { token, isLoading } = useAuth();
+  const { isLoading, isAuth } = useAuth();
   if (isLoading) {
     return <ActivityIndicator />;
   }
-
+  console.log("Autenticado: ", isAuth);
   return (
     <Stack
       screenOptions={{
@@ -18,11 +18,11 @@ export function NavigationLayout() {
         headerBackButtonDisplayMode: "minimal",
       }}
     >
-      <Stack.Protected guard={token != null}>
+      <Stack.Protected guard={isAuth == true}>
         <Stack.Screen name="(home)" />
       </Stack.Protected>
 
-      <Stack.Protected guard={token == null}>
+      <Stack.Protected guard={isAuth == false}>
         <Stack.Screen name="(public)" />
       </Stack.Protected>
     </Stack>

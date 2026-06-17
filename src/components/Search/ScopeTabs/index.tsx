@@ -1,26 +1,28 @@
-import React from "react"; 
+import { useSearch } from "@/contexts/SearchContext";
+import React, { useState } from "react";
 import { SegmentedButtons } from "react-native-paper";
 
-interface ScopeTabsProps {
-  escopo: string;
-  
-  onChange: (value: any) => void; 
-}
+export function ScopeTabs() {
+  const [escopo, setEscopo] = useState("");
+  const { tipoFiltro } = useSearch();
 
-export default function ScopeTabs({ escopo, onChange }: ScopeTabsProps) {
+  function handleEscopo(value: "Publicacao" | "Usuario") {
+      tipoFiltro.current = value
+    setEscopo(value)
+  }
   return (
     <SegmentedButtons
-      value={escopo}
-      onValueChange={onChange} 
+      value={escopo as "Publicacao" | "Usuario"}
+      onValueChange={handleEscopo}
       buttons={[
         {
-          value: "publicacao",
+          value: "Publicacao",
           label: "Publicações",
         },
         {
-          value: "artista",
+          value: "Usuario",
           label: "Usuários",
-        },
+        }
       ]}
     />
   );

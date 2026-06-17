@@ -7,4 +7,4 @@ export interface PublicacaoPageParams {
   nomeAutor?: string;
   tipoStatus?: TipoStatus;
   idUsuario?: number;
-}
+}    

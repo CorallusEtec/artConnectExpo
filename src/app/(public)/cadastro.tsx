@@ -1,15 +1,20 @@
-import { AlertMessage } from "@/components/AlertMessage";
-import { BannerLogo } from "@/components/BannerLogo";
-import { InputIcon } from "@/components/InputIcon";
-import { InputSenha } from "@/components/InputSenha";
-import { TextButton } from "@/components/TextButton";
-import { schema } from "@/schemas/cadastroSchema";
-import { AuthService } from "@/services/AuthService";
+import {
+  BannerLogo,
+  InputIcon,
+  InputSenha,
+  TextButton
+} from "@/components";
 import { style } from "@/style/pages/cadastro";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-import { Button, Dialog, Portal, Switch } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import {
+  Button,
+  Dialog,
+  Portal,
+  Switch,
+  Text
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Cadastro() {
@@ -18,28 +23,13 @@ export default function Cadastro() {
   const [senha, setSenha] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
   const [isArtista, setArtista] = useState(false);
+
   const errorMessage = useRef("");
   const [alert, setAlert] = useState(false);
 
   const [dialog, setDialog] = useState(false);
 
-  function avancar() {
-    const valido = schema.safeParse({ nome, email, senha });
-
-    if (!valido.success) {
-      errorMessage.current = valido.error.issues[0].message;
-      setAlert(true);
-    } else {
-      AuthService.register({
-        nome,
-        email,
-        senha,
-        tipoConta: isArtista ? "ARTISTA" : "CONTRATANTE",
-      });
-
-      setDialog(true);
-    }
-  }
+  function avancar() {}
 
   return (
     <SafeAreaView style={style.container}>
@@ -58,16 +48,11 @@ export default function Cadastro() {
         </Dialog>
       </Portal>
 
-      <AlertMessage
-        onDismiss={() => setAlert(false)}
-        visible={alert}
-        text={errorMessage.current}
-      />
       <BannerLogo />
 
       <View>
         <View style={style.titleContainer}>
-          <Text style={style.titulo}> Cadastre-se </Text>
+          <Text style={style.titulo}> Crie sua conta no Art Connect </Text>
         </View>
 
         <ScrollView>
