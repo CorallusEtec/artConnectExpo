@@ -14,7 +14,10 @@ export function Header() {
 
       <View style={style.actionsContainer}>
         {!isAuth ? (
-          <IconButton icon="logout" onPress={() => router.dismissTo("/")} />
+          <IconButton
+            icon="logout"
+            onPress={() => router.dismissTo("/login")}
+          />
         ) : (
           <IconButton
             icon="message-text-outline"

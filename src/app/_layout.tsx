@@ -12,17 +12,18 @@ export function NavigationLayout() {
   console.log("Autenticado: ", isAuth);
   return (
     <Stack
+      initialRouteName={isAuth ? "(home)/home" : "(public)/login"}
       screenOptions={{
         statusBarHidden: true,
         header: () => null,
         headerBackButtonDisplayMode: "minimal",
       }}
     >
-      <Stack.Protected guard={isAuth == true}>
+      <Stack.Protected guard={isAuth === true}>
         <Stack.Screen name="(home)" />
       </Stack.Protected>
 
-      <Stack.Protected guard={isAuth == false}>
+      <Stack.Protected guard={isAuth === false}>
         <Stack.Screen name="(public)" />
       </Stack.Protected>
     </Stack>

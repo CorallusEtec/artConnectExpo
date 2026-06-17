@@ -2,7 +2,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AuthLoginRequest } from "@/models/request/AuthLoginRequest";
 import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
 import { useMutation } from "@tanstack/react-query";
-import { router } from "expo-router";
 import config from "./config";
 
 export function useLoginMutate() {
@@ -13,7 +12,6 @@ export function useLoginMutate() {
     onSuccess: (data) => {
       (async () => {
         await signIn(data.data);
-        router.replace("/home");
       })();
     },
   });

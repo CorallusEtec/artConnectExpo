@@ -99,13 +99,13 @@ export default function Login() {
         </View>
 
         {/*
-        <Button
-          onPress={() => router.navigate("/home")}
-          mode="outlined"
-          style={{ width: "80%", borderRadius: 12, borderColor: "#c6c6c6" }}
-        >
-          Continuar sem Login
-        </Button>
+          <Button
+            onPress={() => router.navigate("/home")}
+            mode="outlined"
+            style={{ width: "80%", borderRadius: 12, borderColor: "#c6c6c6" }}
+          >
+            Continuar sem Login
+          </Button>
         */}
 
         <Pressable onPress={() => router.navigate("/cadastro")}>
