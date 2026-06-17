@@ -25,6 +25,8 @@ export class ArtistaService {
         body: JSON.stringify(payload),
       });
 
+      console.log(token);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         const errorMessage =
