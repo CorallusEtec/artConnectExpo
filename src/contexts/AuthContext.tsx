@@ -24,13 +24,13 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | null>({
-  isAuth: true,
+  isAuth: false,
   isLoading: true,
   token: null,
   signIn: async (token: AuthLoginResponse) => {},
   signOut: async () => {},
   getValidateToken: () => "",
-  getTipoConta: () => "ARTISTA",
+  getTipoConta: () => "CONVIDADO",
   getValidateId: () => 0,
 });
 
@@ -48,6 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (savedToken) setToken(JSON.parse(savedToken));
         if (savedToken != null) {
           isAuth.current = true;
+        } else {
+          isAuth.current = false;
         }
       } catch (e) {
         console.error(e);
@@ -61,14 +63,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signIn(login: AuthLoginResponse) {
     await AsyncStorage.setItem("@artconnect:token", JSON.stringify(login));
     setToken(login); // Muda o estado global
+    isAuth.current = true;
     queryClient.invalidateQueries();
   }
 
   async function signOut() {
     await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
+    isAuth.current = false;
     queryClient.invalidateQueries();
-    router.dismissTo("/")
+    router.dismissTo("/");
   }
 
   function getValidateToken(): string {

@@ -16,4 +16,9 @@ export const style = StyleSheet.create({
     maxHeight: 50,
     resizeMode: "contain",
   },
+  actionsContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 16,
+  },
 });

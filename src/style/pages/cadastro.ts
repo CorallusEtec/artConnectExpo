@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
+    paddingTop: 50,
     flex: 1,
     backgroundColor: "white",
   },
@@ -9,11 +10,11 @@ export const style = StyleSheet.create({
   titleContainer: {
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 20,
   },
 
   titulo: {
-    fontSize: 22,
-    fontWeight: "medium",
+    fontSize: 20,
   },
 
   inputContainer: {
