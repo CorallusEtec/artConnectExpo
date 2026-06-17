@@ -18,7 +18,9 @@ export function TextButton({
   return (
     <Button
       mode={variant === "primary" ? "contained" : "outlined"}
-      buttonColor={variant === "primary" ? (buttonColor ?? "#2563eb") : undefined}
+      buttonColor={
+        variant === "primary" ? (buttonColor ?? "#2563eb") : undefined
+      }
       textColor={variant === "secondary" ? "#2563eb" : "#fff"}
       rippleColor={variant === "secondary" ? "#2563eb20" : undefined}
       contentStyle={{ paddingVertical: 4 }}

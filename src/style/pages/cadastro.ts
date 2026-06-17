@@ -2,43 +2,44 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    paddingTop: 30,
     flex: 1,
     backgroundColor: "white",
   },
-
-  titleContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
   },
 
   titulo: {
     fontSize: 20,
   },
 
-  inputContainer: {
-    alignItems: "center",
+  titleContainer: {
+    gap: 25,
+    marginBottom: 20,
   },
+
+  formContainer: {
+    alignItems: "center",
+    paddingBottom: 100,
+  },
+
+  tipoContaGroup: {
+    marginTop: 20,
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 15,
+  },
+
   // relacionado aos inputs
   inputGroup: {
     width: "80%",
-    gap: 10,
-  },
-
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
   },
 
   // relacionado aos botões
-  btnContainer: {
-    marginTop: 20,
-    marginBottom: 20,
-    alignItems: "center",
-  },
-
   btnGroup: {
+    marginTop: 10,
     width: "80%",
     gap: 20,
   },

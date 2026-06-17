@@ -65,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(login); // Muda o estado global
     isAuth.current = true;
     queryClient.invalidateQueries();
+    router.dismissTo("/home");
   }
 
   async function signOut() {
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null); // Remove o acesso instantaneamente
     isAuth.current = false;
     queryClient.invalidateQueries();
-    router.dismissTo("/");
+    router.dismissTo("/login");
   }
 
   function getValidateToken(): string {
