@@ -11,11 +11,11 @@ type AvatarRenderProps = {
  * @param param0 Props do componente
  * @returns Renderiza o avatar do usuário com ou sem foto e nome.
  */
-function renderAvatar({ nome, size, uri }: AvatarRenderProps) {
+function renderAvatar({ nome, size = 70, uri }: AvatarRenderProps) {
   if (uri) {
-    return <Avatar.Image size={70} source={{ uri }} />;
+    return <Avatar.Image size={size} source={{ uri }} />;
   } else if (nome) {
-    return <Avatar.Text size={70} label={nome[0]} />;
+    return <Avatar.Text size={size} label={nome[0]} />;
   } else {
     return (
       <Avatar.Image
