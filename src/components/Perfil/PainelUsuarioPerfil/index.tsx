@@ -1,8 +1,9 @@
+import { AvatarRender } from "@/components/AvatarRender";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUsuarioByIdQuery } from "@/services/UsuarioService";
 import { AppUtils } from "@/utils/AppUtils";
 import { View } from "react-native";
-import { Avatar, Text, TouchableRipple } from "react-native-paper";
+import { Text, TouchableRipple } from "react-native-paper";
 import { style } from "./style";
 
 export function PainelUsuarioPerfil() {
@@ -10,28 +11,15 @@ export function PainelUsuarioPerfil() {
 
   const { data } = useUsuarioByIdQuery(getValidateId());
 
-  function guestFotoRender() {
-    if (data?.data.nome) {
-      return <Avatar.Text label={data?.data.nome.charAt(0)} size={92} />;
-    } else {
-      return (
-        <Avatar.Image
-          source={require("@/assets/template/avatar.png")}
-          size={92}
-        />
-      );
-    }
-  }
-
   return (
     <View style={style.fundo}>
       <View style={style.headerRow}>
         <View style={style.profile}>
-          {data?.data.fotoPerfilUrl ? (
-            <Avatar.Image size={92} source={{ uri: data.data.fotoPerfilUrl }} />
-          ) : (
-            guestFotoRender()
-          )}
+          <AvatarRender
+            nome={data?.data.nome}
+            size={92}
+            uri={data?.data.fotoPerfilUrl}
+          />
           <Text style={style.infoLabel}>{data?.data.nome}</Text>
           {data?.data && (
             <Text style={style.infoLabel}>

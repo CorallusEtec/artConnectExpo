@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ArtConnectColorTheme } from "@/style/appTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { ActivityIndicator } from "react-native";
@@ -42,7 +43,7 @@ export default function RootLayout() {
   const theme = {
     ...MD3LightTheme,
     colors: {
-      ...MD3LightTheme.colors,
+      ...ArtConnectColorTheme.colors,
     },
   };
   // LOGICA DE PROTEÇÃO DAS ROTAS DE LOGIN E HOME

@@ -1,9 +1,9 @@
-import { gStyles } from "@/style/gStyle";
+import { ArtConnectColorTheme } from "@/style/appTheme";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   navbar: {
-    backgroundColor: gStyles.azul[500],
+    backgroundColor: ArtConnectColorTheme.colors.primary,
     justifyContent: "space-between",
   },
 });
