@@ -20,7 +20,7 @@ class ArteService {
     const response = await config.axiosClient.get<PagedResponse<ArteResponse>>(
       `${config.apiUrl}/arte/findAll`,
       {
-        params: params,
+        params: { size: 20, ...params },
       },
     );
 

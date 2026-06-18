@@ -1,3 +1,4 @@
 export interface ArtePageParams {
-  nomeArte: string;
+  nomeArte?: string;
+  size?: number;
 }

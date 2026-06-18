@@ -1,6 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthLoginRequest } from "@/models/request/AuthLoginRequest";
-import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
 import { useMutation } from "@tanstack/react-query";
 import config from "./config";
 
@@ -18,6 +17,14 @@ export function useLoginMutate() {
   return mutate;
 }
 
+export function useCadastroMutate() {
+  const mutate = useMutation({
+    mutationFn: (request: FormData) => AuthService.register(request),
+  });
+
+  return mutate;
+}
+
 export class AuthService {
   static async login(loginRequest: AuthLoginRequest) {
     return await config.axiosClient.post(
@@ -26,11 +33,11 @@ export class AuthService {
     );
   }
 
-  static async register(cadastroRequest: AuthRegisterRequest) {
-    const response = await config.axiosClient.post(
-      `${config.apiUrl}/auth/register`,
-      cadastroRequest,
-    );
+  static async register(cadastroRequest: FormData) {
+    const response = await fetch(`${config.apiUrl}/auth/register`, {
+      body: cadastroRequest,
+      method: "POST",
+    });
 
     return response;
   }
