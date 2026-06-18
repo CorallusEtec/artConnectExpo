@@ -1,6 +1,7 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { TipoReacao } from "@/models/enumeration/enumeration";
-import { useRef } from "react";
+import { usePublicacaoQuery } from "@/services/PublicacaoService";
+import { useReagirPublicacao } from "@/services/ReacaoService";
 import { Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { ICON_SIZE } from "../../style";
@@ -10,12 +11,10 @@ import { style } from "../style";
  * Props do componente
  */
 export type PublicacaoReacaoToggleProps = {
-  /** Indice da curtida no array de reações do back-end */
-  index: number;
-  key?: number;
-  /** T */
-  tipoReacao: TipoReacao;
   /** Carrega os icones com os estados reagido e não reagido da reação */
+  tipoReacao: TipoReacao;
+  /** Traz o total da reação */
+  insigth: number;
 };
 
 const reacaoStateIcons = {
@@ -29,40 +28,35 @@ const reacaoStateIcons = {
  */
 export function PublicacaoReacaoToggle({
   tipoReacao,
-  index,
+  insigth,
 }: PublicacaoReacaoToggleProps) {
-  // Contexto
-  const { data, setData } = usePublicacaoData();
-  /** Estado que carrega o total da reacao*/
-  const insight = useRef(data.reacoes[index].total);
+  const { idPublicacao } = usePublicacao(); // Contexto com dados da publicação
+  const { data } = usePublicacaoQuery(idPublicacao); // Busca as reações atuais
+  const { mutate } = useReagirPublicacao(); // Mutate para perssistir reação
 
-  /**
-   * Ao reagir altera a reação feita pelo usuário
+  /** Ao reagir altera a reação feita pelo usuário
    */
   function toggleReagir() {
-    setData((prevState) => ({
-      ...prevState,
-      ["reacaoUsuario"]: tipoReacao != data.reacaoUsuario ? tipoReacao : null,
-    }));
     // Código de reagir no banco de dados
+    mutate({
+      idRecurso: idPublicacao,
+      nomeTipoReacao: tipoReacao,
+      tipoRecurso: "PUBLICACAO",
+    });
   }
 
   return (
     <View style={style.actionContainer}>
       <IconButton
         icon={
-          tipoReacao == data.reacaoUsuario
+          data?.data.reacaoUsuario == tipoReacao
             ? reacaoStateIcons[tipoReacao].on
             : reacaoStateIcons[tipoReacao].off
         }
         size={ICON_SIZE}
-        onPress={() => toggleReagir()}
+        onPress={toggleReagir}
       />
-      <Text style={style.actionInsight}>
-        {tipoReacao == data.reacaoUsuario
-          ? insight.current + 1
-          : insight.current}
-      </Text>
+      <Text style={style.actionInsight}>{insigth}</Text>
     </View>
   );
 }

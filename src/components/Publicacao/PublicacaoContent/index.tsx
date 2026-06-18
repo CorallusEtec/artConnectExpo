@@ -1,18 +1,25 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
+import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { Text } from "react-native";
 import { Card } from "react-native-paper";
-import { renderMidia } from "./Midias/RenderMidia";
+import { RenderMidia } from "./Midias/RenderMidia";
 
 export function PublicacaoContent() {
-  const publicacao = usePublicacaoData().data.publicacao;
+  const { idPublicacao } = usePublicacao();
+  const { data } = usePublicacaoQuery(idPublicacao);
+
   return (
     <>
       <Card.Content>
-        {/* LEGENDA */}
-        <Text>{publicacao.legenda}</Text>
+        <Text>{data?.data.publicacao.legenda || ""}</Text>
       </Card.Content>
-      {/*MIDIA*/}
-        {publicacao.urlMidia && (renderMidia(publicacao.urlMidia!, publicacao.tipoMidia))}
+
+      {data?.data.publicacao.urlMidia && (
+        <RenderMidia
+          urlMidia={data.data.publicacao.urlMidia}
+          tipoMidia={data?.data.publicacao.tipoMidia}
+        />
+      )}
     </>
   );
 }

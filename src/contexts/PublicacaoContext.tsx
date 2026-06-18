@@ -1,25 +1,30 @@
-import { PublicacaoDetails } from "@/models/response/PublicacaoResponse";
 import {
   createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
   useContext,
+  useRef,
   useState,
 } from "react";
 
-/**
- * Tipagem do contexto
+/** Tipagem do contexto
  */
-export interface PublicacaoContextType {
-  data: PublicacaoDetails;
-  setData: Dispatch<SetStateAction<PublicacaoDetails>>;
-}
+type PublicacaoContextType = {
+  idPublicacao: number;
+  comentarioSection: boolean; // Modal da seção de comentários
+  setComentarioSection: Dispatch<SetStateAction<boolean>>;
+};
 
 // CONTEXTO CRIADO
 const PublicacaoContext = createContext<PublicacaoContextType>(
   {} as PublicacaoContextType,
 );
+
+type PublicacaoProviderProps = {
+  children: ReactNode;
+  idPublicacaoInit: number;
+};
 
 /**
  *
@@ -28,15 +33,19 @@ const PublicacaoContext = createContext<PublicacaoContextType>(
  */
 export function PublicacaoProvider({
   children,
-  dadosPubli,
-}: {
-  children: ReactNode;
-  dadosPubli: PublicacaoDetails;
-}) {
-  const [data, setData] = useState<PublicacaoDetails>(dadosPubli);
+  idPublicacaoInit,
+}: PublicacaoProviderProps) {
+  const [comentarioSection, setComentarioSection] = useState(false); // Modal de comentários
+  const idPublicacao = useRef(idPublicacaoInit);
 
   return (
-    <PublicacaoContext.Provider value={{ data: data, setData: setData }}>
+    <PublicacaoContext.Provider
+      value={{
+        idPublicacao: idPublicacao.current,
+        setComentarioSection,
+        comentarioSection,
+      }}
+    >
       {children}
     </PublicacaoContext.Provider>
   );
@@ -46,8 +55,13 @@ export function PublicacaoProvider({
  *
  * @returns Dados da publicação para árvore de componentes de Publicação.
  */
-export function usePublicacaoData(): PublicacaoContextType {
+export function usePublicacao(): PublicacaoContextType {
   const context = useContext(PublicacaoContext);
+  if (context == undefined) {
+    throw new Error(
+      "O contexto deve ser usado dentro do provider de Publicação",
+    );
+  }
 
   return context;
 }

@@ -1,20 +1,8 @@
-import { PublicacaoResponse } from "./PublicacaoResponse";
-
-export type TipoConta = "ARTISTA" | "CONTRATANTE" | "ADMIN";
-export type NomeTipoStatus = "ATIVO" | "INATIVO" | "BLOQUEADO" | "PENDENTE";
-
-export interface TipoStatus {
-  id: number;
-  nomeTipoStatus: NomeTipoStatus;
-}
-
-// 3. Interface para o objeto interno de Status
-export interface Status {
-  id: number;
-  tipoStatus: TipoStatus;
-  descricao?: string;
-  dataModificacao: string; // Vem como string no formato ISO (ex: "2026-05-21T14:47:22")
-}
+import { TipoConta } from "../enumeration/enumeration";
+import { ArteResponse } from "./ArteResponse";
+import { GeneroArteResponse } from "./GeneroArteResponse";
+import { PublicacaoDetailsResponse } from "./Publicacao/PublicacaoDetailsResponse";
+import { Status } from "./Status";
 
 export interface UsuarioResponse {
   id: number;
@@ -33,5 +21,8 @@ export interface UsuarioResponse {
   textoBio?: string;
   fotoPerfilUrl?: string;
   contatos?: [];
-  publicacaoes: PublicacaoResponse[];
+  publicacoes: PublicacaoDetailsResponse[];
+
+  arte: ArteResponse;
+  generosArte: GeneroArteResponse[];
 }

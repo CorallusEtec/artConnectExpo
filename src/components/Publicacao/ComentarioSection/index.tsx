@@ -1,66 +1,50 @@
-import { useAuth } from "@/contexts/AuthContext";
-import { ComentarioProvider } from "@/contexts/ComentarioContext";
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
-import { useComentarioQuery } from "@/services/ComentarioService";
-import { useState } from "react";
-import { ActivityIndicator, FlatList, Modal, View } from "react-native";
-import { Card, Divider, IconButton, Text } from "react-native-paper";
-import { Comentario } from "../Comentario";
-import { ComentarioSender } from "../ComentarioSender";
+import { ComentarioProvider, usePublicacao } from "@/contexts";
+import { useComentarioListQuery } from "@/services/ComentarioService";
+import { FlatList, Modal } from "react-native";
+import { Card, Divider, PaperProvider, useTheme } from "react-native-paper";
+import { Comentario } from "./Comentario";
+import { ComentarioSectionHeader } from "./ComentarioSectionHeader";
+import { ComentarioSender } from "./ComentarioSender";
 import { style } from "./style";
 
-type ComentarioSectionProps = {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-};
-
-export function ComentarioSection({
-  visible,
-  setVisible,
-}: ComentarioSectionProps) {
+export function ComentarioSection() {
   // ID da publicação
-  const { id } = usePublicacaoData().data.publicacao;
-  const auth = useAuth();
-  let tokenValidado = "";
-  if (auth.token != null) {
-    tokenValidado = auth.token.token;
-  }
+  const { idPublicacao, comentarioSection } = usePublicacao();
+  const theme = useTheme();
 
-  const { data, isLoading } = useComentarioQuery(id, tokenValidado);
+  const { data: comentarioData, isLoading } = useComentarioListQuery(
+    idPublicacao,
+    comentarioSection,
+  );
 
-  const [comentarios, setComentarios] = useState(data?.data.content);
   return (
     <Modal
       transparent
       animationType="slide"
-      visible={visible}
+      visible={comentarioSection}
       style={style.container}
     >
-      <Card style={style.contentContainer} mode="elevated">
-        <View style={style.headerContainer}>
-          <Text variant="headlineSmall" style={style.headerTitle}>
-            Comentários
-          </Text>
-          <IconButton icon="close" onPress={() => setVisible(false)} />
-        </View>
-        <ComentarioSender />
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <>
-            <Divider />
+      <PaperProvider theme={theme}>
+        <Card style={style.contentContainer} mode="elevated">
+          <ComentarioSectionHeader />
+          <ComentarioSender />
+          <Divider />
+
+          {isLoading ? (
+            <></>
+          ) : (
             <FlatList
-              data={comentarios}
+              data={comentarioData?.data.content}
               keyExtractor={(id) => id.id.toString()}
               renderItem={({ item }) => (
-                <ComentarioProvider initialData={item}>
+                <ComentarioProvider comentarioIdInitial={item.id}>
                   <Comentario />
                 </ComentarioProvider>
               )}
             />
-          </>
-        )}
-      </Card>
+          )}
+        </Card>
+      </PaperProvider>
     </Modal>
   );
 }

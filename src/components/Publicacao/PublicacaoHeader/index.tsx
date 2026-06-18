@@ -1,9 +1,11 @@
-import { usePublicacaoData } from "@/contexts/PublicacaoContext";
+import { AvatarRender } from "@/components/AvatarRender";
+import { usePublicacao } from "@/contexts/PublicacaoContext";
+import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { Avatar, Card, IconButton, Menu } from "react-native-paper";
+import { Card, IconButton, Menu } from "react-native-paper";
 import { style } from "./style";
 
 /**
@@ -12,38 +14,27 @@ import { style } from "./style";
  */
 export function PublicacaoHeader() {
   const [menu, setMenu] = useState(false);
-  const publicacao = usePublicacaoData().data.publicacao;
+  const { idPublicacao } = usePublicacao();
+  const { data, isLoading } = usePublicacaoQuery(idPublicacao);
 
-  function guestFotoRender() {
-    if (publicacao.autor.nome) {
-      return <Avatar.Text label={publicacao.autor.nome.charAt(0)} size={35} />;
-    } else {
-      return (
-        <Avatar.Image
-          source={require("@/assets/template/avatar.png")}
-          size={35}
-        />
-      );
-    }
-  }
-
+  if (isLoading) return <></>;
   return (
     <Card.Content style={style.headerContainer}>
       <View style={style.headerContent}>
-        {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
-        {publicacao.autor.fotoPerfilUrl ? (
-          <Avatar.Image
-            size={35}
-            source={{ uri: publicacao.autor.fotoPerfilUrl }}
-          />
-        ) : (
-          guestFotoRender()
-        )}
+        <AvatarRender
+          size={35}
+          nome={data?.data.publicacao.autor.nome}
+          uri={data?.data.publicacao.autor.fotoPerfilUrl}
+        />
         <View style={style.metadataPubli}>
-          <Text style={style.autorLabel}>{publicacao.autor.nome}</Text>
+          <Text style={style.autorLabel}>
+            {data?.data.publicacao.autor.nome}
+          </Text>
           <Text style={style.publishDateLabel}>
             {AppUtils.labelData(
-              AppUtils.converterData(new Date(publicacao.dataPublicacao)),
+              AppUtils.converterData(
+                new Date(data!.data.publicacao.dataPublicacao),
+              ),
             )}
           </Text>
         </View>

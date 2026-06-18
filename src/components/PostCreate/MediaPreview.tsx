@@ -1,14 +1,16 @@
-import { ResizeMode, Video } from "expo-av";
-import { Image, Platform, Text, View, useWindowDimensions } from "react-native";
+// import { ResizeMode, Video } from "expo-av";
+import {useVideoPlayer, VideoView} from "expo-video";
+import { Button, Image, Text, View, useWindowDimensions } from "react-native";
 import { style } from './style';
 import { TipoMidia } from "./types";
+import { useEvent } from "expo";
 
 interface Props {
   midia: any;
   tipoMidia: TipoMidia | null;
 }
 
-function renderConteudo(midia: any, tipoMidia: TipoMidia | null, maxHeight: number) {
+function renderConteudo(midia: any, tipoMidia: TipoMidia | null, maxHeight: number, player: any, isPlaying: boolean) {
   switch (tipoMidia) {
     // volta como imagem
     case TipoMidia.IMAGE: {
@@ -24,25 +26,15 @@ function renderConteudo(midia: any, tipoMidia: TipoMidia | null, maxHeight: numb
 
     // volta como video
     case TipoMidia.VIDEO: {
-      /**  é pra mostrar direitinho na web, pq na web a forma de mostrar é diferente, 
-      e se não fizer isso fica todo quebrado todo ruim, só pra esclarecer 
-      */
-      if (Platform.OS === "web") {
-        return (
-          <video
-            src={midia.uri}
-            controls
-            style={{ width: "100%", maxHeight, objectFit: "contain", backgroundColor: "#000", borderRadius: 12 }}
-          />
-        );
-      }
       return (
-        <Video
-          source={{ uri: midia.uri }}
-          style={{ width: "100%", height: 200, backgroundColor: "#000" }}
-          useNativeControls
-          resizeMode={ResizeMode.CONTAIN}
-        />
+        <View style={style.contentContainer}>
+          <VideoView
+            style={style.video}
+            player={player}
+            fullscreenOptions={{ enable: true }}
+            allowsPictureInPicture
+          />
+        </View>
       );
     }
 
@@ -66,10 +58,18 @@ function renderConteudo(midia: any, tipoMidia: TipoMidia | null, maxHeight: numb
     const { height } = useWindowDimensions();
     const maxHeight = height * 0.4;
 
+    const videoUri = midia?.uri ?? "";
+
+    const player = useVideoPlayer(videoUri, player => {
+      player.loop = true;
+      player.play();
+    })
+    const {isPlaying} = useEvent(player, 'playingChange', { isPlaying: player.playing});
+
     if (!midia) return null;
     return (
       <View style={style.previewWrapper}>
-        {renderConteudo(midia, tipoMidia, maxHeight)}
+        {renderConteudo(midia, tipoMidia, maxHeight, player, isPlaying)}
       </View>
     );
   }

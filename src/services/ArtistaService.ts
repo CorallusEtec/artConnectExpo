@@ -1,3 +1,4 @@
+import { ArtistaResponse } from "@/models/response/ArtistaResponse";
 import config from "./config";
 
 export interface ArtistaEditDTO {
@@ -12,7 +13,7 @@ export interface ArtistaEditDTO {
   uf?: string;
 }
 
-export default class ArtistaService {
+export class ArtistaService {
   static async edit(token: string, payload: ArtistaEditDTO): Promise<void> {
     try {
       const response = await fetch(`${config.apiUrl}/artista/edit`, {
@@ -24,15 +25,28 @@ export default class ArtistaService {
         body: JSON.stringify(payload),
       });
 
+      console.log(token);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        const errorMessage = errorData?.message || await response.text() || "Erro ao editar artista";
+        const errorMessage =
+          errorData?.message ||
+          (await response.text()) ||
+          "Erro ao editar artista";
         throw new Error(errorMessage);
       }
     } catch (error) {
       console.error("Erro ao editar artista:", error);
       throw error;
     }
+  }
+
+  static async findById(artistaId: number) {
+    const response = await config.axiosClient.get<ArtistaResponse>(
+      `${config.apiUrl}/artista/${artistaId}`,
+    );
+
+    return response;
   }
 
   static async listarAntigo(filtros?: {

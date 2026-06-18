@@ -1,23 +1,29 @@
-import { gStyles } from "@/style/gStyle";
-import { AntDesign } from "@expo/vector-icons";
-import { Image, TouchableOpacity, View, ViewProps } from "react-native";
+import { useAuth } from "@/contexts";
+import { router } from "expo-router";
+import { Image, View, ViewProps } from "react-native";
+import { IconButton } from "react-native-paper";
 import { style } from "./style";
 
 export type HeaderProps = ViewProps & {};
 
 export function Header() {
+  const { isAuth } = useAuth();
   return (
     <View style={style.navbar}>
       <Image style={style.banner} source={require("@/assets/img/banner.png")} />
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 16,
-        }}
-      >
-        <TouchableOpacity>
-          <AntDesign name="message" color={gStyles.cinza[600]} size={22} />
-        </TouchableOpacity>
+
+      <View style={style.actionsContainer}>
+        {!isAuth ? (
+          <IconButton
+            icon="logout"
+            onPress={() => router.dismissTo("/login")}
+          />
+        ) : (
+          <IconButton
+            icon="message-text-outline"
+            onPress={() => router.push("/chat/contacts")}
+          />
+        )}
       </View>
     </View>
   );

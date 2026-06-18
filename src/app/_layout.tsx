@@ -1,29 +1,30 @@
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ArtConnectColorTheme } from "@/style/appTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { ActivityIndicator } from "react-native";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 
 export function NavigationLayout() {
-  const { token, isLoading } = useAuth();
+  const { isLoading, isAuth } = useAuth();
   if (isLoading) {
     return <ActivityIndicator />;
   }
 
   return (
     <Stack
+      initialRouteName={!isAuth ? "(public)/login" : undefined}
       screenOptions={{
         statusBarHidden: true,
-        headerTitle: "",
-        headerTransparent: true,
+        header: () => null,
         headerBackButtonDisplayMode: "minimal",
       }}
     >
-      <Stack.Protected guard={token != null}>
+      <Stack.Protected guard={isAuth === true}>
         <Stack.Screen name="(home)" />
       </Stack.Protected>
 
-      <Stack.Protected guard={token == null}>
+      <Stack.Protected guard={isAuth === false}>
         <Stack.Screen name="(public)" />
       </Stack.Protected>
     </Stack>
@@ -42,7 +43,7 @@ export default function RootLayout() {
   const theme = {
     ...MD3LightTheme,
     colors: {
-      ...MD3LightTheme.colors,
+      ...ArtConnectColorTheme.colors,
     },
   };
   // LOGICA DE PROTEÇÃO DAS ROTAS DE LOGIN E HOME
@@ -50,12 +51,12 @@ export default function RootLayout() {
   // SE NÃO, ATIVA /login E DESATIVA (home)
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={client}>
+    <QueryClientProvider client={client}>
+      <AuthProvider>
         <PaperProvider theme={theme}>
           <NavigationLayout />
         </PaperProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
