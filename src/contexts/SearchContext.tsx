@@ -5,29 +5,34 @@ import {
   RefObject,
   useContext,
   useRef,
-  useState
+  useState,
 } from "react";
 
 type SearchContextType = {
   modalFiltro: boolean;
   setModalFiltro: (value: boolean) => void;
-  tipoFiltro: RefObject<"Publicacao" | "Usuario">,
-  form: RefObject<SearchFiltroParams>
+  tipoFiltro: RefObject<"Publicacao" | "Usuario">;
+  form: RefObject<SearchFiltroParams>;
 };
 
 const SearchContext = createContext<SearchContextType>({} as SearchContextType);
 
 type SearchProviderProps = {
   children: ReactNode;
-  initialState: boolean
+  initialState: boolean;
 };
 
-export function SearchProvider({ children, initialState }: SearchProviderProps) {
+export function SearchProvider({
+  children,
+  initialState,
+}: SearchProviderProps) {
   const [modalFiltro, setModalFiltro] = useState(initialState);
-  const form = useRef({} as SearchFiltroParams);
+  const form = useRef({ nome: "", legenda: "" } as SearchFiltroParams);
   const tipoFiltro = useRef<"Publicacao" | "Usuario">("Usuario");
   return (
-    <SearchContext.Provider value={{ tipoFiltro, modalFiltro, setModalFiltro, form }}>
+    <SearchContext.Provider
+      value={{ tipoFiltro, modalFiltro, setModalFiltro, form }}
+    >
       {children}
     </SearchContext.Provider>
   );
