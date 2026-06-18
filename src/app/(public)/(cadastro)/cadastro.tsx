@@ -5,6 +5,8 @@ import {
   FormInput,
   FormPassInput,
 } from "@/components/Form";
+import { useCadastro } from "@/contexts/CadastroContext";
+import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
 import { schema } from "@/schemas/cadastroSchema";
 import { style } from "@/style/pages/cadastro";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,13 +30,21 @@ export default function Cadastro() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      isArtista: false,
+    },
   });
-
+  const { cadastroRequest } = useCadastro();
   const onSubmit = (data: z.infer<typeof schema>) => {
-    if (getValues("isArtista")) {
-    }
+    console.log("Passou");
+    cadastroRequest.current = {
+      nome: data.nome,
+      email: data.email,
+      senha: data.senha,
+      tipoConta: data.isArtista ? "ARTISTA" : "CONTRATANTE",
+    } as AuthRegisterRequest;
+    router.navigate("/cadastroDetails");
   };
-
   return (
     <>
       <StatusBar hidden />

@@ -5,12 +5,15 @@ import { style } from "./style";
 
 type PaperInputSenhaProps = TextInputProps & {};
 
-export function FormPassInput({ ...props }: PaperInputSenhaProps) {
+export function FormPassInput({
+  mode = "outlined",
+  ...props
+}: PaperInputSenhaProps) {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
 
   return (
     <TextInput
-      mode="outlined"
+      mode={mode}
       secureTextEntry={!senhaVisivel}
       left={<TextInput.Icon icon="lock-outline" color={gStyles.azul[500]} />}
       right={
@@ -21,7 +24,6 @@ export function FormPassInput({ ...props }: PaperInputSenhaProps) {
         />
       }
       style={style.input}
-      outlineStyle={{ borderRadius: 8 }}
       {...props}
     />
   );

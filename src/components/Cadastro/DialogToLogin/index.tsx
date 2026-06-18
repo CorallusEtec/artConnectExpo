@@ -13,7 +13,7 @@ export function DialogToLogin({ visible }: { visible: boolean }) {
           </Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={() => router.back()}>Ok</Button>
+          <Button onPress={() => router.dismissTo("/login")}>Ok</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

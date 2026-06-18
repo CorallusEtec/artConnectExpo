@@ -15,7 +15,7 @@ export const schema = z
       .string({ error: "Campo não preenchido" })
       .trim()
       .min(6, { error: "A senha deve conter no mínimo 6 caracteres" }),
-    isArtista: z.boolean(),
+    isArtista: z.boolean().default(false),
   })
   .refine(({ senha, senhaConfirm }) => senha === senhaConfirm, {
     error: "As senhas não coincidem.",

@@ -6,16 +6,20 @@ type PaperInputProps = TextInputProps & {
   icon?: string;
 };
 
-export function FormInput({ icon, ...props }: PaperInputProps) {
+export function FormInput({
+  mode = "outlined",
+  icon,
+  ...props
+}: PaperInputProps) {
   return (
     <TextInput
-      mode="outlined"
+      mode={mode}
       left={
         icon ? (
           <TextInput.Icon icon={icon} color={gStyles.azul[500]} />
         ) : undefined
       }
-      style={style.input}
+      style={[style.input, props.style]}
       {...props}
     />
   );
