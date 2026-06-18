@@ -1,7 +1,9 @@
 import { AvatarRender } from "@/components";
+import { DialogToLogin } from "@/components/Cadastro/DialogToLogin";
 import { FormInput } from "@/components/Form";
 import { useCadastro } from "@/contexts/CadastroContext";
 import { schema } from "@/schemas/cadastroEndereco";
+import { useCadastroMutate } from "@/services/AuthService";
 import { style } from "@/style/pages/cadastroDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
@@ -21,6 +23,7 @@ import z from "zod";
  */
 export default function Usuario() {
   const { cadastroRequest, fotoPerfil } = useCadastro();
+  const { mutate, isPending, error, isSuccess } = useCadastroMutate();
   const [imagem, setImagem] = useState<ImagePicker.ImagePickerResult>(
     {} as ImagePicker.ImagePickerResult,
   );
@@ -47,12 +50,19 @@ export default function Usuario() {
   }
   function proximaEtapa() {
     if (cadastroRequest.current.tipoConta == "CONTRATANTE") {
-      // Subir Dialog de sucesso e redirecionar para login
+      const formData = new FormData();
+      console.log("Aqiuo");
+      if (fotoPerfil.current) {
+        formData.append("fotoPerfil", fotoPerfil.current as unknown as Blob);
+      }
+      formData.append("principal", JSON.stringify(cadastroRequest.current));
+      mutate(formData);
     } else {
       // Ir para próxima etapa do cadastro de artista
       router.navigate("/cadastroArtista");
     }
   }
+  console.log(error);
   function finalizarCadastro(data: z.infer<typeof schema>) {
     // Fazer cadastro normalmente
     if (imagem.assets) {
@@ -81,6 +91,7 @@ export default function Usuario() {
 
   return (
     <KeyboardAvoidingView behavior="padding" style={style.container}>
+      <DialogToLogin visible={isSuccess} />
       <View style={style.titleContainer}>
         <Text variant="headlineSmall">
           Bem vindo(a), {cadastroRequest.current.nome}
@@ -234,6 +245,8 @@ export default function Usuario() {
           <Button
             style={{ marginLeft: 10 }}
             mode="contained"
+            disabled={isPending}
+            loading={isPending}
             onPress={handleSubmit(finalizarCadastro)}
           >
             {cadastroRequest.current.tipoConta == "ARTISTA"
