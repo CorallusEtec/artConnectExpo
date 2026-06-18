@@ -9,10 +9,10 @@ export function NavigationLayout() {
   if (isLoading) {
     return <ActivityIndicator />;
   }
-  console.log("Autenticado: ", isAuth);
+
   return (
     <Stack
-      initialRouteName={isAuth ? "(home)/home" : "(public)/login"}
+      initialRouteName={!isAuth ? "(public)/login" : undefined}
       screenOptions={{
         statusBarHidden: true,
         header: () => null,

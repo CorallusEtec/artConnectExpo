@@ -5,7 +5,6 @@ import { style } from "./style";
 export function FilterPublicacaoForm() {
   return (
     <View>
-     
       <Text style={style.label}>Nome do Autor</Text>
       <TextInput
         mode="outlined"
@@ -20,7 +19,6 @@ export function FilterPublicacaoForm() {
           <TextInput
             mode="outlined"
             placeholder="25/05/2026"
-            keyboardType="numeric"
             style={style.input}
             outlineColor="#E0E0E0"
             activeOutlineColor="#0B31A3"

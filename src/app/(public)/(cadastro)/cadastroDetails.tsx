@@ -51,7 +51,6 @@ export default function Usuario() {
   function proximaEtapa() {
     if (cadastroRequest.current.tipoConta == "CONTRATANTE") {
       const formData = new FormData();
-      console.log("Aqiuo");
       if (fotoPerfil.current) {
         formData.append("fotoPerfil", fotoPerfil.current as unknown as Blob);
       }

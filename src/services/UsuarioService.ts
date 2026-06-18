@@ -1,4 +1,6 @@
+import { SearchFiltroParams } from "@/models/request/pageable/SearchFiltroParams";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import { PagedResponse } from "@/models/response/PagedResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +17,27 @@ export function useUsuarioByIdQuery(usuarioId: number) {
   };
 }
 
+export function useUsuarioFiltroQuery(params?: SearchFiltroParams) {
+  const query = useQuery({
+    queryKey: ["usuarioFiltro"],
+    queryFn: () => UsuarioService.listarFiltro(params),
+  });
+  return {
+    ...query,
+    data: query.data,
+  };
+}
+
 export class UsuarioService {
+  static async listarFiltro(params?: SearchFiltroParams) {
+    const response = await config.axiosClient.get<
+      PagedResponse<UsuarioResponse>
+    >(`${config.apiUrl}/usuario/findAll`, {
+      params: params,
+    });
+    return response;
+  }
+
   async listar(params?: any) {
     const queryParams = new URLSearchParams();
 
