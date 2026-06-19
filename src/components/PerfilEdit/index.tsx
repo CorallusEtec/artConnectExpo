@@ -9,6 +9,7 @@ import { AvatarEditor } from "./AvatarEditor";
 import { EnderecoFields } from "./EnderecoFields";
 import { FormField } from "./FormField";
 import { useEditPerfil } from "./useEditPerfil";
+import ContatoInput from "./ContatoInput";
 
 export default function EditPerfil() {
   const {
@@ -21,6 +22,12 @@ export default function EditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
+    contatosWhatsapp,
+    setContatosWhatsapp,
+    contatosInstagram,
+    setContatosInstagram,
+    handleRemoverContatoWhatsapp,
+    handleRemoverContatoInstagram,
     alert,
     dialog,
   } = useEditPerfil();
@@ -47,11 +54,7 @@ export default function EditPerfil() {
 
       <Text style={style.title}>Editar perfil</Text>
 
-      <AvatarEditor
-        fotoUri={fotoUri}
-        uploading={uploadingFoto}
-        onAlterar={handleAlterarFoto}
-      />
+      <AvatarEditor fotoUri={fotoUri} uploading={uploadingFoto} onAlterar={handleAlterarFoto} />
 
       <FormField
         label="Nome"
@@ -79,14 +82,28 @@ export default function EditPerfil() {
         onChangeText={(text) => alterarCampo("textoBio", text)}
       />
 
+      <ContatoInput
+        titulo="WhatsApp"
+        valorInicial={contatosWhatsapp}
+        tipo={1}
+        placeholder="(00) 00000-0000"
+        onChange={setContatosWhatsapp}
+        onRemover={handleRemoverContatoWhatsapp}
+      />
+
+      <ContatoInput
+        titulo="Instagram"
+        valorInicial={contatosInstagram}
+        tipo={2}
+        placeholder="Digite seu instagram"
+        onChange={setContatosInstagram}
+        onRemover={handleRemoverContatoInstagram}
+      />
+
       <EnderecoFields form={form} onChange={alterarCampo} />
 
       <TouchableOpacity style={style.botaoSalvar} onPress={handleSalvar} disabled={saving}>
-        {saving ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={style.textoSalvar}>Salvar alterações</Text>
-        )}
+        {saving ? <ActivityIndicator color="#fff" /> : <Text style={style.textoSalvar}>Salvar alterações</Text>}
       </TouchableOpacity>
 
       <AlertMessage {...alert} />

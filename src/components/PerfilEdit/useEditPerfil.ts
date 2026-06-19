@@ -1,12 +1,14 @@
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
+import ContatoService from "@/services/ContatoService";
 import { ContratanteEditDTO, ContratanteService } from "@/services/ContratanteService";
 import UsuarioService from "@/services/UsuarioService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { Contato } from "./ContatoInput/types";
 
 export type TipoUsuario = "artista" | "contratante" | null;
 
@@ -36,6 +38,21 @@ const FORM_INICIAL: FormPerfil = {
   razaoSocial: "",
 };
 
+const TIPO_WHATSAPP = 1;
+const TIPO_INSTAGRAM = 2;
+
+function mapearContatos(contatos: any[] | undefined, tipo: number): Contato[] {
+  if (!contatos) return [];
+
+  return contatos
+    .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
+    .map((c): Contato => ({
+      id: c.idContato,
+      valor: c.valorContato || "",
+      tipo,
+    }));
+}
+
 export function useEditPerfil() {
   const [user, setUser] = useState<UsuarioResponse | null>(null);
   const [tipoUsuario, setTipoUsuario] = useState<TipoUsuario>(null);
@@ -45,6 +62,9 @@ export function useEditPerfil() {
   const [uploadingFoto, setUploadingFoto] = useState(false);
   const [form, setForm] = useState<FormPerfil>(FORM_INICIAL);
 
+  const [contatosWhatsapp, setContatosWhatsapp] = useState<Contato[]>([]);
+  const [contatosInstagram, setContatosInstagram] = useState<Contato[]>([]);
+
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -52,7 +72,7 @@ export function useEditPerfil() {
   const [dialogMessage, setDialogMessage] = useState("");
 
   function mostrarErro(mensagem: string) {
-     setErrorMessage(mensagem);
+    setErrorMessage(mensagem);
     setAlert(true);
   }
 
@@ -85,6 +105,9 @@ export function useEditPerfil() {
       setFotoUri(model.fotoPerfilUrl ?? null);
       setTipoUsuario(model.tipoConta === "CONTRATANTE" ? "contratante" : "artista");
       preencherFormulario(model);
+
+      setContatosWhatsapp(mapearContatos(model.contatos as any, TIPO_WHATSAPP));
+      setContatosInstagram(mapearContatos(model.contatos as any, TIPO_INSTAGRAM));
     } catch (error) {
       console.error("Erro ao carregar perfil:", error);
       mostrarErro("Não foi possível carregar os dados do perfil");
@@ -155,7 +178,6 @@ export function useEditPerfil() {
 
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
- 
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);
       mostrarErro(error.message || "Não foi possível atualizar a foto de perfil");
@@ -200,6 +222,21 @@ export function useEditPerfil() {
     });
   }
 
+  async function salvarContatos(token: string) {
+    const contatos = [...contatosWhatsapp, ...contatosInstagram].filter((c) => c.valor.trim());
+
+    for (const contato of contatos) {
+      if (contato.id) {
+        await ContatoService.edit(contato.id, { valorContato: contato.valor }, token);
+      } else {
+        await ContatoService.save(
+          { valorContato: contato.valor, idTipoContato: contato.tipo },
+          token,
+        );
+      }
+    }
+  }
+
   async function handleSalvar() {
     if (!user || !tipoUsuario) return;
 
@@ -215,6 +252,8 @@ export function useEditPerfil() {
         await ContratanteService.edit(tokenParse.token, prepararPayloadContratante());
       }
 
+      await salvarContatos(tokenParse.token);
+
       mostrarSucesso("Perfil atualizado com sucesso!");
     } catch (error: any) {
       console.error("Erro ao salvar:", error);
@@ -223,6 +262,29 @@ export function useEditPerfil() {
       setSaving(false);
     }
   }
+
+  async function removerContatoRemoto(contatoId?: number) {
+    if (!contatoId) return;
+
+    const tokenParse = await obterToken();
+    if (!tokenParse) return;
+
+    try {
+      await ContatoService.delete(contatoId, tokenParse.token);
+    } catch (error: any) {
+      console.error("Erro ao remover contato:", error);
+      mostrarErro(error.message || "Não foi possível remover o contato");
+    }
+  }
+
+  function handleRemoverContatoWhatsapp(index: number) {
+    return removerContatoRemoto(contatosWhatsapp[index]?.id);
+  }
+
+  function handleRemoverContatoInstagram(index: number) {
+    return removerContatoRemoto(contatosInstagram[index]?.id);
+  }
+  // -------------------------------
 
   function fecharDialog() {
     setDialog(false);
@@ -239,9 +301,15 @@ export function useEditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
+    contatosWhatsapp,
+    setContatosWhatsapp,
+    contatosInstagram,
+    setContatosInstagram,
+    handleRemoverContatoWhatsapp,
+    handleRemoverContatoInstagram,
     alert: {
-    visible: alert,
-    text: errorMessage,
+      visible: alert,
+      text: errorMessage,
       onDismiss: () => setAlert(false),
     },
     dialog: {
