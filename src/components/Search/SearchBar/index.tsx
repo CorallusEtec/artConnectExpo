@@ -1,5 +1,5 @@
 import { useSearch } from "@/contexts/SearchContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
 import { style } from "./style";
@@ -8,8 +8,15 @@ export default function SearchBar() {
   const [input, setInput] = useState("");
   const { setModalFiltro, tipoFiltro, form } = useSearch();
 
+  useEffect(() => {
+    const valorAtual = tipoFiltro.current === "Publicacao" 
+      ? form.current.legenda 
+      : form.current.nome;
+    setInput(valorAtual || "");
+  }, [tipoFiltro.current]);
+
   function handleInput(text: string) {
-    if (tipoFiltro.current == "Publicacao") {
+    if (tipoFiltro.current === "Publicacao") {
       form.current.legenda = text;
     } else {
       form.current.nome = text;

@@ -30,4 +30,10 @@ export const style = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 4,
   },
+  badge: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#fff",
+    marginLeft: 8,
+  },
 });

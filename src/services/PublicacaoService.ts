@@ -17,7 +17,7 @@ export function useFeedQuery(
   page: "feed" | "perfil",
 ) {
   const query = useQuery({
-    queryKey: [page],
+    queryKey: [page, params],
     queryFn: () => PublicacaoService.listar(params),
   });
   return {
