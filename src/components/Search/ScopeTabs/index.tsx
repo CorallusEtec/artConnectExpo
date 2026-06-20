@@ -1,13 +1,13 @@
-// ScopeTabs.tsx - Versão corrigida
 import { Publicacao } from "@/components/Publicacao";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import { useSearch } from "@/contexts/SearchContext";
 import { useFeedQuery } from "@/services/PublicacaoService";
 import { useUsuarioFiltroQuery } from "@/services/UsuarioService";
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import { Button, Divider, SegmentedButtons, Text } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Button, SegmentedButtons, Text } from "react-native-paper";
 import EmptyState from "../EmptyState";
+import UserCard from "../UserCard";
 
 interface ScopeTabsProps {
   setTipoFiltro?: (value: "Publicacao" | "Usuario") => void;
@@ -32,12 +32,10 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
 
   const usuarioQuery = useUsuarioFiltroQuery(filtrosAtuais);
   const publicacaoQuery = useFeedQuery(
-    { 
-      legenda: filtrosAtuais.legenda,
-    },
+    { legenda: filtrosAtuais.legenda },
     "feed"
   );
-  
+
   const { data, refetch, isLoading, isFetching } = escopo === "Usuario" ? usuarioQuery : publicacaoQuery;
 
   function handleEscopo(value: "Publicacao" | "Usuario") {
@@ -83,7 +81,7 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
         >
           Buscar
         </Button>
-        
+
         {termoBuscaAtual?.trim() !== "" && (
           <Text style={{ marginVertical: 12, fontSize: 14, color: "#666" }}>
             {data?.data?.content?.length || 0} resultados encontrados
@@ -92,23 +90,34 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
       </View>
 
       {termoBuscaAtual?.trim() !== "" ? (
-        <ScrollView 
+        <ScrollView
           ref={scrollViewRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={true}
         >
           {escopo === "Usuario" ? (
-            data?.data?.content?.map((item: any) => (
-              <TouchableOpacity
-                key={item.id}
-                style={{ padding: 16 }}
-                onPress={() => console.log(item.nome)}
-              >
-                <Text>{item.nome}</Text>
-                <Divider />
-              </TouchableOpacity>
-            ))
+            data?.data?.content?.map((item: any) => {
+            if (item.tipoConta === "ADMIN") return null;
+
+              return (
+                <UserCard
+                  key={item.id}
+                  nome={item.nome}
+                  localizacao={
+                    item.cidade && item.estado 
+                      ? `${item.cidade}, ${item.estado}` 
+                      : item.cidade 
+                      ? item.cidade 
+                      : item.estado 
+                      ? item.estado 
+                      : ""}                  
+                    textoBio={item.textoBio || "Sem descrição"}
+                  tipo={item.tipoConta}
+                  fotoPerfilUrl={item.fotoPerfilUrl}
+                />
+              );
+            })
           ) : (
             data?.data?.content?.map((item: any) => (
               <PublicacaoProvider

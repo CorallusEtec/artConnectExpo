@@ -1,4 +1,3 @@
-// SearchBar.tsx - Versão corrigida
 import { useSearch } from "@/contexts/SearchContext";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
