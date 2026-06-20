@@ -2,7 +2,7 @@ import { ArtConnectColorTheme } from "@/style/appTheme";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
-  fundo: {
+   fundo: {
     backgroundColor: ArtConnectColorTheme.colors.primary,
     paddingTop: 10,
     paddingBottom: 35,
@@ -50,5 +50,22 @@ export const style = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     marginTop: 2,
+  },
+
+  contatosContainer: {
+    marginTop: 10,
+    paddingHorizontal: 6,
+    gap: 6,
+  },
+
+  contatoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  contatoText: {
+    color: "white",
+    fontSize: 13,
   },
 });

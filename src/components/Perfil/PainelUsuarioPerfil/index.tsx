@@ -1,29 +1,37 @@
 import { AvatarRender } from "@/components/AvatarRender";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUsuarioByIdQuery } from "@/services/UsuarioService";
+import { usePerfil } from "@/contexts";
 import { AppUtils } from "@/utils/AppUtils";
 import { View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { Icon, Text, TouchableRipple } from "react-native-paper";
 import { style } from "./style";
 
-export function PainelUsuarioPerfil() {
-  const { getValidateId } = useAuth();
+const TIPO_WHATSAPP = 1;
+const TIPO_INSTAGRAM = 2;
 
-  const { data } = useUsuarioByIdQuery(getValidateId());
+function iconePorTipo(idTipoContato?: number) {
+  if (idTipoContato === TIPO_WHATSAPP) return "whatsapp";
+  if (idTipoContato === TIPO_INSTAGRAM) return "instagram";
+  return "card-account-phone-outline";
+}
+
+export function PainelUsuarioPerfil() {
+  const { dataPerfil } = usePerfil();
+
+  const contatos = dataPerfil?.contatos ?? [];
 
   return (
     <View style={style.fundo}>
       <View style={style.headerRow}>
         <View style={style.profile}>
           <AvatarRender
-            nome={data?.data.nome}
+            nome={dataPerfil?.nome}
             size={92}
-            uri={data?.data.fotoPerfilUrl}
+            uri={dataPerfil?.fotoPerfilUrl}
           />
-          <Text style={style.infoLabel}>{data?.data.nome}</Text>
-          {data?.data && (
+          <Text style={style.infoLabel}>{dataPerfil?.nome}</Text>
+          {dataPerfil && (
             <Text style={style.infoLabel}>
-              {AppUtils.capitalize(data.data.tipoConta)}
+              {AppUtils.capitalize(dataPerfil.tipoConta)}
             </Text>
           )}
         </View>
@@ -33,14 +41,11 @@ export function PainelUsuarioPerfil() {
               Posts
             </Text>
             <Text variant="titleMedium" style={style.infoValue}>
-              {(data?.data.publicacoes && data.data.publicacoes.length) || 0}
+              {(dataPerfil?.publicacoes && dataPerfil.publicacoes.length) || 0}
             </Text>
           </View>
 
-          <TouchableRipple
-            onPress={() => {}}
-            rippleColor="rgba(255, 255, 255, .2)"
-          >
+          <TouchableRipple onPress={() => {}} rippleColor="rgba(255, 255, 255, .2)">
             <View style={style.infoDuo}>
               <Text variant="bodyLarge" style={style.infoLabel}>
                 Seguidores
@@ -51,10 +56,7 @@ export function PainelUsuarioPerfil() {
             </View>
           </TouchableRipple>
 
-          <TouchableRipple
-            onPress={() => {}}
-            rippleColor="rgba(255, 255, 255, .2)"
-          >
+          <TouchableRipple onPress={() => {}} rippleColor="rgba(255, 255, 255, .2)">
             <View style={style.infoDuo}>
               <Text variant="bodyLarge" style={style.infoLabel}>
                 Seguindo
@@ -69,9 +71,24 @@ export function PainelUsuarioPerfil() {
 
       <View style={style.bioContainer}>
         <Text variant="bodyMedium" style={style.bioText}>
-          {data?.data.textoBio || "Sem biografia"}
+          {dataPerfil?.textoBio || "Sem biografia"}
         </Text>
       </View>
+
+      {contatos.length > 0 && (
+        <View style={style.contatosContainer}>
+          {contatos.map((contato, index) => (
+            <View key={contato.idContato ?? index} style={style.contatoRow}>
+              <Icon
+                source={iconePorTipo(contato.tipoContato?.idTipoContato)}
+                size={18}
+                color="white"
+              />
+              <Text style={style.contatoText}>{contato.valorContato}</Text>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 }

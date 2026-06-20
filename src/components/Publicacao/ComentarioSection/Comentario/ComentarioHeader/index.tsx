@@ -2,8 +2,9 @@ import { useComentario } from "@/contexts/ComentarioContext";
 import { useComentarioQuery } from "@/services/ComentarioService";
 import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import {
   Avatar,
   Card,
@@ -17,9 +18,17 @@ export function ComentarioHeader() {
   const [menu, setMenu] = useState(false);
   const { comentarioId } = useComentario();
   const { data } = useComentarioQuery(comentarioId);
+
+  function navigateToProfile() {
+    const usuarioId = data?.data.usuario.id;
+    if (usuarioId) {
+      router.push(`/${usuarioId}`);
+    }
+  }
+
   return (
     <Card.Content style={style.headerContainer}>
-      <View style={style.headerContent}>
+      <Pressable style={style.headerContent} onPress={navigateToProfile}>
         {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
         <Avatar.Text
           label={data?.data.usuario.nome.charAt(0) || ""}
@@ -34,7 +43,7 @@ export function ComentarioHeader() {
               )}
           </Text>
         </View>
-      </View>
+      </Pressable>
       <View style={style.actionContainer}>
         <ComentrarioToggleAction />
 

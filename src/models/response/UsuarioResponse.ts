@@ -1,5 +1,6 @@
 import { TipoConta } from "../enumeration/enumeration";
 import { ArteResponse } from "./ArteResponse";
+import { ContatoResponse } from "./ContatoResponse";
 import { GeneroArteResponse } from "./GeneroArteResponse";
 import { PublicacaoDetailsResponse } from "./Publicacao/PublicacaoDetailsResponse";
 import { Status } from "./Status";
@@ -20,7 +21,7 @@ export interface UsuarioResponse {
   uf?: string;
   textoBio?: string;
   fotoPerfilUrl?: string;
-  contatos?: [];
+  contatos?: ContatoResponse[];
   publicacoes: PublicacaoDetailsResponse[];
 
   arte: ArteResponse;
