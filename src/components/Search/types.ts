@@ -4,7 +4,7 @@ export interface FiltrosState {
   nome: string;
   cidade: string;
   estado: string;
-  tipoUsuario: string;
+  tipoConta: string;
   legenda: string;
   nomeAutor: string;
   dataInicio: string;
