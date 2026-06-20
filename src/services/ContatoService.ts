@@ -1,22 +1,6 @@
 import config from "./config";
-
-export interface ContatoSaveDTO {
-  idTipoContato: number;
-  valorContato: string;
-}
-
-export interface ContatoEditDTO {
-  valorContato: string;
-}
-
-export interface ContatoResponse {
-  idContato: number;
-  tipoContato: {
-    idTipoContato: number;
-    nome?: string;
-  };
-  valorContato: string;
-}
+import { ContatoEdit } from "@/models/request/ContatoEditRequest";
+import { ContatoSave } from "@/models/request/ContatoSaveRequest";
 
 export default class ContatoService {
   /** Salva um novo contato do usuário autenticado.
@@ -24,7 +8,7 @@ export default class ContatoService {
    * @param payload Dados do contato a ser salvo.
    * @param token Token do usuário autenticado.
    */
-  static async save(payload: ContatoSaveDTO, token: string) {
+  static async save(payload: ContatoSave, token: string) {
     const response = await config.axiosClient.post(
       `${config.apiUrl}/contato/save`,
       payload,
@@ -44,7 +28,7 @@ export default class ContatoService {
    * @param payload Novo valor do contato.
    * @param token Token do usuário autenticado.
    */
-  static async edit(idContato: number, payload: ContatoEditDTO, token: string) {
+  static async edit(idContato: number, payload: ContatoEdit, token: string) {
     const response = await config.axiosClient.put(
       `${config.apiUrl}/contato/${idContato}`,
       payload,
