@@ -68,4 +68,28 @@ export const style = StyleSheet.create({
     color: "white",
     fontSize: 13,
   },
+  artInfoContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 10,
+    paddingHorizontal: 6,
+  },
+
+  artChip: {
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    justifyContent: "center",
+  },
+
+  artChipText: {
+    color: "white",
+    fontSize: 12,
+    marginVertical: 0,
+  },
+
+  contatoRowDisabled: {
+    opacity: 0.7,
+  },
 });
