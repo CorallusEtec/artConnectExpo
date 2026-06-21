@@ -29,13 +29,14 @@ export function PainelUsuarioPerfil() {
             size={92}
             uri={dataPerfil?.fotoPerfilUrl}
           />
-          <Text style={style.infoLabel}>{dataPerfil?.nome}</Text>
+          <Text style={style.nomeLabel}>{dataPerfil?.nome}</Text>
           {dataPerfil && (
             <Text style={style.infoLabel}>
               {AppUtils.capitalize(dataPerfil.tipoConta)}
             </Text>
           )}
         </View>
+
         <View style={style.infosProfile}>
           <View style={style.infoDuo}>
             <Text variant="bodyLarge" style={style.infoLabel}>
@@ -46,7 +47,11 @@ export function PainelUsuarioPerfil() {
             </Text>
           </View>
 
-          <TouchableRipple onPress={() => {}} rippleColor="rgba(255, 255, 255, .2)">
+          <TouchableRipple
+            style={style.infoDuoTouchable}
+            onPress={() => {}}
+            rippleColor="rgba(255, 255, 255, .2)"
+          >
             <View style={style.infoDuo}>
               <Text variant="bodyLarge" style={style.infoLabel}>
                 Seguidores
@@ -57,7 +62,11 @@ export function PainelUsuarioPerfil() {
             </View>
           </TouchableRipple>
 
-          <TouchableRipple onPress={() => {}} rippleColor="rgba(255, 255, 255, .2)">
+          <TouchableRipple
+            style={style.infoDuoTouchable}
+            onPress={() => {}}
+            rippleColor="rgba(255, 255, 255, .2)"
+          >
             <View style={style.infoDuo}>
               <Text variant="bodyLarge" style={style.infoLabel}>
                 Seguindo
@@ -69,7 +78,8 @@ export function PainelUsuarioPerfil() {
           </TouchableRipple>
         </View>
       </View>
-       {(arte || generosArte.length > 0) && (
+
+      {(arte || generosArte.length > 0) && (
         <View style={style.artInfoContainer}>
           {arte && (
             <Chip style={style.artChip} textStyle={style.artChipText} compact>
@@ -116,8 +126,8 @@ export function PainelUsuarioPerfil() {
               </Pressable>
             );
           })}
-    </View>
+        </View>
       )}
-  </View>
+    </View>
   );
 }
