@@ -14,6 +14,8 @@ export interface ArtistaEditDTO {
   complemento?: string;
   cidade?: string;
   uf?: string;
+  arte?: { id: number };
+  generosArte?: { id: number }[];
 }
 
 export interface ArtistaFiltro {

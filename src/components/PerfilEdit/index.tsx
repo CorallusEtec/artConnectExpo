@@ -11,6 +11,7 @@ import { FormField } from "./FormField";
 import { useEditPerfil } from "./useEditPerfil";
 import ContatoInput from "./ContatoInput";
 import { TipoContato } from "@/models/enumeration/TipoContato";
+import { ArteGeneroFields } from "./ArteField";
 
 export default function EditPerfil() {
   const {
@@ -23,6 +24,14 @@ export default function EditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
+    //-----
+    tiposArte,
+    arteSelecionada,
+    handleSelecionarArte,
+    generosArte,
+    carregandoGeneros,
+    generosSelecionados,
+    handleToggleGenero,
     //-----
     contatosEmail,
     setContatosEmail,
@@ -91,6 +100,18 @@ export default function EditPerfil() {
         value={form.textoBio}
         onChangeText={(text) => alterarCampo("textoBio", text)}
       />
+
+      {tipoUsuario === "artista" && (
+        <ArteGeneroFields
+          tiposArte={tiposArte}
+          arteSelecionada={arteSelecionada}
+          onSelecionarArte={handleSelecionarArte}
+          generosArte={generosArte}
+          carregandoGeneros={carregandoGeneros}
+          generosSelecionados={generosSelecionados}
+          onToggleGenero={handleToggleGenero}
+        />
+      )}
 
       <ContatoInput
         titulo="Email"
