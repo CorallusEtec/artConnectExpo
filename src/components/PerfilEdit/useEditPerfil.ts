@@ -9,6 +9,8 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Contato } from "./ContatoInput/types";
+import { TipoContato } from "@/models/enumeration/TipoContato";
+
 
 export type TipoUsuario = "artista" | "contratante" | null;
 
@@ -42,11 +44,11 @@ const TIPO_WHATSAPP = 1;
 const TIPO_INSTAGRAM = 2;
 
 function mapearContatos(contatos: any[] | undefined, tipo: number): Contato[] {
-  if (!contatos) return [];
+   if (!contatos) return [];
 
-  return contatos
-    .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
-    .map((c): Contato => ({
+   return contatos
+     .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
+     .map((c): Contato => ({
       id: c.idContato,
       valor: c.valorContato || "",
       tipo,
@@ -62,8 +64,10 @@ export function useEditPerfil() {
   const [uploadingFoto, setUploadingFoto] = useState(false);
   const [form, setForm] = useState<FormPerfil>(FORM_INICIAL);
 
-  const [contatosWhatsapp, setContatosWhatsapp] = useState<Contato[]>([]);
+  const [contatosEmail, setContatosEmail] = useState<Contato[]>([]);
+  const [contatosTelegram, setContatosTelegram] = useState<Contato[]>([]);
   const [contatosInstagram, setContatosInstagram] = useState<Contato[]>([]);
+  const [contatosTelefone, setContatosTelefone] = useState<Contato[]>([]);
 
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -106,8 +110,10 @@ export function useEditPerfil() {
       setTipoUsuario(model.tipoConta === "CONTRATANTE" ? "contratante" : "artista");
       preencherFormulario(model);
 
-      setContatosWhatsapp(mapearContatos(model.contatos as any, TIPO_WHATSAPP));
-      setContatosInstagram(mapearContatos(model.contatos as any, TIPO_INSTAGRAM));
+      setContatosEmail(mapearContatos(model.contatos as any, TipoContato.EMAIL));
+      setContatosTelegram(mapearContatos(model.contatos as any, TipoContato.TELEGRAM));
+      setContatosInstagram(mapearContatos(model.contatos as any, TipoContato.INSTAGRAM));
+      setContatosTelefone(mapearContatos(model.contatos as any, TipoContato.TELEFONE));
     } catch (error) {
       console.error("Erro ao carregar perfil:", error);
       mostrarErro("Não foi possível carregar os dados do perfil");
@@ -223,7 +229,12 @@ export function useEditPerfil() {
   }
 
   async function salvarContatos(token: string) {
-    const contatos = [...contatosWhatsapp, ...contatosInstagram].filter((c) => c.valor.trim());
+    const contatos = [
+      ...contatosTelefone, 
+      ...contatosInstagram,
+      ...contatosTelegram,
+      ...contatosEmail,
+    ].filter((c) => c.valor.trim());
 
     for (const contato of contatos) {
       if (contato.id) {
@@ -277,12 +288,19 @@ export function useEditPerfil() {
     }
   }
 
-  function handleRemoverContatoWhatsapp(index: number) {
-    return removerContatoRemoto(contatosWhatsapp[index]?.id);
-  }
+  // -------------------------------
 
+  function handleRemoverContatoTelefone(index: number) {
+    return removerContatoRemoto(contatosTelefone[index]?.id);
+  }
   function handleRemoverContatoInstagram(index: number) {
     return removerContatoRemoto(contatosInstagram[index]?.id);
+  }
+  function handleRemoverContatoEmail(index: number) {
+    return removerContatoRemoto(contatosEmail[index]?.id);
+  }
+  function handleRemoverContatoTelegram(index: number) {
+    return removerContatoRemoto(contatosTelegram[index]?.id);
   }
   // -------------------------------
 
@@ -301,12 +319,20 @@ export function useEditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
-    contatosWhatsapp,
-    setContatosWhatsapp,
+    //-----
+    contatosEmail,
+    setContatosEmail,
+    contatosTelegram,
+    setContatosTelegram,
     contatosInstagram,
     setContatosInstagram,
-    handleRemoverContatoWhatsapp,
+    contatosTelefone,
+    setContatosTelefone,
+    //-------
+    handleRemoverContatoTelefone,
     handleRemoverContatoInstagram,
+    handleRemoverContatoEmail,
+    handleRemoverContatoTelegram,
     alert: {
       visible: alert,
       text: errorMessage,

@@ -1,10 +1,12 @@
 import { gStyles } from "@/style/gStyle";
+import { navegarParaPerfil } from "@/utils/NavigationUtils";
 import React from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Avatar, Badge, Card, Text } from "react-native-paper";
 import { style } from "./style";
 
 interface UserCardProps {
+  id: number;
   nome: string;
   localizacao: string;
   textoBio: string;
@@ -12,7 +14,8 @@ interface UserCardProps {
   fotoPerfilUrl: string;
 }
 
-export default function UserCard({
+export default function UserCard({  
+  id,
   nome,
   localizacao,
   textoBio,
@@ -36,29 +39,31 @@ export default function UserCard({
     "#888888";
 
   return (
-    <Card style={style.card} elevation={0}>
-      <Card.Content style={style.content}>
-        {avatar}
+    <Pressable onPress={() => navegarParaPerfil(id)}>
+      <Card style={style.card} elevation={0}>
+        <Card.Content style={style.content}>
+          {avatar}
 
-        <View style={style.infoContainer}>
-          {/* Nome e badge na mesma linha */}
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Text variant="titleMedium" style={style.nome}>
-              {nome}
+          <View style={style.infoContainer}>
+            {/* Nome e badge na mesma linha */}
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Text variant="titleMedium" style={style.nome}>
+                {nome}
+              </Text>
+              <Badge style={[style.badge, { backgroundColor: corBadge }]}>
+                {tipo || "ARTISTA"} 
+              </Badge>
+            </View>
+
+            <Text variant="bodySmall" style={style.sub}>
+              {localizacao}
             </Text>
-            <Badge style={[style.badge, { backgroundColor: corBadge }]}>
-              {tipo || "ARTISTA"} 
-            </Badge>
+            <Text variant="bodyMedium" style={style.sub}>
+              {textoBio}
+            </Text>
           </View>
-
-          <Text variant="bodySmall" style={style.sub}>
-            {localizacao}
-          </Text>
-          <Text variant="bodyMedium" style={style.sub}>
-            {textoBio}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
+        </Card.Content>
+      </Card>
+    </Pressable>
   );
 }

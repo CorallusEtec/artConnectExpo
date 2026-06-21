@@ -1,18 +1,10 @@
 import { AvatarRender } from "@/components/AvatarRender";
 import { usePerfil } from "@/contexts";
 import { AppUtils } from "@/utils/AppUtils";
+import { iconePorTipoContato } from "@/utils/ContatoUtils";
 import { View } from "react-native";
 import { Icon, Text, TouchableRipple } from "react-native-paper";
 import { style } from "./style";
-
-const TIPO_WHATSAPP = 1;
-const TIPO_INSTAGRAM = 2;
-
-function iconePorTipo(idTipoContato?: number) {
-  if (idTipoContato === TIPO_WHATSAPP) return "whatsapp";
-  if (idTipoContato === TIPO_INSTAGRAM) return "instagram";
-  return "card-account-phone-outline";
-}
 
 export function PainelUsuarioPerfil() {
   const { dataPerfil } = usePerfil();
@@ -80,7 +72,7 @@ export function PainelUsuarioPerfil() {
           {contatos.map((contato, index) => (
             <View key={contato.idContato ?? index} style={style.contatoRow}>
               <Icon
-                source={iconePorTipo(contato.tipoContato?.idTipoContato)}
+                source={iconePorTipoContato(contato.tipoContato?.idTipoContato)}
                 size={18}
                 color="white"
               />

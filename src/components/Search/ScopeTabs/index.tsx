@@ -103,6 +103,7 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
               return (
                 <UserCard
                   key={item.id}
+                  id={item.id}
                   nome={item.nome}
                   localizacao={
                     item.cidade && item.estado 

@@ -10,6 +10,7 @@ import { EnderecoFields } from "./EnderecoFields";
 import { FormField } from "./FormField";
 import { useEditPerfil } from "./useEditPerfil";
 import ContatoInput from "./ContatoInput";
+import { TipoContato } from "@/models/enumeration/TipoContato";
 
 export default function EditPerfil() {
   const {
@@ -22,12 +23,21 @@ export default function EditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
-    contatosWhatsapp,
-    setContatosWhatsapp,
+    //-----
+    contatosEmail,
+    setContatosEmail,
+    contatosTelegram,
+    setContatosTelegram,
     contatosInstagram,
     setContatosInstagram,
-    handleRemoverContatoWhatsapp,
+    contatosTelefone,
+    setContatosTelefone,
+    //--------
+    handleRemoverContatoTelefone,
     handleRemoverContatoInstagram,
+    handleRemoverContatoEmail,
+    handleRemoverContatoTelegram,
+    //---------
     alert,
     dialog,
   } = useEditPerfil();
@@ -83,22 +93,40 @@ export default function EditPerfil() {
       />
 
       <ContatoInput
-        titulo="WhatsApp"
-        valorInicial={contatosWhatsapp}
-        tipo={1}
-        placeholder="(00) 00000-0000"
-        onChange={setContatosWhatsapp}
-        onRemover={handleRemoverContatoWhatsapp}
+        titulo="Email"
+        valorInicial={contatosEmail}
+        tipo={TipoContato.EMAIL}
+        placeholder="seuemail@exemplo.com"
+        onChange={setContatosEmail}
+        onRemover={handleRemoverContatoEmail}
+      />
+
+      <ContatoInput
+        titulo="Telegram"
+        valorInicial={contatosTelegram}
+        tipo={TipoContato.TELEGRAM}
+        placeholder="Digite seu usuário do Telegram"
+        onChange={setContatosTelegram}
+        onRemover={handleRemoverContatoTelegram}
       />
 
       <ContatoInput
         titulo="Instagram"
         valorInicial={contatosInstagram}
-        tipo={2}
+        tipo={TipoContato.INSTAGRAM}
         placeholder="Digite seu instagram"
         onChange={setContatosInstagram}
         onRemover={handleRemoverContatoInstagram}
       />
+
+      <ContatoInput
+        titulo="Telefone"
+        valorInicial={contatosTelefone}
+        tipo={TipoContato.TELEFONE}
+        placeholder="(00) 00000-0000"
+        onChange={setContatosTelefone}
+        onRemover={handleRemoverContatoTelefone}
+     />
 
       <EnderecoFields form={form} onChange={alterarCampo} />
 

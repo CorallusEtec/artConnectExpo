@@ -3,7 +3,7 @@ import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { navegarParaPerfil } from "@/utils/NavigationUtils";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Card, IconButton, Menu } from "react-native-paper";
@@ -18,20 +18,13 @@ export function PublicacaoHeader() {
   const { idPublicacao } = usePublicacao();
   const { data, isLoading } = usePublicacaoQuery(idPublicacao);
 
-  function navigateToProfile() {
-    const autorId = data?.data.publicacao.autor.id;
-    if (autorId) {
-      router.push(`/${autorId}`);
-    }
-  }
-
   if (isLoading) return <></>;
 
   return (
     <Card.Content style={style.headerContainer}>
       <Pressable 
         style={style.headerContent} 
-        onPress={navigateToProfile}
+        onPress={() => navegarParaPerfil(data?.data.publicacao.autor.id)}
       >
         <AvatarRender
           size={35}
