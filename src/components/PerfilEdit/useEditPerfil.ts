@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts";
+import { TipoContato } from "@/models/enumeration/TipoContato";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
@@ -5,11 +7,11 @@ import ContatoService from "@/services/ContatoService";
 import { ContratanteEditDTO, ContratanteService } from "@/services/ContratanteService";
 import UsuarioService from "@/services/UsuarioService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Contato } from "./ContatoInput/types";
-import { TipoContato } from "@/models/enumeration/TipoContato";
 
 
 export type TipoUsuario = "artista" | "contratante" | null;
@@ -39,9 +41,6 @@ const FORM_INICIAL: FormPerfil = {
   uf: "",
   razaoSocial: "",
 };
-
-const TIPO_WHATSAPP = 1;
-const TIPO_INSTAGRAM = 2;
 
 function mapearContatos(contatos: any[] | undefined, tipo: number): Contato[] {
    if (!contatos) return [];
@@ -74,6 +73,9 @@ export function useEditPerfil() {
 
   const [dialog, setDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
+
+  const queryClient = useQueryClient();
+  const { getValidateId } = useAuth();
 
   function mostrarErro(mensagem: string) {
     setErrorMessage(mensagem);
@@ -184,6 +186,7 @@ export function useEditPerfil() {
 
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
+      queryClient.invalidateQueries({ queryKey: [getValidateId(), "profileData"] });
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);
       mostrarErro(error.message || "Não foi possível atualizar a foto de perfil");
@@ -246,6 +249,7 @@ export function useEditPerfil() {
         );
       }
     }
+    queryClient.invalidateQueries({ queryKey: [getValidateId(), "profileData"] });
   }
 
   async function handleSalvar() {
@@ -258,9 +262,9 @@ export function useEditPerfil() {
       if (!tokenParse) return;
 
       if (tipoUsuario === "artista") {
-        await ArtistaService.edit(tokenParse.token, prepararPayloadArtista());
+        await ArtistaService.edit(prepararPayloadArtista());
       } else {
-        await ContratanteService.edit(tokenParse.token, prepararPayloadContratante());
+        await ContratanteService.edit(prepararPayloadContratante());
       }
 
       await salvarContatos(tokenParse.token);

@@ -113,7 +113,7 @@ export function PainelUsuarioPerfil() {
             return (
               <Pressable
                 key={contato.idContato ?? index}
-                style={[style.contatoRow, !link && style.contatoRowDisabled]}
+                style={style.contatoRow}
                 disabled={!link}
                 onPress={() => handleAbrirContato(link)}
               >

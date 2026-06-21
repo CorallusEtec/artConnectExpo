@@ -5,6 +5,7 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
+  useEffect,
   useRef,
   useState
 } from "react";
@@ -26,11 +27,15 @@ type PerfilProviderProps = {
 
 export function PerfilProvider({ children, dataInicial }: PerfilProviderProps) {
   const [modalConfig, setModalConfig] = useState(false);
-  const dataPerfil = useRef<UsuarioResponse>(dataInicial);
+  const [dataPerfil, setDataPerfil] = useState<UsuarioResponse | undefined>(dataInicial);
+
+  useEffect(() => {
+    setDataPerfil(dataInicial);
+  }, [dataInicial]);
 
   return (
     <PerfilContext.Provider
-      value={{ modalConfig, setModalConfig, dataPerfil: dataPerfil.current }}
+      value={{ modalConfig, setModalConfig, dataPerfil }}
     >
       {children}
     </PerfilContext.Provider>

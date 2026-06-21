@@ -114,7 +114,4 @@ export const style = StyleSheet.create({
     marginVertical: 0,
   },
 
-  contatoRowDisabled: {
-    opacity: 0.7,
-  },
 });
