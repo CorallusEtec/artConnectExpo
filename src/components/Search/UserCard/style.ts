@@ -36,4 +36,19 @@ export const style = StyleSheet.create({
     color: "#fff",
     marginLeft: 8,
   },
+  artInfoContainer: {
+    flexDirection: "row",
+    gap: 6,
+  },
+
+  artChip: {
+    backgroundColor: "#d0d0d0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  artChipText: {
+    color: "black",
+    fontSize: 11,
+  },
 });

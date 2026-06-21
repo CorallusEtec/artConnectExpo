@@ -1,8 +1,10 @@
+import { ArteResponse } from "@/models/response/ArteResponse";
+import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { gStyles } from "@/style/gStyle";
 import { navegarParaPerfil } from "@/utils/NavigationUtils";
 import React from "react";
 import { Pressable, View } from "react-native";
-import { Avatar, Badge, Card, Text } from "react-native-paper";
+import { Avatar, Badge, Card, Chip, Text } from "react-native-paper";
 import { style } from "./style";
 
 interface UserCardProps {
@@ -12,6 +14,8 @@ interface UserCardProps {
   textoBio: string;
   tipo: string;
   fotoPerfilUrl: string;
+  arte?: ArteResponse;
+  generosArte?: GeneroArteResponse[];
 }
 
 export default function UserCard({  
@@ -21,6 +25,8 @@ export default function UserCard({
   textoBio,
   tipo,
   fotoPerfilUrl,
+  arte,
+  generosArte = [],
 }: UserCardProps) {
   const avatar = fotoPerfilUrl ? (
     <Avatar.Image size={48} source={{ uri: fotoPerfilUrl }} style={style.avatar} />
@@ -50,7 +56,7 @@ export default function UserCard({
               <Text variant="titleMedium" style={style.nome}>
                 {nome}
               </Text>
-              <Badge style={[style.badge, { backgroundColor: corBadge }]}>
+              <Badge style={[style.badge, { backgroundColor: corBadge, flexShrink: 0 }]}>
                 {tipo || "ARTISTA"} 
               </Badge>
             </View>
@@ -61,6 +67,29 @@ export default function UserCard({
             <Text variant="bodyMedium" style={style.sub}>
               {textoBio}
             </Text>
+            {(arte || generosArte.length > 0) && (
+              <View style={style.artInfoContainer}>
+                {arte && (
+                  <Chip
+                    style={style.artChip}
+                    textStyle={style.artChipText}
+                    compact
+                  >
+                    {arte.nomeArte}
+                  </Chip>
+                )}
+                {generosArte.map((genero, index) => (
+                  <Chip
+                    key={genero.id ?? index}
+                    style={style.artChip}
+                    textStyle={style.artChipText}
+                    compact
+                  >
+                    {genero.nomeGeneroArte}
+                  </Chip>
+                ))}
+              </View>
+            )}
           </View>
         </Card.Content>
       </Card>

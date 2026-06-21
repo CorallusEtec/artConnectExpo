@@ -116,6 +116,8 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
                     textoBio={item.textoBio || "Sem descrição"}
                   tipo={item.tipoConta}
                   fotoPerfilUrl={item.fotoPerfilUrl}
+                  arte={item.arte}
+                  generosArte={item.generosArte}
                 />
               );
             })
