@@ -6,6 +6,9 @@ import { style } from "./style";
 
 import { adicionarContato, atualizarContato } from "./Actions";
 import { Contato, ContatoInputProps } from "./types";
+import { TipoContato } from "@/models/enumeration/TipoContato";
+import { MaskedTextInput } from "react-native-mask-text";
+
 
 export default function ContatoInput({
   titulo,
@@ -17,6 +20,7 @@ export default function ContatoInput({
 }: ContatoInputProps) {
   const [lista, setLista] = useState<Contato[]>(valorInicial);
   const temContato = lista.length > 0;
+  const isTelefone = tipo === TipoContato.TELEFONE;
 
   useEffect(() => {
     onChange(lista);
@@ -38,13 +42,26 @@ export default function ContatoInput({
 
       {lista.map((contato, index) => (
         <View key={index} style={style.contatoRow}>
-          <TextInput
-            style={[style.input, style.contatoInput]}
-            placeholder={placeholder}
-            placeholderTextColor={gStyles.cinza[500]}
-            value={contato.valor}
-            onChangeText={(text) => atualizarContato(setLista, index, text)}
-          />
+          {isTelefone ? (
+            <MaskedTextInput
+              mask="(99) 99999-9999"
+              style={[style.input, style.contatoInput]}
+              placeholder={placeholder}
+              placeholderTextColor={gStyles.cinza[500]}
+              value={contato.valor}
+              keyboardType="numeric"
+              onChangeText={(text, rawText) => atualizarContato(setLista, index, rawText)}
+            />
+          ) : (
+            <TextInput
+              style={[style.input, style.contatoInput]}
+              placeholder={placeholder}
+              placeholderTextColor={gStyles.cinza[500]}
+              value={contato.valor}
+              onChangeText={(text) => atualizarContato(setLista, index, text)}
+            />
+          )}
+
 
           <TouchableOpacity onPress={() => handleRemover(index)}>
             <Feather name="trash-2" size={24} color="black" />
