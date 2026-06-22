@@ -26,4 +26,7 @@ export interface UsuarioResponse {
 
   arte: ArteResponse;
   generosArte: GeneroArteResponse[];
+
+  totalSeguidores: number;
+  totalSeguindo: number;
 }

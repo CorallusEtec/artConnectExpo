@@ -1,27 +1,29 @@
 import { useSearch } from "@/contexts/SearchContext";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { IconButton, TextInput } from "react-native-paper";
 import { style } from "./style";
 
 export default function SearchBar() {
   const [input, setInput] = useState("");
-  const { setModalFiltro, tipoFiltro, form } = useSearch();
+  const { setModalFiltro, tipoFiltro, form, setForm, filtrosAtivos } = useSearch();
+
+  const isUsuario = tipoFiltro.current === "Usuario";
 
   useEffect(() => {
     const valorAtual = tipoFiltro.current === "Publicacao" 
-      ? form.current.legenda 
-      : form.current.nome;
+      ? form.legenda  
+      : form.nome;    
     setInput(valorAtual || "");
-  }, [tipoFiltro.current]);
+  }, [tipoFiltro.current, filtrosAtivos]); 
 
   function handleInput(text: string) {
-    if (tipoFiltro.current === "Publicacao") {
-      form.current.legenda = text;
-    } else {
-      form.current.nome = text;
-    }
     setInput(text);
+    
+    setForm((prev) => ({
+      ...prev,
+      [tipoFiltro.current === "Publicacao" ? "legenda" : "nome"]: text,
+    }));
   }
 
   return (
@@ -33,17 +35,15 @@ export default function SearchBar() {
         onChangeText={handleInput}
         style={style.input}
       />
+      {isUsuario && (
+        <IconButton
+          icon="tune"
+          mode="contained"
+          size={28}
+          onPress={() => setModalFiltro(true)}
+          style={style.filterButton}
+        />
+      )}
     </View>
   );
 }
-/**
- * 
- * 
- * <IconButton
-        icon="tune"
-        mode="contained"
-        size={28}
-        onPress={() => setModalFiltro(true)}
-        style={style.filterButton}
-      />
- */

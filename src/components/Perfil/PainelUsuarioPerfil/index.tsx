@@ -1,11 +1,11 @@
 import { AvatarRender } from "@/components/AvatarRender";
 import { usePerfil } from "@/contexts";
+import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { AppUtils } from "@/utils/AppUtils";
 import { iconePorTipoContato, linkPorContato } from "@/utils/ContatoUtils";
 import { Linking, Pressable, View } from "react-native";
-import { Icon, Text, TouchableRipple, Chip } from "react-native-paper";
+import { Chip, Icon, Text, TouchableRipple } from "react-native-paper";
 import { style } from "./style";
-import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 
 export function PainelUsuarioPerfil() {
   const { dataPerfil } = usePerfil();
@@ -57,7 +57,7 @@ export function PainelUsuarioPerfil() {
                 Seguidores
               </Text>
               <Text variant="titleMedium" style={style.infoValue}>
-                0
+                {dataPerfil?.totalSeguidores ?? 0}
               </Text>
             </View>
           </TouchableRipple>
@@ -72,7 +72,7 @@ export function PainelUsuarioPerfil() {
                 Seguindo
               </Text>
               <Text variant="titleMedium" style={style.infoValue}>
-                0
+                {dataPerfil?.totalSeguindo ?? 0}
               </Text>
             </View>
           </TouchableRipple>

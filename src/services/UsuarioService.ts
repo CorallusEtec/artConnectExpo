@@ -19,7 +19,7 @@ export function useUsuarioByIdQuery(usuarioId: number) {
 
 export function useUsuarioFiltroQuery(params?: SearchFiltroParams) {
   const query = useQuery({
-    queryKey: ["usuarioFiltro"],
+    queryKey: ["usuarioFiltro", params],
     queryFn: () => UsuarioService.listarFiltro(params),
   });
   return {
@@ -153,7 +153,23 @@ export class UsuarioService {
     const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
     return await this.findById(tokenParse.id, tokenParse.token);
   }
+
+  static async listarArtistasFiltro(params?: SearchFiltroParams) {
+    const response = await config.axiosClient.get<PagedResponse<UsuarioResponse>>(
+      `${config.apiUrl}/artista/findAll`,
+      { params: params }
+    );
+    return response;
+  }
 }
+
+  export function useArtistaFiltroSearchQuery(params?: SearchFiltroParams) {
+    const query = useQuery({
+      queryKey: ["artistaFiltroSearch", params],
+      queryFn: () => UsuarioService.listarArtistasFiltro(params),
+    });
+    return { ...query, data: query.data };
+  }
 
 const usuarioService = new UsuarioService();
 export default usuarioService;
