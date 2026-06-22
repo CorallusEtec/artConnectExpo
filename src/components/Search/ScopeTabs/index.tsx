@@ -2,8 +2,8 @@ import { Publicacao } from "@/components/Publicacao";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import { useSearch } from "@/contexts/SearchContext";
 import { useFeedQuery } from "@/services/PublicacaoService";
-import { useUsuarioFiltroQuery } from "@/services/UsuarioService";
-import React, { useEffect, useRef, useState } from "react";
+import { useArtistaFiltroSearchQuery, useUsuarioFiltroQuery } from "@/services/UsuarioService";
+import React, { useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Button, SegmentedButtons, Text } from "react-native-paper";
 import EmptyState from "../EmptyState";
@@ -14,49 +14,46 @@ interface ScopeTabsProps {
 }
 
 export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
-  const { tipoFiltro, form } = useSearch();
+  const { tipoFiltro, form, filtrosAtivos, aplicarFiltros } = useSearch();
   const [escopo, setEscopo] = useState(tipoFiltro.current);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const [filtrosAtuais, setFiltrosAtuais] = useState({
-    nome: form.current.nome,
-    legenda: form.current.legenda,
-  });
+  const usuarioQuery = useUsuarioFiltroQuery(filtrosAtivos);
+  const artistaQuery = useArtistaFiltroSearchQuery(filtrosAtivos);
 
-  useEffect(() => {
-    setFiltrosAtuais({
-      nome: form.current.nome,
-      legenda: form.current.legenda,
-    });
-  }, [form.current]);
+  const temFiltroArte = !!(filtrosAtivos.arte || filtrosAtivos.generoArte);
+  const queryAtiva = temFiltroArte ? artistaQuery : usuarioQuery;
 
-  const usuarioQuery = useUsuarioFiltroQuery(filtrosAtuais);
   const publicacaoQuery = useFeedQuery(
-    { legenda: filtrosAtuais.legenda },
+    { legenda: filtrosAtivos.legenda },
     "feed"
   );
 
-  const { data, refetch, isLoading, isFetching } = escopo === "Usuario" ? usuarioQuery : publicacaoQuery;
+  const { data, refetch, isLoading, isFetching } =
+    escopo === "Usuario" ? queryAtiva : publicacaoQuery;
 
   function handleEscopo(value: "Publicacao" | "Usuario") {
     tipoFiltro.current = value;
     setEscopo(value);
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-
-    if (setTipoFiltro) {
-      setTipoFiltro(value);
-    }
+    if (setTipoFiltro) setTipoFiltro(value);
   }
 
   function handleBuscar() {
-    setFiltrosAtuais({
-      nome: form.current.nome,
-      legenda: form.current.legenda,
-    });
+    aplicarFiltros(); 
     refetch();
   }
 
-  const termoBuscaAtual = escopo === "Usuario" ? filtrosAtuais.nome : filtrosAtuais.legenda;
+  const temFiltroAtivo =
+    escopo === "Usuario"
+      ? !!(
+          filtrosAtivos.nome ||
+          filtrosAtivos.arte ||
+          filtrosAtivos.generoArte ||
+          filtrosAtivos.cidade ||
+          filtrosAtivos.uf
+        )
+      : !!filtrosAtivos.legenda;
 
   return (
     <View style={{ flex: 1 }}>
@@ -71,25 +68,21 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
         />
         <Button
           mode="contained"
-          style={{
-            marginTop: 16,
-            borderRadius: 8,
-            paddingVertical: 4,
-          }}
+          style={{ marginTop: 16, borderRadius: 8, paddingVertical: 4 }}
           onPress={handleBuscar}
           loading={isLoading || isFetching}
         >
           Buscar
         </Button>
 
-        {termoBuscaAtual?.trim() !== "" && (
+        {temFiltroAtivo && (
           <Text style={{ marginVertical: 12, fontSize: 14, color: "#666" }}>
             {data?.data?.content?.length || 0} resultados encontrados
           </Text>
         )}
       </View>
 
-      {termoBuscaAtual?.trim() !== "" ? (
+      {temFiltroAtivo ? (
         <ScrollView
           ref={scrollViewRef}
           style={{ flex: 1 }}
@@ -98,23 +91,22 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
         >
           {escopo === "Usuario" ? (
             data?.data?.content?.map((item: any) => {
-            if (item.tipoConta === "ADMIN") return null;
-
+              if (item.tipoConta === "ADMIN") return null;
               return (
                 <UserCard
                   key={item.id}
+                  id={item.id}
                   nome={item.nome}
                   localizacao={
-                    item.cidade && item.estado 
-                      ? `${item.cidade}, ${item.estado}` 
-                      : item.cidade 
-                      ? item.cidade 
-                      : item.estado 
-                      ? item.estado 
-                      : ""}                  
-                    textoBio={item.textoBio || "Sem descrição"}
+                    item.cidade && item.uf
+                      ? `${item.cidade}, ${item.uf}`
+                      : item.cidade || item.uf || ""
+                  }
+                  textoBio={item.textoBio || "Sem descrição"}
                   tipo={item.tipoConta}
                   fotoPerfilUrl={item.fotoPerfilUrl}
+                  arte={item.arte}
+                  generosArte={item.generosArte}
                 />
               );
             })

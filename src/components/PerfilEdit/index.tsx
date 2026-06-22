@@ -9,6 +9,9 @@ import { AvatarEditor } from "./AvatarEditor";
 import { EnderecoFields } from "./EnderecoFields";
 import { FormField } from "./FormField";
 import { useEditPerfil } from "./useEditPerfil";
+import ContatoInput from "./ContatoInput";
+import { TipoContato } from "@/models/enumeration/TipoContato";
+import { ArteGeneroFields } from "./ArteField";
 
 export default function EditPerfil() {
   const {
@@ -21,6 +24,29 @@ export default function EditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
+    //-----
+    tiposArte,
+    arteSelecionada,
+    handleSelecionarArte,
+    generosArte,
+    carregandoGeneros,
+    generosSelecionados,
+    handleToggleGenero,
+    //-----
+    contatosEmail,
+    setContatosEmail,
+    contatosTelegram,
+    setContatosTelegram,
+    contatosInstagram,
+    setContatosInstagram,
+    contatosTelefone,
+    setContatosTelefone,
+    //--------
+    handleRemoverContatoTelefone,
+    handleRemoverContatoInstagram,
+    handleRemoverContatoEmail,
+    handleRemoverContatoTelegram,
+    //---------
     alert,
     dialog,
   } = useEditPerfil();
@@ -47,11 +73,7 @@ export default function EditPerfil() {
 
       <Text style={style.title}>Editar perfil</Text>
 
-      <AvatarEditor
-        fotoUri={fotoUri}
-        uploading={uploadingFoto}
-        onAlterar={handleAlterarFoto}
-      />
+      <AvatarEditor fotoUri={fotoUri} uploading={uploadingFoto} onAlterar={handleAlterarFoto} />
 
       <FormField
         label="Nome"
@@ -79,14 +101,58 @@ export default function EditPerfil() {
         onChangeText={(text) => alterarCampo("textoBio", text)}
       />
 
+      {tipoUsuario === "artista" && (
+        <ArteGeneroFields
+          tiposArte={tiposArte}
+          arteSelecionada={arteSelecionada}
+          onSelecionarArte={handleSelecionarArte}
+          generosArte={generosArte}
+          carregandoGeneros={carregandoGeneros}
+          generosSelecionados={generosSelecionados}
+          onToggleGenero={handleToggleGenero}
+        />
+      )}
+
+      <ContatoInput
+        titulo="Email"
+        valorInicial={contatosEmail}
+        tipo={TipoContato.EMAIL}
+        placeholder="seuemail@exemplo.com"
+        onChange={setContatosEmail}
+        onRemover={handleRemoverContatoEmail}
+      />
+
+      <ContatoInput
+        titulo="Telegram"
+        valorInicial={contatosTelegram}
+        tipo={TipoContato.TELEGRAM}
+        placeholder="Digite seu usuário do Telegram"
+        onChange={setContatosTelegram}
+        onRemover={handleRemoverContatoTelegram}
+      />
+
+      <ContatoInput
+        titulo="Instagram"
+        valorInicial={contatosInstagram}
+        tipo={TipoContato.INSTAGRAM}
+        placeholder="Digite seu instagram"
+        onChange={setContatosInstagram}
+        onRemover={handleRemoverContatoInstagram}
+      />
+
+      <ContatoInput
+        titulo="Telefone"
+        valorInicial={contatosTelefone}
+        tipo={TipoContato.TELEFONE}
+        placeholder="(00) 00000-0000"
+        onChange={setContatosTelefone}
+        onRemover={handleRemoverContatoTelefone}
+     />
+
       <EnderecoFields form={form} onChange={alterarCampo} />
 
       <TouchableOpacity style={style.botaoSalvar} onPress={handleSalvar} disabled={saving}>
-        {saving ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={style.textoSalvar}>Salvar alterações</Text>
-        )}
+        {saving ? <ActivityIndicator color="#fff" /> : <Text style={style.textoSalvar}>Salvar alterações</Text>}
       </TouchableOpacity>
 
       <AlertMessage {...alert} />

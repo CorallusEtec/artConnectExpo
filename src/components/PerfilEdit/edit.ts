@@ -108,4 +108,32 @@ export const style = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  chipsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 8,
+  },
+
+  chip: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+  },
+
+  chipSelected: {
+    backgroundColor: gStyles.azul[200],
+    borderColor: gStyles.azul[200],
+  },
+
+  chipText: {
+    color: "#333",
+  },
+
+  chipTextSelected: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
 });

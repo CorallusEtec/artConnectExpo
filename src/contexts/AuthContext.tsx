@@ -8,8 +8,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
-  useRef,
-  useState,
+  useState
 } from "react";
 
 type AuthContextType = {
@@ -37,7 +36,7 @@ const AuthContext = createContext<AuthContextType | null>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<AuthLoginResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const isAuth = useRef(true);
+  const [isAuth, setIsAuth] = useState(false);
   const queryClient = useQueryClient();
 
   // Busca o token salvo ao abrir o aplicativo
@@ -47,9 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const savedToken = await AsyncStorage.getItem("@artconnect:token");
         if (savedToken) setToken(JSON.parse(savedToken));
         if (savedToken != null) {
-          isAuth.current = true;
+          setIsAuth(true);
         } else {
-          isAuth.current = false;
+          setIsAuth(false);  
         }
       } catch (e) {
         console.error(e);
@@ -63,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signIn(login: AuthLoginResponse) {
     await AsyncStorage.setItem("@artconnect:token", JSON.stringify(login));
     setToken(login); // Muda o estado global
-    isAuth.current = true;
+    setIsAuth(true);
     queryClient.invalidateQueries();
     router.dismissTo("/home");
   }
@@ -71,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     await AsyncStorage.removeItem("@artconnect:token");
     setToken(null); // Remove o acesso instantaneamente
-    isAuth.current = false;
+    setIsAuth(false);
     queryClient.invalidateQueries();
     router.dismissTo("/login");
   }
@@ -101,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         token,
         isLoading,
-        isAuth: isAuth.current,
+        isAuth,
         signIn,
         signOut,
         getValidateToken,

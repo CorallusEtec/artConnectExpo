@@ -1,4 +1,7 @@
 import { ContratanteResponse } from "@/models/response/ContratanteResponse";
+import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import config from "./config";
 import { ErroValidacao } from "./ErroValidacao";
 import { ValidationService } from "./ValidacaoService";
@@ -16,7 +19,7 @@ export interface ContratanteEditDTO {
   razaoSocial?: string;
 }
 
-interface ContratanteCadastroDTO {
+export interface ContratanteCadastroDTO {
   nome: string;
   email: string;
   senha: string;
@@ -26,64 +29,44 @@ interface ContratanteCadastroDTO {
   tipo: "cnpj" | "cpf";
 }
 
+async function getToken(): Promise<string> {
+  const tokenData = await AsyncStorage.getItem("@artconnect:token");
+  if (!tokenData) {
+    throw new Error("Usuário não autenticado");
+  }
+  const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+  return tokenParse.token;
+}
+
 export class ContratanteService {
   static async findById(idContratante: number) {
     const response = await config.axiosClient.get<ContratanteResponse>(
       `${config.apiUrl}/contratante/${idContratante}`,
     );
-    return response;
+
+    return response.data;
   }
 
-  static async edit(
-    token: string,
-    payload: ContratanteEditDTO,
-  ): Promise<void> {
-    try {
-      const response = await fetch(`${config.apiUrl}/contratante/edit`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
+  static async edit(payload: ContratanteEditDTO) {
+    const token = await getToken();
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorMessage =
-          errorData?.message ||
-          (await response.text()) ||
-          "Erro ao editar contratante";
+    const response = await config.axiosClient.put(
+      `${config.apiUrl}/contratante/edit`,
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
 
-        throw new Error(errorMessage);
-      }
-    } catch (error) {
-      console.error("Erro ao editar contratante:", error);
-      throw error;
-    }
+    return response.data;
   }
 
   static async save(contratante: ContratanteCadastroDTO) {
-    try {
-      const response = await fetch(
-        `${config.apiUrl}/contratante/save?tipo=${contratante.tipo}`,
-        {
-          body: JSON.stringify(contratante),
-          method: "POST",
-        },
-      );
+    const response = await config.axiosClient.post(
+      `${config.apiUrl}/contratante/save`,
+      contratante,
+      { params: { tipo: contratante.tipo } },
+    );
 
-      const text = await response.text();
-
-      if (!response.ok) {
-        throw new Error(text);
-      }
-
-      return text;
-    } catch (error) {
-      console.error("Erro ao salvar contratante:", error);
-      throw error;
-    }
+    return response.data;
   }
 
   static validarCadastro(dados: any): ErroValidacao {
@@ -113,4 +96,31 @@ export class ContratanteService {
 
     return erro;
   }
+}
+
+export function useContratanteByIdQuery(idContratante: number) {
+  return useQuery({
+    queryKey: ["contratante", idContratante],
+    queryFn: () => ContratanteService.findById(idContratante),
+    enabled: !!idContratante,
+  });
+}
+
+export function useEditContratanteMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ContratanteEditDTO) =>
+      ContratanteService.edit(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["contratante"] });
+    },
+  });
+}
+
+export function useSaveContratanteMutation() {
+  return useMutation({
+    mutationFn: (contratante: ContratanteCadastroDTO) =>
+      ContratanteService.save(contratante),
+  });
 }

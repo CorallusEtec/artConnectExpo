@@ -6,6 +6,7 @@ export interface SearchFiltroParams {
     cidade?: string,
     uf?: string,
     arte?: string,
+    generoArte?: string,
     nomeArtistico?: string,
     legenda?: string;
     dataInicio?: string;

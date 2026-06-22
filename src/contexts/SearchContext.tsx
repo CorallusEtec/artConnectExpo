@@ -12,7 +12,12 @@ type SearchContextType = {
   modalFiltro: boolean;
   setModalFiltro: (value: boolean) => void;
   tipoFiltro: RefObject<"Publicacao" | "Usuario">;
-  form: RefObject<SearchFiltroParams>;
+  form: SearchFiltroParams; 
+  setForm: React.Dispatch<React.SetStateAction<SearchFiltroParams>>; 
+  aplicarFiltros: () => void;
+  filtrosAtivos: SearchFiltroParams;
+  resetCounter: number;
+  limparFiltros: () => void;
 };
 
 const SearchContext = createContext<SearchContextType>({} as SearchContextType);
@@ -22,16 +27,46 @@ type SearchProviderProps = {
   initialState: boolean;
 };
 
-export function SearchProvider({
-  children,
-  initialState,
-}: SearchProviderProps) {
+const valoresIniciais: SearchFiltroParams = {
+  nome: "",
+  legenda: "",
+  arte: "",
+  generoArte: "",
+  cidade: "",
+  uf: "",
+};
+
+export function SearchProvider({ children, initialState }: SearchProviderProps) {
   const [modalFiltro, setModalFiltro] = useState(initialState);
-  const form = useRef({ nome: "", legenda: "" } as SearchFiltroParams);
+  const [resetCounter, setResetCounter] = useState(0);
+
+  const [form, setForm] = useState<SearchFiltroParams>({ ...valoresIniciais });
+  const [filtrosAtivos, setFiltrosAtivos] = useState<SearchFiltroParams>({ ...valoresIniciais });
   const tipoFiltro = useRef<"Publicacao" | "Usuario">("Usuario");
+
+  function aplicarFiltros() {
+    setFiltrosAtivos({ ...form });
+  }
+
+  function limparFiltros() {
+    setForm({ ...valoresIniciais });
+    setFiltrosAtivos({ ...valoresIniciais });
+    setResetCounter(prev => prev + 1);
+  }
+
   return (
-    <SearchContext.Provider
-      value={{ tipoFiltro, modalFiltro, setModalFiltro, form }}
+    <SearchContext.Provider 
+      value={{ 
+        tipoFiltro, 
+        modalFiltro, 
+        setModalFiltro, 
+        form, 
+        setForm, 
+        aplicarFiltros, 
+        filtrosAtivos, 
+        limparFiltros, 
+        resetCounter 
+      }}
     >
       {children}
     </SearchContext.Provider>
@@ -39,7 +74,5 @@ export function SearchProvider({
 }
 
 export function useSearch() {
-  const context = useContext(SearchContext);
-
-  return context;
+  return useContext(SearchContext);
 }

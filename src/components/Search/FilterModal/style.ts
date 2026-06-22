@@ -9,7 +9,7 @@ export const style = StyleSheet.create({
     right: 0,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: "85%",
+    maxHeight: "92%",
   },
   applyButton: {
     marginTop: 20,

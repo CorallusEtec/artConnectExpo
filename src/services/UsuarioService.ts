@@ -3,7 +3,7 @@ import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PagedResponse } from "@/models/response/PagedResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import config from "./config";
 
 export function useUsuarioByIdQuery(usuarioId: number) {
@@ -19,13 +19,25 @@ export function useUsuarioByIdQuery(usuarioId: number) {
 
 export function useUsuarioFiltroQuery(params?: SearchFiltroParams) {
   const query = useQuery({
-    queryKey: ["usuarioFiltro"],
+    queryKey: ["usuarioFiltro", params],
     queryFn: () => UsuarioService.listarFiltro(params),
   });
   return {
     ...query,
     data: query.data,
   };
+}
+
+export function useUpdateFotoPerfilMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: { uri: string; name?: string; type?: string }) =>
+      usuarioService.updateFotoPerfil(file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profileData"] });
+    },
+  });
 }
 
 export class UsuarioService {
@@ -97,45 +109,36 @@ export class UsuarioService {
     name?: string;
     type?: string;
   }): Promise<string> {
-    try {
-      const tokenData = await AsyncStorage.getItem("@artconnect:token");
-      if (!tokenData) {
-        throw new Error("Usuário não autenticado");
-      }
+    const tokenData = await AsyncStorage.getItem("@artconnect:token");
+    if (!tokenData) {
+      throw new Error("Usuário não autenticado");
+    }
 
-      const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+    const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
 
-      const blobResponse = await fetch(file.uri);
-      const blob = await blobResponse.blob();
+    const blobResponse = await fetch(file.uri);
+    const blob = await blobResponse.blob();
 
-      const mimeType = file.type || blob.type || "image/jpeg";
-      const extensao = mimeType.split("/")[1] ?? "jpg";
-      const fileName = file.name || `foto-perfil-${Date.now()}.${extensao}`;
+    const mimeType = file.type || blob.type || "image/jpeg";
+    const extensao = mimeType.split("/")[1] ?? "jpg";
+    const fileName = file.name || `foto-perfil-${Date.now()}.${extensao}`;
 
-      const formData = new FormData();
-      formData.append("file", blob, fileName);
+    const formData = new FormData();
+    formData.append("file", blob, fileName);
 
-      const response = await fetch(`${config.apiUrl}/usuario/foto-perfil`, {
-        method: "PUT",
+    // Não definir "Content-Type" manualmente: o axios precisa gerar o
+    // boundary do multipart sozinho, senão o backend rejeita a requisição.
+    const response = await config.axiosClient.put(
+      `${config.apiUrl}/usuario/foto-perfil`,
+      formData,
+      {
         headers: {
           Authorization: `Bearer ${tokenParse.token}`,
         },
-        body: formData,
-      });
+      },
+    );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorMessage =
-          errorData?.message || "Erro ao atualizar foto de perfil";
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      return data.message || "Foto de perfil atualizada com sucesso!";
-    } catch (error) {
-      console.error("Erro no service de upload:", error);
-      throw error;
-    }
+    return response.data?.message || "Foto de perfil atualizada com sucesso!";
   }
 
   /**
@@ -150,5 +153,23 @@ export class UsuarioService {
     const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
     return await this.findById(tokenParse.id, tokenParse.token);
   }
+
+  static async listarArtistasFiltro(params?: SearchFiltroParams) {
+    const response = await config.axiosClient.get<PagedResponse<UsuarioResponse>>(
+      `${config.apiUrl}/artista/findAll`,
+      { params: params }
+    );
+    return response;
+  }
 }
-export default new UsuarioService();
+
+  export function useArtistaFiltroSearchQuery(params?: SearchFiltroParams) {
+    const query = useQuery({
+      queryKey: ["artistaFiltroSearch", params],
+      queryFn: () => UsuarioService.listarArtistasFiltro(params),
+    });
+    return { ...query, data: query.data };
+  }
+
+const usuarioService = new UsuarioService();
+export default usuarioService;

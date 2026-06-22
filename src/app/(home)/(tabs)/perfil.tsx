@@ -25,7 +25,7 @@ export default function Perfil() {
     <>
       <Header />
       <ScrollView style={style.container}>
-        <PerfilProvider key={getValidateId()} dataInicial={data?.data}>
+        <PerfilProvider key={data?.data?.fotoPerfilUrl} dataInicial={data?.data}>
           {/* Modal de configurações do aplicativo */}
           <ModalSettings />
 
