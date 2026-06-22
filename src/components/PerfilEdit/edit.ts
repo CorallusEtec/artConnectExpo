@@ -84,7 +84,7 @@ export const style = StyleSheet.create({
   headerProfile: {
     height: 92,
     width: 92,
-    borderRadius: "100%",
+    borderRadius: 500,
   },
 
   contatoRow: {

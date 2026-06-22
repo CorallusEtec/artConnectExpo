@@ -12,6 +12,7 @@ import { useEditPerfil } from "./useEditPerfil";
 import ContatoInput from "./ContatoInput";
 import { TipoContato } from "@/models/enumeration/TipoContato";
 import { ArteGeneroFields } from "./ArteField";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function EditPerfil() {
   const {
@@ -54,7 +55,8 @@ export default function EditPerfil() {
   if (loading) return <ActivityIndicator size="large" />;
 
   return (
-    <ScrollView style={style.container}>
+    <SafeAreaView style={style.container}>
+    <ScrollView>
       <Portal>
         <Dialog visible={dialog.visible}>
           <Dialog.Title>Perfil</Dialog.Title>
@@ -157,5 +159,6 @@ export default function EditPerfil() {
 
       <AlertMessage {...alert} />
     </ScrollView>
+    </SafeAreaView>
   );
 }
