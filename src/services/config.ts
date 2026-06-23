@@ -12,7 +12,7 @@ const config = {
    */
   //apiUrl: "http://localhost:8080",
 
-   apiUrl: "http://192.168.15.2:8080",
+  apiUrl: "http://10.0.0.179:8080",
 
   axiosClient,
 };
