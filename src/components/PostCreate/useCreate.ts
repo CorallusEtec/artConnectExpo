@@ -15,7 +15,8 @@ export function useCreate() {
   // aqui escolhe a imagem/video da galeria e define o tipo já
   async function escolherGaleria() {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      //mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ["images", "livePhotos", "videos"],
       allowsEditing: true,
       quality: 1,
     });
@@ -31,7 +32,8 @@ export function useCreate() {
   // aqui abre a camera
   async function escolherCamera() {
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      //mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ["images", "livePhotos", "videos"],
       allowsEditing: true,
       quality: 1,
     });

@@ -1,5 +1,5 @@
-import { Pressable, Text, TextInput, View } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Text, TextInput, View } from "react-native";
+import { Button, useTheme } from "react-native-paper";
 import { AlertMessage } from "../AlertMessage";
 import AttachBar from "./AttachBar";
 import MediaPreview from "./MediaPreview";
@@ -19,9 +19,12 @@ export default function Create() {
     handlePublicar,
     escolherAudio,
   } = useCreate();
+
   return (
     <View style={style.container}>
-      <Text style={[style.title, { color: theme.colors.primary }]}>Criar publicação</Text>
+      <Text style={[style.title, { color: theme.colors.primary }]}>
+        Criar publicação
+      </Text>
 
       <AlertMessage text={erro} visible={!!erro} onDismiss={() => {}} />
 
@@ -41,9 +44,9 @@ export default function Create() {
 
       <MediaPreview midia={midia} tipoMidia={tipoMidia} />
 
-      <Pressable style={[style.postar, { backgroundColor: theme.colors.primary }]} onPress={handlePublicar}>
-        <Text style={style.postarText}>Publicar</Text>
-      </Pressable>
+      <Button onPress={handlePublicar} mode="contained">
+        Publicar
+      </Button>
     </View>
   );
 }
