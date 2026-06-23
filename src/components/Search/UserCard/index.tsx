@@ -28,6 +28,7 @@ export default function UserCard({
   arte,
   generosArte = [],
 }: UserCardProps) {
+  const generosArray = Array.isArray(generosArte) ? generosArte : [];
   const avatar = fotoPerfilUrl ? (
     <Avatar.Image size={48} source={{ uri: fotoPerfilUrl }} style={style.avatar} />
   ) : (
@@ -52,7 +53,7 @@ export default function UserCard({
 
           <View style={style.infoContainer}>
             {/* Nome e badge na mesma linha */}
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: 'wrap' }}>
               <Text variant="titleMedium" style={style.nome}>
                 {nome}
               </Text>
@@ -67,7 +68,7 @@ export default function UserCard({
             <Text variant="bodyMedium" style={style.sub}>
               {textoBio}
             </Text>
-            {(arte || generosArte.length > 0) && (
+             {(arte || generosArray.length > 0) && (
               <View style={style.artInfoContainer}>
                 {arte && (
                   <Chip
@@ -78,7 +79,7 @@ export default function UserCard({
                     {arte.nomeArte}
                   </Chip>
                 )}
-                {generosArte.map((genero, index) => (
+                {generosArray.map((genero, index) => (
                   <Chip
                     key={genero.id ?? index}
                     style={style.artChip}

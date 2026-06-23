@@ -10,6 +10,9 @@ import { style } from "./style";
 export function PainelUsuarioPerfil() {
   const { dataPerfil } = usePerfil();
 
+  console.log("dataPerfil.arte:", dataPerfil?.arte);
+  console.log("dataPerfil.generosArte:", dataPerfil?.generosArte);
+
   const contatos = dataPerfil?.contatos ?? [];
   const arte = dataPerfil?.arte;
   const generosArte: GeneroArteResponse[] = dataPerfil?.generosArte ?? [];
