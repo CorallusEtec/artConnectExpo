@@ -55,8 +55,6 @@ export const ArtistaColorTheme = JSON.parse(
 
 /**
  * Tema Contratante — Vermelho
- * Mesma estrutura tonal do tema Artista (MD3), com o hue rotacionado
- * para vermelho. O "primary" segue a família da paleta gStyles.vermelho.
  */
 export const ContratanteColorTheme = JSON.parse(
   `
