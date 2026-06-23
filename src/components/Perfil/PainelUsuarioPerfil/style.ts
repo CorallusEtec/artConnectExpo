@@ -1,9 +1,7 @@
-import { ArtConnectColorTheme } from "@/style/appTheme";
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   fundo: {
-    backgroundColor: ArtConnectColorTheme.colors.primary,
     paddingTop: 10,
     paddingBottom: 35,
     paddingHorizontal: 20,

@@ -3,10 +3,11 @@ import { ArteResponse } from "@/models/response/ArteResponse";
 import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { useArteList } from "@/services/ArteService";
 import { useGeneroArteByArte } from "@/services/GeneroArteService";
+import { useDynamicThemeStyles } from "@/style/useDynamicThemeStyles";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { Chip, Menu, Text, TextInput, TouchableRipple } from "react-native-paper";
+import { Chip, Menu, Text, TextInput, TouchableRipple, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 type Props = { 
@@ -20,6 +21,8 @@ export function FilterArtistaForm({ form, setForm, modalFiltro, resetCounter }: 
   const [arteSelecionadaId, setArteSelecionadaId] = useState<number | null>(null);
   const [arteSelecionadaNome, setArteSelecionadaNome] = useState<string>("");
   const [menuArteVisivel, setMenuArteVisivel] = useState(false);
+  const theme = useTheme();
+  const dynamic = useDynamicThemeStyles();
 
   const { tiposArte } = useArteList();
   const { generosArte } = useGeneroArteByArte(arteSelecionadaId ?? undefined);
@@ -123,8 +126,8 @@ export function FilterArtistaForm({ form, setForm, modalFiltro, resetCounter }: 
                     mode="outlined"
                     selected={selecionado}
                     onPress={() => selecionarGenero(genero)}
-                    style={[style.chip, selecionado && style.chipSelected]}
-                    selectedColor={selecionado ? "#fff" : "#0B31A3"}
+                    style={[style.chip, dynamic.borderPrimary, selecionado && [style.chipSelected, dynamic.bgPrimary]]}
+                    selectedColor={selecionado ? "#fff" : theme.colors.primary}
                   >
                     {genero.nomeGeneroArte}
                   </Chip>
@@ -146,7 +149,7 @@ export function FilterArtistaForm({ form, setForm, modalFiltro, resetCounter }: 
             onChangeText={handleCidade}
             style={style.input}
             outlineColor="#E0E0E0"
-            activeOutlineColor="#0B31A3"
+            activeOutlineColor={theme.colors.primary}
           />
         </View>
         <View style={style.ufContainer}>
@@ -158,7 +161,7 @@ export function FilterArtistaForm({ form, setForm, modalFiltro, resetCounter }: 
             onChangeText={handleUf}
             style={style.input}
             outlineColor="#E0E0E0"
-            activeOutlineColor="#0B31A3"
+            activeOutlineColor={theme.colors.primary}
             autoCapitalize="characters"
             maxLength={2}
           />

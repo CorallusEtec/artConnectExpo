@@ -1,33 +1,42 @@
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { ArtConnectColorTheme } from "@/style/appTheme";
+import { ArtConnectColorTheme, getThemeByTipoConta } from "@/style/appTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { ActivityIndicator } from "react-native";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 
 export function NavigationLayout() {
-  const { isLoading, isAuth } = useAuth();
+  const { isLoading, isAuth, getTipoConta } = useAuth();
   if (isLoading) {
     return <ActivityIndicator />;
   }
 
-  return (
-    <Stack
-      initialRouteName={!isAuth ? "(public)/login" : undefined}
-      screenOptions={{
-        statusBarHidden: true,
-        header: () => null,
-        headerBackButtonDisplayMode: "minimal",
-      }}
-    >
-      <Stack.Protected guard={isAuth === true}>
-        <Stack.Screen name="(home)" />
-      </Stack.Protected>
+  const theme = {
+    ...MD3LightTheme,
+    colors: {
+      ...getThemeByTipoConta(getTipoConta()).colors,
+    },
+  };
 
-      <Stack.Protected guard={isAuth === false}>
-        <Stack.Screen name="(public)" />
-      </Stack.Protected>
-    </Stack>
+  return (
+    <PaperProvider theme={theme}>
+      <Stack
+        initialRouteName={!isAuth ? "(public)/login" : undefined}
+        screenOptions={{
+          statusBarHidden: true,
+          header: () => null,
+          headerBackButtonDisplayMode: "minimal",
+        }}
+      >
+        <Stack.Protected guard={isAuth === true}>
+          <Stack.Screen name="(home)" />
+        </Stack.Protected>
+
+        <Stack.Protected guard={isAuth === false}>
+          <Stack.Screen name="(public)" />
+        </Stack.Protected>
+      </Stack>
+    </PaperProvider>
   );
 }
 
@@ -40,12 +49,6 @@ const client = new QueryClient({
 });
 
 export default function RootLayout() {
-  const theme = {
-    ...MD3LightTheme,
-    colors: {
-      ...ArtConnectColorTheme.colors,
-    },
-  };
   // LOGICA DE PROTEÇÃO DAS ROTAS DE LOGIN E HOME
   // SE EXISTE NO ASYNC STORAGE, LIBERA (home) E DESATIVA /login
   // SE NÃO, ATIVA /login E DESATIVA (home)
@@ -53,7 +56,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={client}>
       <AuthProvider>
-        <PaperProvider theme={theme}>
+        <PaperProvider>
           <NavigationLayout />
         </PaperProvider>
       </AuthProvider>

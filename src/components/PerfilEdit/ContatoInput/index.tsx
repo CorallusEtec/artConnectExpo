@@ -1,8 +1,9 @@
-import { gStyles } from "@/style/gStyle";
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
+import { useDynamicThemeStyles } from "@/style/useDynamicThemeStyles";
+import { useTheme } from "react-native-paper";
 
 import { adicionarContato, atualizarContato } from "./Actions";
 import { Contato, ContatoInputProps } from "./types";
@@ -21,6 +22,8 @@ export default function ContatoInput({
   const [lista, setLista] = useState<Contato[]>(valorInicial);
   const temContato = lista.length > 0;
   const isTelefone = tipo === TipoContato.TELEFONE;
+  const theme = useTheme();
+  const dynamic = useDynamicThemeStyles();
 
   useEffect(() => {
     onChange(lista);
@@ -47,7 +50,7 @@ export default function ContatoInput({
               mask="(99) 99999-9999"
               style={[style.input, style.contatoInput]}
               placeholder={placeholder}
-              placeholderTextColor={gStyles.cinza[500]}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
               value={contato.valor}
               keyboardType="numeric"
               onChangeText={(text, rawText) => atualizarContato(setLista, index, rawText)}
@@ -56,7 +59,7 @@ export default function ContatoInput({
             <TextInput
               style={[style.input, style.contatoInput]}
               placeholder={placeholder}
-              placeholderTextColor={gStyles.cinza[500]}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
               value={contato.valor}
               onChangeText={(text) => atualizarContato(setLista, index, text)}
             />
@@ -71,7 +74,7 @@ export default function ContatoInput({
 
       {!temContato && (
         <TouchableOpacity
-          style={[style.input, style.botaoAdicionarContato]}
+          style={[style.input, style.botaoAdicionarContato, dynamic.bgPrimary]}
           onPress={() => adicionarContato(setLista, tipo)}
         >
           <Text style={style.textoAdicionarContato}>+ Adicionar</Text>

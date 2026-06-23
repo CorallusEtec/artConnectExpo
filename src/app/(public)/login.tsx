@@ -5,9 +5,10 @@ import { style } from "@/style/pages/login";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { Button, Checkbox } from "react-native-paper";
+import { Button, Checkbox, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login() {
+  const theme = useTheme();
   const [checked, setChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -75,7 +76,7 @@ export default function Login() {
             <Checkbox
               status={checked ? "checked" : "unchecked"}
               onPress={() => setChecked(!checked)}
-              color={checked ? "#2563eb" : undefined}
+              color={checked ? theme.colors.primary : undefined}
             />
             <Text style={style.textoPadrão}>Lembre-se de Mim</Text>
           </Pressable>

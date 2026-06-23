@@ -4,7 +4,7 @@ import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { AppUtils } from "@/utils/AppUtils";
 import { iconePorTipoContato, linkPorContato } from "@/utils/ContatoUtils";
 import { Linking, Pressable, View } from "react-native";
-import { Chip, Icon, Text, TouchableRipple } from "react-native-paper";
+import { Chip, Icon, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 export function PainelUsuarioPerfil() {
@@ -14,6 +14,8 @@ export function PainelUsuarioPerfil() {
   const arte = dataPerfil?.arte;
   const generosArte: GeneroArteResponse[] = dataPerfil?.generosArte ?? [];
 
+  const theme = useTheme();
+
   async function handleAbrirContato(link: string | null) {
     if (!link) return;
     const suportado = await Linking.canOpenURL(link);
@@ -21,7 +23,7 @@ export function PainelUsuarioPerfil() {
   }
 
   return (
-    <View style={style.fundo}>
+    <View style={[style.fundo, {backgroundColor: theme.colors.primary}]}>
       <View style={style.headerRow}>
         <View style={style.profile}>
           <AvatarRender

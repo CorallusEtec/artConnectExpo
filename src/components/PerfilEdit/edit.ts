@@ -12,7 +12,6 @@ export const style = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: gStyles.azul[200],
   },
 
   linhaAvatar: {
@@ -40,7 +39,6 @@ export const style = StyleSheet.create({
     position: "absolute",
     right: 40,
     top: 60,
-    backgroundColor: gStyles.azul[200],
     padding: 8,
     borderRadius: 20,
   },
@@ -69,7 +67,6 @@ export const style = StyleSheet.create({
   },
 
   botaoSalvar: {
-    backgroundColor: gStyles.azul[200],
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
