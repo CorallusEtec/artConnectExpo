@@ -11,22 +11,18 @@ const BANNER_VERMELHO = require("@/assets/img/banner-vermelho.png");
 
 export function Header() {
   const { isAuth, getTipoConta } = useAuth();
-  const banner = getTipoConta() === "CONTRATANTE" ? BANNER_VERMELHO : BANNER_AZUL;
+  const banner =
+    getTipoConta() === "CONTRATANTE" ? BANNER_VERMELHO : BANNER_AZUL;
 
   return (
     <View style={style.navbar}>
       <Image style={style.banner} source={banner} />
 
       <View style={style.actionsContainer}>
-        {!isAuth ? (
+        {!isAuth && (
           <IconButton
             icon="logout"
             onPress={() => router.dismissTo("/login")}
-          />
-        ) : (
-          <IconButton
-            icon="message-text-outline"
-            onPress={() => router.push("/chat/contacts")}
           />
         )}
       </View>

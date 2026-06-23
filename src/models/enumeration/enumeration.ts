@@ -1,4 +1,5 @@
-export type TipoMidia = "IMAGEM" | "VIDEO" | "AUDIO";
+export const tipoMidia = ["IMAGEM", "VIDEO", "AUDIO"] as const; // Const para o schema do zod
+export type TipoMidia = (typeof tipoMidia)[number];
 
 export type TipoConta = "ARTISTA" | "CONTRATANTE" | "CONVIDADO";
 
