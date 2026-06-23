@@ -1,3 +1,4 @@
+import { useAuth } from "@/contexts";
 import { SearchFiltroParams } from "@/models/request/pageable/SearchFiltroParams";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { PagedResponse } from "@/models/response/PagedResponse";
@@ -30,12 +31,14 @@ export function useUsuarioFiltroQuery(params?: SearchFiltroParams) {
 
 export function useUpdateFotoPerfilMutation() {
   const queryClient = useQueryClient();
-
+  const { getValidateId } = useAuth();
   return useMutation({
     mutationFn: (file: { uri: string; name?: string; type?: string }) =>
       usuarioService.updateFotoPerfil(file),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profileData"] });
+      queryClient.invalidateQueries({
+        queryKey: [getValidateId(), "profileData"],
+      });
     },
   });
 }
@@ -105,42 +108,43 @@ export class UsuarioService {
   }
 
   async updateFotoPerfil(file: {
-  uri: string;
-  name?: string;
-  type?: string;
-}): Promise<string> {
-  const tokenData = await AsyncStorage.getItem("@artconnect:token");
-  if (!tokenData) {
-    throw new Error("Usuário não autenticado");
-  }
+    uri: string;
+    name?: string;
+    type?: string;
+  }): Promise<string> {
+    const tokenData = await AsyncStorage.getItem("@artconnect:token");
+    if (!tokenData) {
+      throw new Error("Usuário não autenticado");
+    }
 
-  const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+    const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
 
-  const uriParts = file.uri.split('.');
-  const fileExtension = uriParts[uriParts.length - 1] || "jpg";
-  const mimeType = file.type || `image/${fileExtension === 'png' ? 'png' : 'jpeg'}`;
-  const fileName = file.name || `foto-perfil-${Date.now()}.${fileExtension}`;
+    const uriParts = file.uri.split(".");
+    const fileExtension = uriParts[uriParts.length - 1] || "jpg";
+    const mimeType =
+      file.type || `image/${fileExtension === "png" ? "png" : "jpeg"}`;
+    const fileName = file.name || `foto-perfil-${Date.now()}.${fileExtension}`;
 
-  const formData = new FormData();
-  
-  formData.append("file", {
-    uri: file.uri,
-    name: fileName,
-    type: mimeType,
-  } as any);
+    const formData = new FormData();
 
-  const response = await config.axiosClient.put(
-    `${config.apiUrl}/usuario/foto-perfil`,
-    formData,
-    {
-      headers: {
-        Authorization: `Bearer ${tokenParse.token}`,
+    formData.append("file", {
+      uri: file.uri,
+      name: fileName,
+      type: mimeType,
+    } as any);
+
+    const response = await config.axiosClient.put(
+      `${config.apiUrl}/usuario/foto-perfil`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenParse.token}`,
+        },
       },
-    },
-  );
+    );
 
-  return response.data?.message || "Foto de perfil atualizada com sucesso!";
-}
+    return response.data?.message || "Foto de perfil atualizada com sucesso!";
+  }
 
   /**
    * Busca os dados atualizados do usuário incluindo a nova foto
@@ -156,21 +160,20 @@ export class UsuarioService {
   }
 
   static async listarArtistasFiltro(params?: SearchFiltroParams) {
-    const response = await config.axiosClient.get<PagedResponse<UsuarioResponse>>(
-      `${config.apiUrl}/artista/findAll`,
-      { params: params }
-    );
+    const response = await config.axiosClient.get<
+      PagedResponse<UsuarioResponse>
+    >(`${config.apiUrl}/artista/findAll`, { params: params });
     return response;
   }
 }
 
-  export function useArtistaFiltroSearchQuery(params?: SearchFiltroParams) {
-    const query = useQuery({
-      queryKey: ["artistaFiltroSearch", params],
-      queryFn: () => UsuarioService.listarArtistasFiltro(params),
-    });
-    return { ...query, data: query.data };
-  }
+export function useArtistaFiltroSearchQuery(params?: SearchFiltroParams) {
+  const query = useQuery({
+    queryKey: ["artistaFiltroSearch", params],
+    queryFn: () => UsuarioService.listarArtistasFiltro(params),
+  });
+  return { ...query, data: query.data };
+}
 
 const usuarioService = new UsuarioService();
 export default usuarioService;
