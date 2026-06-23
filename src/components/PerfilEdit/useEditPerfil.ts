@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Contato } from "./ContatoInput/types";
+import { Platform } from "react-native";
 
 
 export type TipoUsuario = "artista" | "contratante" | null;
@@ -194,8 +195,12 @@ export function useEditPerfil() {
     try {
       setUploadingFoto(true);
 
+      const uriFormatada = Platform.OS === "android" 
+        ? (imagemSelecionada.uri.startsWith("file://") ? imagemSelecionada.uri : `file://${imagemSelecionada.uri}`)
+        : imagemSelecionada.uri.replace("file://", "");
+
       const arquivo = {
-        uri: imagemSelecionada.uri,
+        uri: uriFormatada,
         name: imagemSelecionada.fileName || `foto-perfil-${Date.now()}.jpg`,
         type: imagemSelecionada.mimeType || "image/jpeg",
       };
@@ -205,7 +210,9 @@ export function useEditPerfil() {
       setFotoUri(imagemSelecionada.uri);
 
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
+      
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
+      console.log(fotoUri)
       queryClient.invalidateQueries({ queryKey: [getValidateId(), "profileData"] });
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);

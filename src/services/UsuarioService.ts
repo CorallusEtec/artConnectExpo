@@ -105,41 +105,42 @@ export class UsuarioService {
   }
 
   async updateFotoPerfil(file: {
-    uri: string;
-    name?: string;
-    type?: string;
-  }): Promise<string> {
-    const tokenData = await AsyncStorage.getItem("@artconnect:token");
-    if (!tokenData) {
-      throw new Error("Usuário não autenticado");
-    }
-
-    const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
-
-    const blobResponse = await fetch(file.uri);
-    const blob = await blobResponse.blob();
-
-    const mimeType = file.type || blob.type || "image/jpeg";
-    const extensao = mimeType.split("/")[1] ?? "jpg";
-    const fileName = file.name || `foto-perfil-${Date.now()}.${extensao}`;
-
-    const formData = new FormData();
-    formData.append("file", blob, fileName);
-
-    // Não definir "Content-Type" manualmente: o axios precisa gerar o
-    // boundary do multipart sozinho, senão o backend rejeita a requisição.
-    const response = await config.axiosClient.put(
-      `${config.apiUrl}/usuario/foto-perfil`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenParse.token}`,
-        },
-      },
-    );
-
-    return response.data?.message || "Foto de perfil atualizada com sucesso!";
+  uri: string;
+  name?: string;
+  type?: string;
+}): Promise<string> {
+  const tokenData = await AsyncStorage.getItem("@artconnect:token");
+  if (!tokenData) {
+    throw new Error("Usuário não autenticado");
   }
+
+  const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+
+  const uriParts = file.uri.split('.');
+  const fileExtension = uriParts[uriParts.length - 1] || "jpg";
+  const mimeType = file.type || `image/${fileExtension === 'png' ? 'png' : 'jpeg'}`;
+  const fileName = file.name || `foto-perfil-${Date.now()}.${fileExtension}`;
+
+  const formData = new FormData();
+  
+  formData.append("file", {
+    uri: file.uri,
+    name: fileName,
+    type: mimeType,
+  } as any);
+
+  const response = await config.axiosClient.put(
+    `${config.apiUrl}/usuario/foto-perfil`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${tokenParse.token}`,
+      },
+    },
+  );
+
+  return response.data?.message || "Foto de perfil atualizada com sucesso!";
+}
 
   /**
    * Busca os dados atualizados do usuário incluindo a nova foto

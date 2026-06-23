@@ -102,7 +102,7 @@ export class PublicacaoService {
    * @param param0 Request params para a requisição
    * @returns Status da requisição
    */
-  static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
+  static async save({legenda, file, tipoMidia }: PublicacaoRequest) {
     try {
       const formData = new FormData();
 

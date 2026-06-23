@@ -49,7 +49,6 @@ export function ArteGeneroFields({
             style={{
               borderWidth: 1,
               borderColor: "#ddd",
-              borderRadius: 10,
               padding: 12,
               flexDirection: "row",
               justifyContent: "space-between",
