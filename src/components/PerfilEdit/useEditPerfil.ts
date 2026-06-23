@@ -197,7 +197,7 @@ export function useEditPerfil() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.8,
+      quality: 0.6,
     });
 
     if (resultado.canceled) return null;
