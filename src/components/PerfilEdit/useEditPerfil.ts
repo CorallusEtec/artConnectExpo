@@ -5,7 +5,10 @@ import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import { useArteList } from "@/services/ArteService";
 import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
 import ContatoService from "@/services/ContatoService";
-import { ContratanteEditDTO, ContratanteService } from "@/services/ContratanteService";
+import {
+  ContratanteEditDTO,
+  ContratanteService,
+} from "@/services/ContratanteService";
 import { useGeneroArteByArte } from "@/services/GeneroArteService";
 import UsuarioService from "@/services/UsuarioService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,9 +16,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Contato } from "./ContatoInput/types";
 import { Platform } from "react-native";
-
+import { Contato } from "./ContatoInput/types";
 
 export type TipoUsuario = "artista" | "contratante" | null;
 
@@ -46,15 +48,17 @@ const FORM_INICIAL: FormPerfil = {
 };
 
 function mapearContatos(contatos: any[] | undefined, tipo: number): Contato[] {
-   if (!contatos) return [];
+  if (!contatos) return [];
 
-   return contatos
-     .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
-     .map((c): Contato => ({
-      id: c.idContato,
-      valor: c.valorContato || "",
-      tipo,
-    }));
+  return contatos
+    .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
+    .map(
+      (c): Contato => ({
+        id: c.idContato,
+        valor: c.valorContato || "",
+        tipo,
+      }),
+    );
 }
 
 export function useEditPerfil() {
@@ -87,7 +91,7 @@ export function useEditPerfil() {
   const tiposArte = tiposArteResp?.data?.content ?? [];
 
   const { generosArte, isFetching: carregandoGeneros } = useGeneroArteByArte(
-    arteSelecionada ?? undefined
+    arteSelecionada ?? undefined,
   );
 
   function mostrarErro(mensagem: string) {
@@ -118,17 +122,30 @@ export function useEditPerfil() {
       const tokenParse = await obterToken();
       if (!tokenParse) return;
 
-      const model = await UsuarioService.findById(tokenParse.id, tokenParse.token);
+      const model = await UsuarioService.findById(
+        tokenParse.id,
+        tokenParse.token,
+      );
 
       setUser(model);
       setFotoUri(model.fotoPerfilUrl ?? null);
-      setTipoUsuario(model.tipoConta === "CONTRATANTE" ? "contratante" : "artista");
+      setTipoUsuario(
+        model.tipoConta === "CONTRATANTE" ? "contratante" : "artista",
+      );
       preencherFormulario(model);
 
-      setContatosEmail(mapearContatos(model.contatos as any, TipoContato.EMAIL));
-      setContatosTelegram(mapearContatos(model.contatos as any, TipoContato.TELEGRAM));
-      setContatosInstagram(mapearContatos(model.contatos as any, TipoContato.INSTAGRAM));
-      setContatosTelefone(mapearContatos(model.contatos as any, TipoContato.TELEFONE));
+      setContatosEmail(
+        mapearContatos(model.contatos as any, TipoContato.EMAIL),
+      );
+      setContatosTelegram(
+        mapearContatos(model.contatos as any, TipoContato.TELEGRAM),
+      );
+      setContatosInstagram(
+        mapearContatos(model.contatos as any, TipoContato.INSTAGRAM),
+      );
+      setContatosTelefone(
+        mapearContatos(model.contatos as any, TipoContato.TELEFONE),
+      );
 
       const arteAtual = (model as any).arte;
       const generosAtuais = (model as any).generosArte;
@@ -167,7 +184,9 @@ export function useEditPerfil() {
   async function solicitarPermissaoGaleria(): Promise<boolean> {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      mostrarErro("Precisamos de acesso à sua galeria para alterar a foto de perfil.");
+      mostrarErro(
+        "Precisamos de acesso à sua galeria para alterar a foto de perfil.",
+      );
       return false;
     }
     return true;
@@ -178,7 +197,7 @@ export function useEditPerfil() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.8,
+      quality: 0.6,
     });
 
     if (resultado.canceled) return null;
@@ -195,9 +214,12 @@ export function useEditPerfil() {
     try {
       setUploadingFoto(true);
 
-      const uriFormatada = Platform.OS === "android" 
-        ? (imagemSelecionada.uri.startsWith("file://") ? imagemSelecionada.uri : `file://${imagemSelecionada.uri}`)
-        : imagemSelecionada.uri.replace("file://", "");
+      const uriFormatada =
+        Platform.OS === "android"
+          ? imagemSelecionada.uri.startsWith("file://")
+            ? imagemSelecionada.uri
+            : `file://${imagemSelecionada.uri}`
+          : imagemSelecionada.uri.replace("file://", "");
 
       const arquivo = {
         uri: uriFormatada,
@@ -210,13 +232,16 @@ export function useEditPerfil() {
       setFotoUri(imagemSelecionada.uri);
 
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
-      
+
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
-      console.log(fotoUri)
-      queryClient.invalidateQueries({ queryKey: [getValidateId(), "profileData"] });
+      queryClient.invalidateQueries({
+        queryKey: [getValidateId(), "profileData"],
+      });
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);
-      mostrarErro(error.message || "Não foi possível atualizar a foto de perfil");
+      mostrarErro(
+        error.message || "Não foi possível atualizar a foto de perfil",
+      );
     } finally {
       setUploadingFoto(false);
     }
@@ -236,7 +261,7 @@ export function useEditPerfil() {
 
   function handleToggleGenero(id: number) {
     setGenerosSelecionados((prev) =>
-      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
     );
   }
 
@@ -279,7 +304,7 @@ export function useEditPerfil() {
 
   async function salvarContatos(token: string) {
     const contatos = [
-      ...contatosTelefone, 
+      ...contatosTelefone,
       ...contatosInstagram,
       ...contatosTelegram,
       ...contatosEmail,
@@ -287,7 +312,11 @@ export function useEditPerfil() {
 
     for (const contato of contatos) {
       if (contato.id) {
-        await ContatoService.edit(contato.id, { valorContato: contato.valor }, token);
+        await ContatoService.edit(
+          contato.id,
+          { valorContato: contato.valor },
+          token,
+        );
       } else {
         await ContatoService.save(
           { valorContato: contato.valor, idTipoContato: contato.tipo },
@@ -295,7 +324,9 @@ export function useEditPerfil() {
         );
       }
     }
-    queryClient.invalidateQueries({ queryKey: [getValidateId(), "profileData"] });
+    queryClient.invalidateQueries({
+      queryKey: [getValidateId(), "profileData"],
+    });
   }
 
   async function handleSalvar() {
