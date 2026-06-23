@@ -8,24 +8,24 @@ import {
 import { useCadastro } from "@/contexts/CadastroContext";
 import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
 import { schema } from "@/schemas/cadastroSchema";
+import { ArtistaColorTheme, ContratanteColorTheme } from "@/style/appTheme";
 import { style } from "@/style/pages/cadastro";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   KeyboardAvoidingView,
   ScrollView,
   StatusBar,
   View,
 } from "react-native";
-import { Divider, Switch, Text } from "react-native-paper";
+import { Divider, MD3LightTheme, PaperProvider, Switch, Text } from "react-native-paper";
 import z from "zod";
 
 export default function Cadastro() {
   /** Controle de formulário e validações */
   const {
     control,
-    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -34,9 +34,19 @@ export default function Cadastro() {
       isArtista: false,
     },
   });
+
+  // Observa o valor do switch em tempo real para trocar o tema
+  const isArtista = useWatch({ control, name: "isArtista" });
+
+  const localTheme = {
+    ...MD3LightTheme,
+    colors: {
+      ...(isArtista ? ArtistaColorTheme : ContratanteColorTheme).colors,
+    },
+  };
+
   const { cadastroRequest } = useCadastro();
   const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log("Passou");
     cadastroRequest.current = {
       nome: data.nome,
       email: data.email,
@@ -45,8 +55,9 @@ export default function Cadastro() {
     } as AuthRegisterRequest;
     router.navigate("/cadastroDetails");
   };
+
   return (
-    <>
+    <PaperProvider theme={localTheme}>
       <StatusBar hidden />
       <KeyboardAvoidingView style={style.container} behavior="padding">
         <View style={style.titleContainer}>
@@ -68,7 +79,7 @@ export default function Cadastro() {
                   <View style={style.tipoContaGroup}>
                     <Text variant="bodyMedium">
                       Criar conta como:{" "}
-                      {getValues("isArtista") ? "Artista" : "Contratante"}
+                      {value ? "Artista" : "Contratante"}
                     </Text>
                     <Switch
                       onBlur={onBlur}
@@ -181,6 +192,6 @@ export default function Cadastro() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
+    </PaperProvider>
   );
 }

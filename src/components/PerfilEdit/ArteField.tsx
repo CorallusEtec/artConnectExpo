@@ -4,7 +4,7 @@ import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { gStyles } from "@/style/gStyle";
 import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, View } from "react-native";
-import { Chip, Menu, Text, TouchableRipple } from "react-native-paper";
+import { Chip, Menu, Text, TouchableRipple, useTheme } from "react-native-paper";
 
 type Props = {
   tiposArte: ArteResponse[];
@@ -26,6 +26,7 @@ export function ArteGeneroFields({
   onToggleGenero,
 }: Props) {
   const [menuVisivel, setMenuVisivel] = useState(false);
+  const theme = useTheme();
 
   const arteAtual = tiposArte.find((a) => a.id === arteSelecionada);
   const labelArte = arteAtual?.nomeArte ?? "Nenhuma";
@@ -95,8 +96,8 @@ export function ArteGeneroFields({
                     key={genero.id}
                     mode="outlined"
                     selected={selecionado}
-                    selectedColor={selecionado ? "#fff" : gStyles.azul[200]}
-                    style={selecionado && { backgroundColor: gStyles.azul[200] }}
+                    selectedColor={selecionado ? "#fff" : theme.colors.primary}
+                    style={selecionado && { backgroundColor: theme.colors.primary }}
                     onPress={() => onToggleGenero(genero.id)}
                   >
                     {genero.nomeGeneroArte}

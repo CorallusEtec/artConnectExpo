@@ -1,8 +1,10 @@
 import { View } from "react-native";
-import { Text, TextInput } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 export function FilterPublicacaoForm() {
+  const theme = useTheme();
+
   return (
     <View>
       <Text style={style.label}>Nome do Autor</Text>
@@ -11,7 +13,7 @@ export function FilterPublicacaoForm() {
         placeholder="Ex: André"
         style={style.input}
         outlineColor="#E0E0E0"
-        activeOutlineColor="#0B31A3"
+        activeOutlineColor={theme.colors.primary}
       />
       <View style={style.row}>
         <View style={style.flex1}>
@@ -21,7 +23,7 @@ export function FilterPublicacaoForm() {
             placeholder="25/05/2026"
             style={style.input}
             outlineColor="#E0E0E0"
-            activeOutlineColor="#0B31A3"
+            activeOutlineColor={theme.colors.primary}
           />
         </View>
         <View style={style.flex1}>
@@ -32,7 +34,7 @@ export function FilterPublicacaoForm() {
             keyboardType="numeric"
             style={style.input}
             outlineColor="#E0E0E0"
-            activeOutlineColor="#0B31A3"
+            activeOutlineColor={theme.colors.primary}
           />
         </View>
       </View>

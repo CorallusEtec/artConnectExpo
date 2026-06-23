@@ -12,7 +12,6 @@ export const style = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: gStyles.azul[200],
   },
 
   input: {
@@ -47,7 +46,6 @@ export const style = StyleSheet.create({
   },
 
   postar: {
-    backgroundColor: gStyles.azul[200],
     padding: 14,
     borderRadius: 10,
     alignItems: "center",

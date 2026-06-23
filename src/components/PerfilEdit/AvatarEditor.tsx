@@ -1,7 +1,8 @@
-import { gStyles } from "@/style/gStyle";
 import { style } from "./edit";
+import { useDynamicThemeStyles } from "@/style/useDynamicThemeStyles";
 import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
+import { useTheme } from "react-native-paper";
 
 type Props = {
   fotoUri: string | null;
@@ -10,13 +11,16 @@ type Props = {
 };
 
 export function AvatarEditor({ fotoUri, uploading, onAlterar }: Props) {
+  const theme = useTheme();
+  const dynamic = useDynamicThemeStyles();
+
   return (
     <View style={style.linhaAvatar}>
       <View style={style.avatarContainer}>
         {uploading ? (
           <ActivityIndicator
             size="large"
-            color={gStyles.azul[200]}
+            color={theme.colors.primary}
             style={style.headerProfile}
           />
         ) : (
@@ -26,7 +30,7 @@ export function AvatarEditor({ fotoUri, uploading, onAlterar }: Props) {
           />
         )}
       </View>
-      <TouchableOpacity style={style.editarAvatar} onPress={onAlterar} disabled={uploading}>
+      <TouchableOpacity style={[style.editarAvatar, dynamic.bgPrimary]} onPress={onAlterar} disabled={uploading}>
         <Feather name="edit-3" size={16} color="#fff" />
       </TouchableOpacity>
     </View>
