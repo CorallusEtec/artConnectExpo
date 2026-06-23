@@ -9,23 +9,26 @@ import { PerfilProvider, useAuth } from "@/contexts";
 import { useUsuarioByIdQuery } from "@/services/UsuarioService";
 import { gStyles } from "@/style/gStyle";
 import { style } from "@/style/pages/profile";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
-import { Button, TouchableRipple } from "react-native-paper";
+import { Button, TouchableRipple, useTheme } from "react-native-paper";
 
 export default function Perfil() {
   const { getValidateId } = useAuth();
   const { data, isLoading } = useUsuarioByIdQuery(getValidateId());
-
+  const theme = useTheme();
   if (isLoading) return <ActivityIndicator />;
 
   return (
     <>
       <Header />
       <ScrollView style={style.container}>
-        <PerfilProvider key={data?.data?.fotoPerfilUrl} dataInicial={data?.data}>
+        <PerfilProvider
+          key={data?.data?.fotoPerfilUrl}
+          dataInicial={data?.data}
+        >
           {/* Modal de configurações do aplicativo */}
           <ModalSettings />
 
@@ -50,10 +53,14 @@ export default function Perfil() {
           {/* Abas/Ícones de Navegação Interna */}
           <View style={style.icons}>
             <TouchableRipple onPress={() => {}}>
-              <Feather name="camera" color={gStyles.cinza[600]} size={32.5} />
+              <Ionicons
+                name="grid-outline"
+                size={24}
+                color={theme.colors.primary}
+              />
             </TouchableRipple>
             <TouchableRipple onPress={() => {}}>
-              <Feather name="bookmark" color={gStyles.cinza[600]} size={35} />
+              <Feather name="bookmark" color={gStyles.cinza[600]} size={24} />
             </TouchableRipple>
           </View>
 

@@ -1,7 +1,13 @@
 import { ComentarioProvider, usePublicacao } from "@/contexts";
 import { useComentarioListQuery } from "@/services/ComentarioService";
 import { FlatList, Modal } from "react-native";
-import { Card, Divider, PaperProvider, useTheme } from "react-native-paper";
+import {
+  Card,
+  Divider,
+  PaperProvider,
+  Text,
+  useTheme,
+} from "react-native-paper";
 import { Comentario } from "./Comentario";
 import { ComentarioSectionHeader } from "./ComentarioSectionHeader";
 import { ComentarioSender } from "./ComentarioSender";
@@ -32,7 +38,7 @@ export function ComentarioSection() {
 
           {isLoading ? (
             <></>
-          ) : (
+          ) : comentarioData && comentarioData.data.content.length > 0 ? (
             <FlatList
               data={comentarioData?.data.content}
               keyExtractor={(id) => id.id.toString()}
@@ -42,6 +48,10 @@ export function ComentarioSection() {
                 </ComentarioProvider>
               )}
             />
+          ) : (
+            <Text style={{ textAlign: "center" }} variant="labelLarge">
+              Nenhum comentário publicado
+            </Text>
           )}
         </Card>
       </PaperProvider>
