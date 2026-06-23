@@ -1,7 +1,7 @@
-import { TipoMidia } from "@/components/PostCreate/types";
+import { TipoMidia } from "../enumeration/enumeration";
 
 export interface PublicacaoRequest {
-  legenda: string;
+  legenda?: string;
   file: any;
   tipoMidia: TipoMidia | null;
 }
