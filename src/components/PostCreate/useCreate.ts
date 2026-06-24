@@ -1,5 +1,6 @@
 import { PublicacaoService } from "@/services/PublicacaoService";
 import * as DocumentPicker from "expo-document-picker";
+import {} from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -13,14 +14,26 @@ export function useCreate() {
   const [nomeAudio, setNomeAudio] = useState<string | null>(null);
 
   // aqui escolhe a imagem/video da galeria e define o tipo já
-  async function escolherGaleria() {
+  async function escolherGaleria(onChangeForm: (val: any) => void) {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      //mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ["images", "livePhotos", "videos"],
       allowsEditing: true,
-      quality: 1,
+      quality: 0.6,
     });
 
     if (!result.canceled) {
+      onChangeForm({
+        tipo:
+          result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE,
+        url: result.assets[0].uri,
+        mimeType: result.assets[0].mimeType,
+        name:
+          result.assets[0].fileName ||
+          `upload-${Date.now()}.${result.assets[0].uri.split(".").pop() || "bin"}`,
+      });
+
+      //Dead Code
       setMidia(result.assets[0]);
       setTipoMidia(
         result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE,
@@ -29,14 +42,25 @@ export function useCreate() {
   }
 
   // aqui abre a camera
-  async function escolherCamera() {
+  async function escolherCamera(onChangeForm: (val: any) => void) {
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      //mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ["images", "livePhotos", "videos"],
       allowsEditing: true,
-      quality: 1,
+      quality: 0.6,
     });
 
     if (!result.canceled) {
+      onChangeForm({
+        tipo:
+          result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE,
+        url: decodeURIComponent(result.assets[0].uri),
+        mimeType: result.assets[0].mimeType,
+        name:
+          result.assets[0].fileName ||
+          `upload-${Date.now()}.${result.assets[0].uri.split(".").pop() || "bin"}`,
+      });
+      // Dead Code
       setMidia(result.assets[0]);
       setTipoMidia(
         result.assets[0].type === "video" ? TipoMidia.VIDEO : TipoMidia.IMAGE,
@@ -65,12 +89,22 @@ export function useCreate() {
     }
   }
 
-  async function escolherAudio() {
+  async function escolherAudio(onChangeForm: (val: any) => void) {
     const result = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
+      copyToCacheDirectory: true,
     });
 
     if (!result.canceled) {
+      const nomeArquivo = result.assets[0].name || `audio-${Date.now()}.mp3`;
+      onChangeForm({
+        tipo: TipoMidia.AUDIO,
+        url: result.assets[0].uri,
+        mimeType: result.assets[0].mimeType || "audio/mpeg",
+        name: nomeArquivo,
+      });
+
+      //Dead Code
       setMidia(result.assets[0]);
       setNomeAudio(result.assets[0].name);
       setTipoMidia(TipoMidia.AUDIO);

@@ -1,6 +1,5 @@
-import { gStyles } from "@/style/gStyle";
 import { StyleProp, ViewStyle } from "react-native";
-import { TextInput, TextInputProps } from "react-native-paper";
+import { TextInput, TextInputProps, useTheme } from "react-native-paper";
 
 type PaperInputProps = TextInputProps & {
   containerStyle?: StyleProp<ViewStyle>;
@@ -8,12 +7,14 @@ type PaperInputProps = TextInputProps & {
 };
 
 export function InputIcon({ icon, ...props }: PaperInputProps) {
+  const theme = useTheme();
+
   return (
     <TextInput
       mode="outlined"
       left={
         icon ? (
-          <TextInput.Icon icon={icon} color={gStyles.azul[500]} />
+          <TextInput.Icon icon={icon} color={theme.colors.primary} />
         ) : undefined
       }
       style={{ fontSize: 16, backgroundColor: "#ffffff" }}

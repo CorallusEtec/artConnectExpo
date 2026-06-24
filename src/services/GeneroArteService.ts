@@ -2,15 +2,15 @@ import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { useQuery } from "@tanstack/react-query";
 import config from "./config";
 
-export function useGeneroArteByArte(id: number) {
+export function useGeneroArteByArte(idArte?: number) {
   const query = useQuery({
-    queryFn: () => GeneroArteService.findByArteId(id),
-    queryKey: ["generoArte"],
-    enabled: false,
+    queryFn: () => GeneroArteService.findByArteId(idArte as number),
+    queryKey: ["generoArte", idArte],
+    enabled: !!idArte,
   });
   return {
     ...query,
-    data: query.data,
+    generosArte: query.data?.data ?? [],
   };
 }
 

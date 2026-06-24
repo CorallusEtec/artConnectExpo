@@ -12,7 +12,6 @@ export const style = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: gStyles.azul[200],
   },
 
   linhaAvatar: {
@@ -40,7 +39,6 @@ export const style = StyleSheet.create({
     position: "absolute",
     right: 40,
     top: 60,
-    backgroundColor: gStyles.azul[200],
     padding: 8,
     borderRadius: 20,
   },
@@ -69,7 +67,6 @@ export const style = StyleSheet.create({
   },
 
   botaoSalvar: {
-    backgroundColor: gStyles.azul[200],
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
@@ -84,7 +81,7 @@ export const style = StyleSheet.create({
   headerProfile: {
     height: 92,
     width: 92,
-    borderRadius: "100%",
+    borderRadius: 500,
   },
 
   contatoRow: {
@@ -105,6 +102,34 @@ export const style = StyleSheet.create({
   },
 
   textoAdicionarContato: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  chipsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 8,
+  },
+
+  chip: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+  },
+
+  chipSelected: {
+    backgroundColor: gStyles.azul[200],
+    borderColor: gStyles.azul[200],
+  },
+
+  chipText: {
+    color: "#333",
+  },
+
+  chipTextSelected: {
     color: "#fff",
     fontWeight: "bold",
   },

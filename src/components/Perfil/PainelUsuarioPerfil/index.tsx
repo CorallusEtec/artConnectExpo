@@ -1,43 +1,59 @@
 import { AvatarRender } from "@/components/AvatarRender";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUsuarioByIdQuery } from "@/services/UsuarioService";
+import { usePerfil } from "@/contexts";
+import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
 import { AppUtils } from "@/utils/AppUtils";
-import { View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { iconePorTipoContato, linkPorContato } from "@/utils/ContatoUtils";
+import { Linking, Pressable, View } from "react-native";
+import { Chip, Icon, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 export function PainelUsuarioPerfil() {
-  const { getValidateId } = useAuth();
+  const { dataPerfil } = usePerfil();
 
-  const { data } = useUsuarioByIdQuery(getValidateId());
+  console.log("dataPerfil.arte:", dataPerfil?.arte);
+  console.log("dataPerfil.generosArte:", dataPerfil?.generosArte);
+
+  const contatos = dataPerfil?.contatos ?? [];
+  const arte = dataPerfil?.arte;
+  const generosArte: GeneroArteResponse[] = dataPerfil?.generosArte ?? [];
+
+  const theme = useTheme();
+
+  async function handleAbrirContato(link: string | null) {
+    if (!link) return;
+    const suportado = await Linking.canOpenURL(link);
+    if (suportado) Linking.openURL(link);
+  }
 
   return (
-    <View style={style.fundo}>
+    <View style={[style.fundo, {backgroundColor: theme.colors.primary}]}>
       <View style={style.headerRow}>
         <View style={style.profile}>
           <AvatarRender
-            nome={data?.data.nome}
+            nome={dataPerfil?.nome}
             size={92}
-            uri={data?.data.fotoPerfilUrl}
+            uri={dataPerfil?.fotoPerfilUrl}
           />
-          <Text style={style.infoLabel}>{data?.data.nome}</Text>
-          {data?.data && (
+          <Text style={style.nomeLabel}>{dataPerfil?.nome}</Text>
+          {dataPerfil && (
             <Text style={style.infoLabel}>
-              {AppUtils.capitalize(data.data.tipoConta)}
+              {AppUtils.capitalize(dataPerfil.tipoConta)}
             </Text>
           )}
         </View>
+
         <View style={style.infosProfile}>
           <View style={style.infoDuo}>
             <Text variant="bodyLarge" style={style.infoLabel}>
               Posts
             </Text>
             <Text variant="titleMedium" style={style.infoValue}>
-              {(data?.data.publicacoes && data.data.publicacoes.length) || 0}
+              {(dataPerfil?.publicacoes && dataPerfil.publicacoes.length) || 0}
             </Text>
           </View>
 
           <TouchableRipple
+            style={style.infoDuoTouchable}
             onPress={() => {}}
             rippleColor="rgba(255, 255, 255, .2)"
           >
@@ -46,12 +62,13 @@ export function PainelUsuarioPerfil() {
                 Seguidores
               </Text>
               <Text variant="titleMedium" style={style.infoValue}>
-                0
+                {dataPerfil?.totalSeguidores ?? 0}
               </Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple
+            style={style.infoDuoTouchable}
             onPress={() => {}}
             rippleColor="rgba(255, 255, 255, .2)"
           >
@@ -60,18 +77,62 @@ export function PainelUsuarioPerfil() {
                 Seguindo
               </Text>
               <Text variant="titleMedium" style={style.infoValue}>
-                0
+                {dataPerfil?.totalSeguindo ?? 0}
               </Text>
             </View>
           </TouchableRipple>
         </View>
       </View>
 
+      {(arte || generosArte.length > 0) && (
+        <View style={style.artInfoContainer}>
+          {arte && (
+            <Chip style={style.artChip} textStyle={style.artChipText} compact>
+              {arte.nomeArte}
+            </Chip>
+          )}
+          {generosArte.map((genero, index: number) => (
+            <Chip
+              key={genero.id ?? index}
+              style={style.artChip}
+              textStyle={style.artChipText}
+              compact
+            >
+              {genero.nomeGeneroArte}
+            </Chip>
+          ))}
+        </View>
+      )}
+
       <View style={style.bioContainer}>
         <Text variant="bodyMedium" style={style.bioText}>
-          {data?.data.textoBio || "Sem biografia"}
+          {dataPerfil?.textoBio || "Sem biografia"}
         </Text>
       </View>
+
+      {contatos.length > 0 && (
+        <View style={style.contatosContainer}>
+          {contatos.map((contato, index) => {
+            const link = linkPorContato(contato);
+
+            return (
+              <Pressable
+                key={contato.idContato ?? index}
+                style={style.contatoRow}
+                disabled={!link}
+                onPress={() => handleAbrirContato(link)}
+              >
+                <Icon
+                  source={iconePorTipoContato(contato.tipoContato?.idTipoContato)}
+                  size={18}
+                  color="white"
+                />
+                <Text style={style.contatoText}>{contato.valorContato}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 }

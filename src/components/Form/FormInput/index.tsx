@@ -1,5 +1,4 @@
-import { gStyles } from "@/style/gStyle";
-import { TextInput, TextInputProps } from "react-native-paper";
+import { TextInput, TextInputProps, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 type PaperInputProps = TextInputProps & {
@@ -11,12 +10,14 @@ export function FormInput({
   icon,
   ...props
 }: PaperInputProps) {
+  const theme = useTheme();
+
   return (
     <TextInput
       mode={mode}
       left={
         icon ? (
-          <TextInput.Icon icon={icon} color={gStyles.azul[500]} />
+          <TextInput.Icon icon={icon} color={theme.colors.primary} />
         ) : undefined
       }
       style={[style.input, props.style]}

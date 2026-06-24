@@ -1,12 +1,23 @@
+import { useAuth } from "@/contexts";
+import { TipoContato } from "@/models/enumeration/TipoContato";
 import { AuthLoginResponse } from "@/models/response/AuthLoginResponse";
 import { UsuarioResponse } from "@/models/response/UsuarioResponse";
+import { useArteList } from "@/services/ArteService";
 import { ArtistaEditDTO, ArtistaService } from "@/services/ArtistaService";
-import { ContratanteEditDTO, ContratanteService } from "@/services/ContratanteService";
+import ContatoService from "@/services/ContatoService";
+import {
+  ContratanteEditDTO,
+  ContratanteService,
+} from "@/services/ContratanteService";
+import { useGeneroArteByArte } from "@/services/GeneroArteService";
 import UsuarioService from "@/services/UsuarioService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
+import { Contato } from "./ContatoInput/types";
 
 export type TipoUsuario = "artista" | "contratante" | null;
 
@@ -36,6 +47,20 @@ const FORM_INICIAL: FormPerfil = {
   razaoSocial: "",
 };
 
+function mapearContatos(contatos: any[] | undefined, tipo: number): Contato[] {
+  if (!contatos) return [];
+
+  return contatos
+    .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
+    .map(
+      (c): Contato => ({
+        id: c.idContato,
+        valor: c.valorContato || "",
+        tipo,
+      }),
+    );
+}
+
 export function useEditPerfil() {
   const [user, setUser] = useState<UsuarioResponse | null>(null);
   const [tipoUsuario, setTipoUsuario] = useState<TipoUsuario>(null);
@@ -45,14 +70,32 @@ export function useEditPerfil() {
   const [uploadingFoto, setUploadingFoto] = useState(false);
   const [form, setForm] = useState<FormPerfil>(FORM_INICIAL);
 
+  const [contatosEmail, setContatosEmail] = useState<Contato[]>([]);
+  const [contatosTelegram, setContatosTelegram] = useState<Contato[]>([]);
+  const [contatosInstagram, setContatosInstagram] = useState<Contato[]>([]);
+  const [contatosTelefone, setContatosTelefone] = useState<Contato[]>([]);
+
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const [dialog, setDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
 
+  const queryClient = useQueryClient();
+  const { getValidateId } = useAuth();
+
+  const [arteSelecionada, setArteSelecionada] = useState<number | null>(null);
+  const [generosSelecionados, setGenerosSelecionados] = useState<number[]>([]);
+
+  const { tiposArte: tiposArteResp } = useArteList();
+  const tiposArte = tiposArteResp?.data?.content ?? [];
+
+  const { generosArte, isFetching: carregandoGeneros } = useGeneroArteByArte(
+    arteSelecionada ?? undefined,
+  );
+
   function mostrarErro(mensagem: string) {
-     setErrorMessage(mensagem);
+    setErrorMessage(mensagem);
     setAlert(true);
   }
 
@@ -79,12 +122,38 @@ export function useEditPerfil() {
       const tokenParse = await obterToken();
       if (!tokenParse) return;
 
-      const model = await UsuarioService.findById(tokenParse.id, tokenParse.token);
+      const model = await UsuarioService.findById(
+        tokenParse.id,
+        tokenParse.token,
+      );
 
       setUser(model);
       setFotoUri(model.fotoPerfilUrl ?? null);
-      setTipoUsuario(model.tipoConta === "CONTRATANTE" ? "contratante" : "artista");
+      setTipoUsuario(
+        model.tipoConta === "CONTRATANTE" ? "contratante" : "artista",
+      );
       preencherFormulario(model);
+
+      setContatosEmail(
+        mapearContatos(model.contatos as any, TipoContato.EMAIL),
+      );
+      setContatosTelegram(
+        mapearContatos(model.contatos as any, TipoContato.TELEGRAM),
+      );
+      setContatosInstagram(
+        mapearContatos(model.contatos as any, TipoContato.INSTAGRAM),
+      );
+      setContatosTelefone(
+        mapearContatos(model.contatos as any, TipoContato.TELEFONE),
+      );
+
+      const arteAtual = (model as any).arte;
+      const generosAtuais = (model as any).generosArte;
+
+      if (arteAtual?.id) setArteSelecionada(arteAtual.id);
+      if (generosAtuais?.length) {
+        setGenerosSelecionados(generosAtuais.map((g: any) => g.id));
+      }
     } catch (error) {
       console.error("Erro ao carregar perfil:", error);
       mostrarErro("Não foi possível carregar os dados do perfil");
@@ -115,7 +184,9 @@ export function useEditPerfil() {
   async function solicitarPermissaoGaleria(): Promise<boolean> {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      mostrarErro("Precisamos de acesso à sua galeria para alterar a foto de perfil.");
+      mostrarErro(
+        "Precisamos de acesso à sua galeria para alterar a foto de perfil.",
+      );
       return false;
     }
     return true;
@@ -126,7 +197,7 @@ export function useEditPerfil() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.8,
+      quality: 0.6,
     });
 
     if (resultado.canceled) return null;
@@ -143,8 +214,15 @@ export function useEditPerfil() {
     try {
       setUploadingFoto(true);
 
+      const uriFormatada =
+        Platform.OS === "android"
+          ? imagemSelecionada.uri.startsWith("file://")
+            ? imagemSelecionada.uri
+            : `file://${imagemSelecionada.uri}`
+          : imagemSelecionada.uri.replace("file://", "");
+
       const arquivo = {
-        uri: imagemSelecionada.uri,
+        uri: uriFormatada,
         name: imagemSelecionada.fileName || `foto-perfil-${Date.now()}.jpg`,
         type: imagemSelecionada.mimeType || "image/jpeg",
       };
@@ -154,11 +232,16 @@ export function useEditPerfil() {
       setFotoUri(imagemSelecionada.uri);
 
       const usuarioAtualizado = await UsuarioService.getCurrentUser();
+
       setFotoUri(usuarioAtualizado.fotoPerfilUrl || imagemSelecionada.uri);
- 
+      queryClient.invalidateQueries({
+        queryKey: [getValidateId(), "profileData"],
+      });
     } catch (error: any) {
       console.error("Erro ao alterar foto:", error);
-      mostrarErro(error.message || "Não foi possível atualizar a foto de perfil");
+      mostrarErro(
+        error.message || "Não foi possível atualizar a foto de perfil",
+      );
     } finally {
       setUploadingFoto(false);
     }
@@ -171,8 +254,19 @@ export function useEditPerfil() {
     return payload;
   }
 
+  function handleSelecionarArte(id: number | null) {
+    setArteSelecionada(id);
+    setGenerosSelecionados([]);
+  }
+
+  function handleToggleGenero(id: number) {
+    setGenerosSelecionados((prev) =>
+      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
+    );
+  }
+
   function prepararPayloadArtista(): ArtistaEditDTO {
-    return limparUndefined<ArtistaEditDTO>({
+    const payload = limparUndefined<ArtistaEditDTO>({
       nome: form.nome || undefined,
       textoBio: form.textoBio || undefined,
       nomeLog: form.nomeLog || undefined,
@@ -183,6 +277,14 @@ export function useEditPerfil() {
       cidade: form.cidade || undefined,
       uf: form.uf || undefined,
     });
+
+    return {
+      ...payload,
+      arte: arteSelecionada ? ({ id: arteSelecionada } as any) : null,
+      generosArte: generosSelecionados.length
+        ? (generosSelecionados.map((id) => ({ id })) as any)
+        : [],
+    } as ArtistaEditDTO;
   }
 
   function prepararPayloadContratante(): ContratanteEditDTO {
@@ -200,6 +302,33 @@ export function useEditPerfil() {
     });
   }
 
+  async function salvarContatos(token: string) {
+    const contatos = [
+      ...contatosTelefone,
+      ...contatosInstagram,
+      ...contatosTelegram,
+      ...contatosEmail,
+    ].filter((c) => c.valor.trim());
+
+    for (const contato of contatos) {
+      if (contato.id) {
+        await ContatoService.edit(
+          contato.id,
+          { valorContato: contato.valor },
+          token,
+        );
+      } else {
+        await ContatoService.save(
+          { valorContato: contato.valor, idTipoContato: contato.tipo },
+          token,
+        );
+      }
+    }
+    queryClient.invalidateQueries({
+      queryKey: [getValidateId(), "profileData"],
+    });
+  }
+
   async function handleSalvar() {
     if (!user || !tipoUsuario) return;
 
@@ -210,10 +339,12 @@ export function useEditPerfil() {
       if (!tokenParse) return;
 
       if (tipoUsuario === "artista") {
-        await ArtistaService.edit(tokenParse.token, prepararPayloadArtista());
+        await ArtistaService.edit(prepararPayloadArtista());
       } else {
-        await ContratanteService.edit(tokenParse.token, prepararPayloadContratante());
+        await ContratanteService.edit(prepararPayloadContratante());
       }
+
+      await salvarContatos(tokenParse.token);
 
       mostrarSucesso("Perfil atualizado com sucesso!");
     } catch (error: any) {
@@ -223,6 +354,36 @@ export function useEditPerfil() {
       setSaving(false);
     }
   }
+
+  async function removerContatoRemoto(contatoId?: number) {
+    if (!contatoId) return;
+
+    const tokenParse = await obterToken();
+    if (!tokenParse) return;
+
+    try {
+      await ContatoService.delete(contatoId, tokenParse.token);
+    } catch (error: any) {
+      console.error("Erro ao remover contato:", error);
+      mostrarErro(error.message || "Não foi possível remover o contato");
+    }
+  }
+
+  // -------------------------------
+
+  function handleRemoverContatoTelefone(index: number) {
+    return removerContatoRemoto(contatosTelefone[index]?.id);
+  }
+  function handleRemoverContatoInstagram(index: number) {
+    return removerContatoRemoto(contatosInstagram[index]?.id);
+  }
+  function handleRemoverContatoEmail(index: number) {
+    return removerContatoRemoto(contatosEmail[index]?.id);
+  }
+  function handleRemoverContatoTelegram(index: number) {
+    return removerContatoRemoto(contatosTelegram[index]?.id);
+  }
+  // -------------------------------
 
   function fecharDialog() {
     setDialog(false);
@@ -239,9 +400,31 @@ export function useEditPerfil() {
     alterarCampo,
     handleAlterarFoto,
     handleSalvar,
+    //-----
+    tiposArte,
+    arteSelecionada,
+    handleSelecionarArte,
+    generosArte,
+    carregandoGeneros,
+    generosSelecionados,
+    handleToggleGenero,
+    //-----
+    contatosEmail,
+    setContatosEmail,
+    contatosTelegram,
+    setContatosTelegram,
+    contatosInstagram,
+    setContatosInstagram,
+    contatosTelefone,
+    setContatosTelefone,
+    //-------
+    handleRemoverContatoTelefone,
+    handleRemoverContatoInstagram,
+    handleRemoverContatoEmail,
+    handleRemoverContatoTelegram,
     alert: {
-    visible: alert,
-    text: errorMessage,
+      visible: alert,
+      text: errorMessage,
       onDismiss: () => setAlert(false),
     },
     dialog: {

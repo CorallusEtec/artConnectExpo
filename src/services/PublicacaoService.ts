@@ -7,7 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PublicacaoPageParams } from "@/models/request/pageable/PublicacaoPageParams";
 import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { Platform } from "react-native";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
@@ -17,13 +18,10 @@ export function useFeedQuery(
   page: "feed" | "perfil",
 ) {
   const query = useQuery({
-    queryKey: [page],
+    queryKey: [page, params],
     queryFn: () => PublicacaoService.listar(params),
   });
-  return {
-    ...query,
-    data: query.data,
-  };
+  return query;
 }
 
 export function usePerfilPublicacaoQuery(usuarioId: number) {
@@ -36,6 +34,26 @@ export function usePerfilPublicacaoQuery(usuarioId: number) {
     ...query,
     data: query.data?.data,
   };
+}
+
+export function usePublicar() {
+  const queryClient = useQueryClient();
+  const { getValidateToken, getValidateId } = useAuth();
+  const mutate = useMutation({
+    mutationFn: (request: PublicacaoRequest) =>
+      PublicacaoService.newSave(request, getValidateToken()),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["feed", {}] });
+      queryClient.invalidateQueries({
+        queryKey: [getValidateId(), "publicacaoPerfil"],
+      });
+    },
+    onSuccess: () => {
+      router.navigate("/home");
+    },
+  });
+
+  return mutate;
 }
 
 export function usePublicacaoQuery(idPublicacao: number) {
@@ -102,6 +120,34 @@ export class PublicacaoService {
    * @param param0 Request params para a requisição
    * @returns Status da requisição
    */
+  static async newSave(
+    { legenda, file, tipoMidia }: PublicacaoRequest,
+    token: string,
+  ) {
+    const formData = new FormData();
+
+    if (legenda) formData.append("legenda", legenda);
+    if (file) {
+      formData.append("arquivo", {
+        uri: file.url,
+        name: `upload-${Date.now()}.${file.name.split(".").pop() || "bin"}`,
+        type: file.mimeType || "video/mp4",
+      } as any);
+    }
+    if (tipoMidia) formData.append("tipoMidia", tipoMidia);
+
+    return await config.axiosClient.post(
+      `${config.apiUrl}/publicacao/save`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+  }
+
   static async save({ legenda, file, tipoMidia }: PublicacaoRequest) {
     try {
       const formData = new FormData();

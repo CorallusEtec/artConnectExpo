@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import { useTheme } from "react-native-paper";
 
 const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
   return <FontAwesome name={name} color={color} size={20} />;
@@ -21,6 +22,7 @@ const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
 
 export default function TabLayout() {
   const { isAuth } = useAuth();
+  const theme = useTheme();
   return (
     <>
       <StatusBar hidden />
@@ -32,6 +34,8 @@ export default function TabLayout() {
           headerShown: false,
           animation: "shift",
           lazy: true,
+          tabBarActiveTintColor: theme.colors.primary,
+          tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
           tabBarButton: (props) => (
             <TouchableOpacity {...(props as TouchableOpacityProps)} />
           ),
@@ -73,6 +77,12 @@ export default function TabLayout() {
             options={{
               title: "Perfil",
               tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="[id]"
+            options={{
+              href: null,
             }}
           />
         </Tabs.Protected>

@@ -1,5 +1,5 @@
 import { StyleProp, TextStyle } from "react-native";
-import { Button, ButtonProps } from "react-native-paper";
+import { Button, ButtonProps, useTheme } from "react-native-paper";
 
 type TextButtonProps = Omit<ButtonProps, "theme" | "children"> & {
   title?: string;
@@ -15,14 +15,16 @@ export function TextButton({
   buttonColor,
   ...props
 }: TextButtonProps) {
+  const theme = useTheme();
+
   return (
     <Button
       mode={variant === "primary" ? "contained" : "outlined"}
       buttonColor={
-        variant === "primary" ? (buttonColor ?? "#2563eb") : undefined
+        variant === "primary" ? (buttonColor ?? theme.colors.primary) : undefined
       }
-      textColor={variant === "secondary" ? "#2563eb" : "#fff"}
-      rippleColor={variant === "secondary" ? "#2563eb20" : undefined}
+      textColor={variant === "secondary" ? theme.colors.primary : "#fff"}
+      rippleColor={variant === "secondary" ? theme.colors.primaryContainer : undefined}
       contentStyle={{ paddingVertical: 4 }}
       labelStyle={[{ fontWeight: "600", fontSize: 15 }, textStyle]}
       {...props}
