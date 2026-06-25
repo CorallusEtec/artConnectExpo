@@ -1,9 +1,10 @@
 import { AvatarRender } from "@/components/AvatarRender";
+import { useAuth } from "@/contexts";
 import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
-import { Feather } from "@expo/vector-icons";
 import { navegarParaPerfil } from "@/utils/NavigationUtils";
+import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Card, IconButton, Menu } from "react-native-paper";
@@ -16,15 +17,18 @@ import { style } from "./style";
 export function PublicacaoHeader() {
   const [menu, setMenu] = useState(false);
   const { idPublicacao } = usePublicacao();
+  const { getValidateId } = useAuth();
   const { data, isLoading } = usePublicacaoQuery(idPublicacao);
 
   if (isLoading) return <></>;
 
   return (
     <Card.Content style={style.headerContainer}>
-      <Pressable 
-        style={style.headerContent} 
-        onPress={() => navegarParaPerfil(data?.data.publicacao.autor.id)}
+      <Pressable
+        style={style.headerContent}
+        onPress={() =>
+          navegarParaPerfil(getValidateId(), data?.data.publicacao.autor.id)
+        }
       >
         <AvatarRender
           size={35}

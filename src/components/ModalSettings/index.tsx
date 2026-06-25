@@ -1,5 +1,4 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { usePerfil } from "@/contexts/PerfilContext";
 import { View } from "react-native";
 import {
   IconButton,
@@ -11,9 +10,14 @@ import {
 } from "react-native-paper";
 import { style } from "./style";
 
-export function ModalSettings() {
+export function ModalSettings({
+  modalConfig,
+  setModalConfig,
+}: {
+  modalConfig: boolean;
+  setModalConfig: (valor: boolean) => void;
+}) {
   const { signOut } = useAuth();
-  const { modalConfig, setModalConfig } = usePerfil();
 
   const theme = useTheme();
   return (
