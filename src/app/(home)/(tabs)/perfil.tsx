@@ -1,5 +1,4 @@
 import { Header } from "@/components";
-import { ModalSettings } from "@/components/ModalSettings";
 import {
   HeaderPerfil,
   PainelUsuarioPerfil,
@@ -29,9 +28,6 @@ export default function Perfil() {
           key={data?.data?.fotoPerfilUrl}
           dataInicial={data?.data}
         >
-          {/* Modal de configurações do aplicativo */}
-          <ModalSettings />
-
           {/* Navbar */}
           <HeaderPerfil />
 
