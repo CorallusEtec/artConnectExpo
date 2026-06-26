@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthLoginRequest } from "@/models/request/AuthLoginRequest";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import config from "./config";
 
 export function useLoginMutate() {
@@ -34,10 +35,10 @@ export class AuthService {
   }
 
   static async register(cadastroRequest: FormData) {
-    const response = await fetch(`${config.apiUrl}/auth/register`, {
-      body: cadastroRequest,
-      method: "POST",
-    });
+    const response = await axios.post(
+      `${config.apiUrl}/auth/register`,
+      cadastroRequest,
+    );
 
     return response;
   }
