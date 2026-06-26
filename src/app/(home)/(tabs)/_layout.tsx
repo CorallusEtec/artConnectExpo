@@ -64,6 +64,7 @@ export default function TabLayout() {
               tabBarIcon: ({ color }) => <TabIcon name="plus" color={color} />,
             }}
           />
+
           <Tabs.Screen
             name="notify"
             options={{
@@ -77,6 +78,15 @@ export default function TabLayout() {
             options={{
               title: "Perfil",
               tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="chat"
+            options={{
+              title: "Chat",
+              tabBarIcon: ({ color }) => (
+                <TabIcon name="envelope" color={color} />
+              ),
             }}
           />
           <Tabs.Screen
