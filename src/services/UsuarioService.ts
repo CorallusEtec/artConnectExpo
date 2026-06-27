@@ -6,6 +6,7 @@ import { UsuarioResponse } from "@/models/response/UsuarioResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import config from "./config";
+import { getExtensaoPorMimeType } from "@/utils/Extensoes";
 
 export function useUsuarioByIdQuery(usuarioId: number) {
   const query = useQuery({
@@ -113,42 +114,33 @@ export class UsuarioService {
     type?: string;
   }): Promise<string> {
     const tokenData = await AsyncStorage.getItem("@artconnect:token");
-    if (!tokenData) {
-      throw new Error("Usuário não autenticado");
+      if (!tokenData) throw new Error("Usuário não autenticado");
+  
+      const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
+  
+      const mimeType = file.type ?? "image/jpeg";
+      const extension = getExtensaoPorMimeType(mimeType) ?? file.uri.split(".").pop() ?? "jpg";
+      const fileName = file.name ?? `foto-perfil-${Date.now()}.${extension}`;
+  
+      const formData = new FormData();
+      const isWeb = file.uri.startsWith("blob:") || file.uri.startsWith("http");
+  
+      if (isWeb) {
+        const blob = await fetch(file.uri).then((r) => r.blob());
+        formData.append("file", new File([blob], fileName, { type: mimeType }));
+      } else {
+        formData.append("file", { uri: file.uri, name: fileName, type: mimeType } as any);
+      }
+  
+      const response = await fetch(`${config.apiUrl}/usuario/foto-perfil`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${tokenParse.token}` },
+        body: formData,
+      });
+  
+      if (!response.ok) throw new Error(`Erro ao atualizar foto: ${response.status}`);
+      return "Foto de perfil atualizada com sucesso!";
     }
-
-    const tokenParse: AuthLoginResponse = JSON.parse(tokenData);
-
-    const uriParts = file.uri.split(".");
-    const fileExtension = uriParts[uriParts.length - 1] || "jpg";
-    const mimeType =
-      file.type || `image/${fileExtension === "png" ? "png" : "jpeg"}`;
-    const fileName = file.name || `foto-perfil-${Date.now()}.${fileExtension}`;
-
-    const formData = new FormData();
-
-    formData.append("file", {
-      uri: file.uri,
-      name: fileName,
-      type: mimeType,
-    } as any);
-
-    // Troca o axiosClient pelo fetch nativo para o upload (funciona igual em web e mobile)
-const response = await fetch(`${config.apiUrl}/usuario/foto-perfil`, {
-  method: "PUT",
-  headers: {
-    Authorization: `Bearer ${tokenParse.token}`,
-    // NÃO coloque Content-Type aqui — o browser define com o boundary correto
-  },
-  body: formData,
-});
-
-if (!response.ok) {
-  throw new Error(`Erro ao atualizar foto: ${response.status}`);
-}
-
-return "Foto de perfil atualizada com sucesso!";
-  }
 
   /**
    * Busca os dados atualizados do usuário incluindo a nova foto
