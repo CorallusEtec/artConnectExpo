@@ -22,6 +22,7 @@ const TabIcon = memo(({ name, color }: { name: any; color: string }) => {
 
 export default function TabLayout() {
   const { isAuth } = useAuth();
+
   const theme = useTheme();
   return (
     <>
