@@ -132,22 +132,22 @@ export class UsuarioService {
       name: fileName,
       type: mimeType,
     } as any);
-    console.log("TOKEN:", tokenParse.token);
-console.log("AUTH HEADER:", `Bearer ${tokenParse.token}`);
-console.log("URL:", `${config.apiUrl}/usuario/foto-perfil`);
 
-    const response = await config.axiosClient.put(
-      `${config.apiUrl}/usuario/foto-perfil`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenParse.token}`,
-        },
-      },
-      
-    );
+    // Troca o axiosClient pelo fetch nativo para o upload (funciona igual em web e mobile)
+const response = await fetch(`${config.apiUrl}/usuario/foto-perfil`, {
+  method: "PUT",
+  headers: {
+    Authorization: `Bearer ${tokenParse.token}`,
+    // NÃO coloque Content-Type aqui — o browser define com o boundary correto
+  },
+  body: formData,
+});
 
-    return response.data?.message || "Foto de perfil atualizada com sucesso!";
+if (!response.ok) {
+  throw new Error(`Erro ao atualizar foto: ${response.status}`);
+}
+
+return "Foto de perfil atualizada com sucesso!";
   }
 
   /**

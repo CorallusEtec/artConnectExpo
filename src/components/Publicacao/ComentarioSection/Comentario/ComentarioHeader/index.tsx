@@ -1,3 +1,4 @@
+import { useAuth } from "@/contexts";
 import { useComentario } from "@/contexts/ComentarioContext";
 import { useComentarioQuery } from "@/services/ComentarioService";
 import { AppUtils } from "@/utils/AppUtils";
@@ -5,25 +6,23 @@ import { navegarParaPerfil } from "@/utils/NavigationUtils";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import {
-  Avatar,
-  Card,
-  IconButton,
-  Menu
-} from "react-native-paper";
+import { Avatar, Card, IconButton, Menu } from "react-native-paper";
 import { ComentrarioToggleAction } from "./ComentarioToggleAction";
 import { style } from "./style";
 
 export function ComentarioHeader() {
   const [menu, setMenu] = useState(false);
   const { comentarioId } = useComentario();
+  const { getValidateId } = useAuth();
   const { data } = useComentarioQuery(comentarioId);
 
   return (
     <Card.Content style={style.headerContainer}>
-      <Pressable 
+      <Pressable
         style={style.headerContent}
-        onPress={() => navegarParaPerfil(data?.data.usuario.id)}
+        onPress={() =>
+          navegarParaPerfil(getValidateId(), data?.data.usuario.id)
+        }
       >
         {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
         <Avatar.Text

@@ -40,9 +40,8 @@ export default function Usuario() {
       mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.6,
     }).then((result) => {
-      console.log(result);
       if (!result.canceled) {
         setImagem(result);
       }
@@ -61,13 +60,12 @@ export default function Usuario() {
       router.navigate("/cadastroArtista");
     }
   }
-  console.log(error);
   function finalizarCadastro(data: z.infer<typeof schema>) {
     // Fazer cadastro normalmente
     if (imagem.assets) {
       fotoPerfil.current = {
         name: imagem.assets[0].fileName || "foto_perfil",
-        type: imagem.assets[0].type || "image/jpeg",
+        type: imagem.assets[0].mimeType || "image/jpeg",
         uri: imagem.assets[0].uri,
       };
     }

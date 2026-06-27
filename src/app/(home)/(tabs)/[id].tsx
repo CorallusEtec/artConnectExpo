@@ -5,7 +5,10 @@ import {
   PublicacoesUsuarioPerfil,
 } from "@/components/Perfil";
 import { PerfilProvider } from "@/contexts";
-import { useIsFollowingQuery, useSeguidaMutation } from "@/services/SeguidaService";
+import {
+  useIsFollowingQuery,
+  useSeguidaMutation,
+} from "@/services/SeguidaService";
 import { useUsuarioByIdQuery } from "@/services/UsuarioService";
 import { style } from "@/style/pages/profile";
 import { useLocalSearchParams } from "expo-router";

@@ -26,7 +26,7 @@ export function RenderMidia({ urlMidia, tipoMidia }: Props) {
           <Image
             source={{ uri: urlMidia }}
             style={{ width: "100%", height: maxHeight }}
-            resizeMode="contain"
+            resizeMode="cover"
           />
           <Divider />
         </>
