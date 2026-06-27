@@ -1,6 +1,7 @@
 import { Header } from "@/components";
 import { Publicacao } from "@/components/Publicacao";
 import { RetryFetch } from "@/components/RetryFetch";
+import { useAuth } from "@/contexts";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import { useFeedQuery } from "@/services/PublicacaoService";
 import { style } from "@/style/pages/home";
@@ -17,6 +18,8 @@ export default function Home() {
     fetchNextPage,
     isLoading,
   } = useFeedQuery({}, "feed");
+  const { getValidateId } = useAuth();
+
   function renderFooter() {
     if (!isFetchingNextPage) return null;
     return <ActivityIndicator size={"large"} />;

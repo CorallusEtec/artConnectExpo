@@ -1,5 +1,5 @@
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { ArtConnectColorTheme, getThemeByTipoConta } from "@/style/appTheme";
+import { getThemeByTipoConta } from "@/style/appTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { ActivityIndicator } from "react-native";
@@ -7,6 +7,7 @@ import { MD3LightTheme, PaperProvider } from "react-native-paper";
 
 export function NavigationLayout() {
   const { isLoading, isAuth, getTipoConta } = useAuth();
+
   if (isLoading) {
     return <ActivityIndicator />;
   }

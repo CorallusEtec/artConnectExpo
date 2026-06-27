@@ -8,7 +8,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
-  useState
+  useState,
 } from "react";
 
 type AuthContextType = {
@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<AuthLoginResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+
   const queryClient = useQueryClient();
 
   // Busca o token salvo ao abrir o aplicativo
@@ -48,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (savedToken != null) {
           setIsAuth(true);
         } else {
-          setIsAuth(false);  
+          setIsAuth(false);
         }
       } catch (e) {
         console.error(e);
@@ -61,10 +62,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signIn(login: AuthLoginResponse) {
     await AsyncStorage.setItem("@artconnect:token", JSON.stringify(login));
+
     setToken(login); // Muda o estado global
     setIsAuth(true);
     queryClient.invalidateQueries();
-    router.dismissTo("/home");
+    if (login.status.tipoStatus !== "ATIVO") {
+      router.dismissTo("/forbidden");
+    } else {
+      router.dismissTo("/home");
+    }
   }
 
   async function signOut() {
