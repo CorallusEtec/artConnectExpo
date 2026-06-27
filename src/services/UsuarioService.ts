@@ -132,6 +132,9 @@ export class UsuarioService {
       name: fileName,
       type: mimeType,
     } as any);
+    console.log("TOKEN:", tokenParse.token);
+console.log("AUTH HEADER:", `Bearer ${tokenParse.token}`);
+console.log("URL:", `${config.apiUrl}/usuario/foto-perfil`);
 
     const response = await config.axiosClient.put(
       `${config.apiUrl}/usuario/foto-perfil`,
@@ -141,6 +144,7 @@ export class UsuarioService {
           Authorization: `Bearer ${tokenParse.token}`,
         },
       },
+      
     );
 
     return response.data?.message || "Foto de perfil atualizada com sucesso!";

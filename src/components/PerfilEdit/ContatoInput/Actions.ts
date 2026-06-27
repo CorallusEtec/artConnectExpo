@@ -1,38 +1,21 @@
+import { Dispatch, SetStateAction } from "react";
 import { Contato } from "./types";
-import ContatoService from "@/services/ContatoService";
 
 export function adicionarContato(
-  setLista: React.Dispatch<React.SetStateAction<Contato[]>>,
+  setLista: Dispatch<SetStateAction<Contato[]>>,
   tipo: number
 ) {
-  setLista(prev => [...prev, { valor: "", tipo }]);
+  setLista((prev) => [...prev, { valor: "", tipo, id: undefined }]);
 }
 
 export function atualizarContato(
-  setLista: React.Dispatch<React.SetStateAction<Contato[]>>,
+  setLista: Dispatch<SetStateAction<Contato[]>>,
   index: number,
-  text: string
+  valor: string
 ) {
-  setLista(prev =>
-    prev.map((c, i) => (i === index ? { ...c, valor: text } : c))
-  );
-}
-
-export async function removerContato(
-  setLista: React.Dispatch<React.SetStateAction<Contato[]>>,
-  lista: Contato[],
-  index: number,
-  token: string
-) {
-  const contato = lista[index];
-
-  if (contato.id) {
-    await ContatoService.delete(contato.id, token);
-  }
-
-  setLista(prev => {
+  setLista((prev) => {
     const copy = [...prev];
-    copy.splice(index, 1);
+    copy[index] = { ...copy[index], valor };
     return copy;
   });
 }
