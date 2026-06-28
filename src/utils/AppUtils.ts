@@ -80,4 +80,15 @@ export class AppUtils {
     if (!texto) return "";
     return texto.charAt(0).toLocaleUpperCase() + texto.slice(1).toLowerCase();
   }
+
+  static dataMessageFormat(dataString: string) {
+    const data = new Date(dataString);
+    const hora =
+      data.getHours() < 10 ? `0${data.getHours()}` : data.getHours().toString();
+    const minuto =
+      data.getMinutes() < 10
+        ? `0${data.getMinutes()}`
+        : data.getMinutes().toString();
+    return `${hora}:${minuto}`;
+  }
 }

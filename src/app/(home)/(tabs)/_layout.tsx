@@ -82,17 +82,20 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
-            name="chat"
+            name="contacts"
             options={{
-              title: "Chat",
+              animation: "shift",
+              title: "Contatos",
               tabBarIcon: ({ color }) => (
                 <TabIcon name="envelope" color={color} />
               ),
             }}
           />
+
           <Tabs.Screen
             name="[id]"
             options={{
+              animation: "shift",
               href: null,
             }}
           />

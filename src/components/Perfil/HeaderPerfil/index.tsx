@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts";
 import { usePerfil } from "@/contexts/PerfilContext";
 import { router } from "expo-router";
-import { Appbar, useTheme } from "react-native-paper";
+import { Appbar, Text, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 export function HeaderPerfil() {
@@ -17,14 +17,28 @@ export function HeaderPerfil() {
         icon="arrow-left"
         size={34}
         onPress={router.back}
-        color="white"
+        color={theme.colors.onPrimary}
       />
       <Appbar.Content
-        titleStyle={{ color: "white" }}
         title={
-          dataPerfil?.id == getValidateId() ? "Seu Perfil" : dataPerfil!.nome
+          <Text
+            numberOfLines={1}
+            style={[style.title, { color: theme.colors.onPrimary }]}
+            variant="titleMedium"
+          >
+            {dataPerfil?.id == getValidateId()
+              ? "Seu Perfil"
+              : dataPerfil!.nome}
+          </Text>
         }
       />
+      {dataPerfil?.id !== getValidateId() && (
+        <Appbar.Action
+          onPress={() => router.navigate(`/chat/${dataPerfil?.id}`)}
+          color={theme.colors.onPrimary}
+          icon="message"
+        />
+      )}
     </Appbar.Header>
   );
 }
