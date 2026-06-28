@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
-  navbar: {
+  container: {
+    flex: 1,
+    padding: 10,
     justifyContent: "space-between",
-    alignItems: "center",
   },
-  title: {},
 });

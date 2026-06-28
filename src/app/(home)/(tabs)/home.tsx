@@ -17,6 +17,7 @@ export default function Home() {
     fetchNextPage,
     isLoading,
   } = useFeedQuery({}, "feed");
+
   function renderFooter() {
     if (!isFetchingNextPage) return null;
     return <ActivityIndicator size={"large"} />;
@@ -24,9 +25,12 @@ export default function Home() {
 
   if (isError)
     return (
-      <RetryFetch onRetry={() => refetch()}>
-        <Text style={{ fontWeight: "500" }}>{error.message}</Text>
-      </RetryFetch>
+      <>
+        <Header />
+        <RetryFetch onRetry={() => refetch()}>
+          <Text style={{ fontWeight: "500" }}>{error?.message}</Text>
+        </RetryFetch>
+      </>
     );
   return (
     <>
