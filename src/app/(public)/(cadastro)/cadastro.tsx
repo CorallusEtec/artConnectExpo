@@ -17,13 +17,14 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   StatusBar,
+  TouchableOpacity,
   View,
 } from "react-native";
-import { Divider, MD3LightTheme, PaperProvider, Switch, Text } from "react-native-paper";
+import { MD3LightTheme, PaperProvider, Text } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import z from "zod";
 
 export default function Cadastro() {
-  /** Controle de formulário e validações */
   const {
     control,
     handleSubmit,
@@ -35,7 +36,6 @@ export default function Cadastro() {
     },
   });
 
-  // Observa o valor do switch em tempo real para trocar o tema
   const isArtista = useWatch({ control, name: "isArtista" });
 
   const localTheme = {
@@ -56,50 +56,88 @@ export default function Cadastro() {
     router.navigate("/cadastroDetails");
   };
 
+  const dynamicStyles = {
+    appTitle: {
+      fontWeight: "bold" as const,
+      color: localTheme.colors.primary,
+    },
+    tipoContaOptionSelected: {
+      borderColor: localTheme.colors.primary,
+      backgroundColor: localTheme.colors.primaryContainer,
+    },
+    optionTextSelected: {
+      color: localTheme.colors.primary,
+      fontWeight: "600" as const,
+    },
+    loginLink: {
+      color: localTheme.colors.primary,
+      fontWeight: "bold" as const,
+    },
+  };
+
   return (
     <PaperProvider theme={localTheme}>
       <StatusBar hidden />
       <KeyboardAvoidingView style={style.container} behavior="padding">
-        <View style={style.titleContainer}>
-          <BannerLogo size={60} />
-          <Divider horizontalInset />
-        </View>
+        <SafeAreaView style={style.scrollContent}>
+        <ScrollView >
+          
+            <BannerLogo size={'8%'}/>
 
-        <ScrollView>
           <View style={style.formContainer}>
-            {/* Tipo de Conta */}
-            <Controller
-              name="isArtista"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <>
-                  <Text variant="titleLarge">
-                    Crie sua conta no Art Connect
-                  </Text>
-                  <View style={style.tipoContaGroup}>
-                    <Text variant="bodyMedium">
-                      Criar conta como:{" "}
-                      {value ? "Artista" : "Contratante"}
-                    </Text>
-                    <Switch
-                      onBlur={onBlur}
-                      onValueChange={onChange}
-                      value={value}
-                    />
-                  </View>
-                </>
-              )}
-            />
+            <Text variant="headlineSmall" style={style.pageTitle}>
+              Criar conta
+            </Text>
+            <Text variant="bodyMedium" style={style.subtitle}>
+              Cadastre-se para começar a contratar e divulgar arte.
+            </Text>
 
-            {/* Inputs */}
-            <View style={style.inputGroup}>
+            <View style={style.tipoContaContainer}>
+              <Text variant="bodyMedium" style={style.tipoContaLabel}>
+                Como deseja usar o app?
+              </Text>
+              
+              <Controller
+                name="isArtista"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View style={style.tipoContaOptions}>
+                    <TouchableOpacity
+                      style={[
+                        style.tipoContaOption,
+                        !value && dynamicStyles.tipoContaOptionSelected,
+                      ]}
+                      onPress={() => onChange(false)}
+                    >
+                      <Text style={!value ? dynamicStyles.optionTextSelected : style.optionText}>
+                        Contratante
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                      style={[
+                        style.tipoContaOption,
+                        value && dynamicStyles.tipoContaOptionSelected,
+                      ]}
+                      onPress={() => onChange(true)}
+                    >
+                      <Text style={value ? dynamicStyles.optionTextSelected : style.optionText}>
+                        Artista
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </View>
+
+            <View>
               <Controller
                 name="nome"
                 control={control}
                 render={({ field: { onBlur, onChange, value } }) => (
                   <>
                     <FormInput
-                      label="Nome *"
+                      label="Nome"
                       placeholder="Digite seu nome"
                       value={value}
                       onBlur={onBlur}
@@ -114,14 +152,15 @@ export default function Cadastro() {
                   </>
                 )}
               />
+              
               <Controller
                 name="email"
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <>
                     <FormInput
-                      label="Email *"
-                      placeholder="Digite seu email"
+                      label="Email"
+                      placeholder="Digite seu e-mail"
                       icon="email-outline"
                       inputMode="email"
                       keyboardType="email-address"
@@ -131,39 +170,44 @@ export default function Cadastro() {
                       value={value}
                       error={!!errors.email}
                     />
-                    <FormHelperText padding="none" visible={!!errors.email}>
+                    <FormHelperText visible={!!errors.email}>
                       {errors.email?.message}
                     </FormHelperText>
                   </>
                 )}
               />
+              
               <Controller
                 name="senha"
                 control={control}
                 render={({ field: { value, onBlur, onChange } }) => (
                   <>
                     <FormPassInput
-                      label="Senha *"
-                      placeholder="Crie sua senha"
+                      label="Senha"
+                      placeholder="Digite sua senha"
                       value={value}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       error={!!errors.senha}
                     />
+                    <Text variant="bodySmall" style={style.senhaHelper}>
+                      Mínimo de 6 caracteres.
+                    </Text>
                     <FormHelperText visible={!!errors.senha}>
                       {errors.senha?.message}
                     </FormHelperText>
                   </>
                 )}
               />
+              
               <Controller
                 name="senhaConfirm"
                 control={control}
                 render={({ field: { onBlur, onChange, value } }) => (
                   <>
                     <FormPassInput
-                      label="Confirmar Senha *"
-                      placeholder="Confirme a senha"
+                      label="Confirmar senha"
+                      placeholder="Confirmar sua senha"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
@@ -176,21 +220,35 @@ export default function Cadastro() {
                 )}
               />
             </View>
-            {/* Botões */}
+
             <View style={style.btnGroup}>
               <FormButton
                 onPress={handleSubmit(onSubmit)}
                 mode="contained"
                 title="Cadastrar"
               />
-              <FormButton
-                mode="outlined"
-                title="Já tenho login"
-                onPress={() => router.back()}
-              />
             </View>
+
+          <View style={style.linhaOuWrapper}>
+            <View style={style.linhaOu} />
+            <Text style={style.textoOu}>ou</Text>
+            <View style={style.linhaOu} />
+          </View>
+
+          <View style={style.loginContainer}>
+            <Text variant="bodyMedium" style={style.loginText}>
+              Já possui uma conta?
+            </Text>
+
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text variant="bodyMedium" style={dynamicStyles.loginLink}>
+                Entrar
+              </Text>
+            </TouchableOpacity>
+          </View>
           </View>
         </ScrollView>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </PaperProvider>
   );
