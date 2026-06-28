@@ -8,8 +8,8 @@ export const style = StyleSheet.create({
 
   scrollContent: {
     flex: 1,
-    paddingHorizontal: 16, 
-    paddingTop: 6,         
+    paddingHorizontal: 16,
+    paddingTop: 6,
   },
 
   formContainer: {
@@ -20,56 +20,65 @@ export const style = StyleSheet.create({
   pageTitle: {
     fontWeight: "bold",
     color: "#1A1A1A",
-    marginBottom: 2, 
+    marginBottom: 2,
     fontSize: 22,
   },
 
   subtitle: {
     color: "#666666",
-    marginBottom: 12, 
+    marginBottom: 12,
     fontSize: 14,
   },
 
   tipoContaContainer: {
-    marginBottom: 12, 
+    marginBottom: 12,
   },
 
   tipoContaLabel: {
     color: "#333333",
-    marginBottom: 4, 
+    marginBottom: 4,
     fontWeight: "500",
     fontSize: 14,
   },
 
   tipoContaOptions: {
     flexDirection: "row",
-    gap: 8, 
+    gap: 8,
   },
 
   tipoContaOption: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 10, 
-    borderRadius: 8,
-    borderWidth: 2,
+    height: 45,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#666666',
     alignItems: "center",
+    justifyContent: "center",
   },
 
   optionText: {
     color: "#666666",
     fontWeight: "500",
-    fontSize: 13,
+    fontSize: 14,
+  },
+
+  input: {
+    height: 45,
+  },
+
+  button: {
+    height: 45,
   },
 
   senhaHelper: {
     color: "#666666",
-    fontSize: 10, 
+    fontSize: 10,
     marginTop: 0,
     marginLeft: 4,
   },
 
   btnGroup: {
-    marginTop: 12, 
+    marginTop: 12,
   },
 
   loginContainer: {
@@ -78,12 +87,12 @@ export const style = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     marginTop: 12,
-    marginBottom: 6, 
+    marginBottom: 6,
   },
 
   loginText: {
     color: "#666666",
-    fontSize: 13, 
+    fontSize: 13,
   },
 
   linhaOuWrapper: {
@@ -104,5 +113,12 @@ export const style = StyleSheet.create({
     marginHorizontal: 14,
     color: "#9B9B9B",
     fontSize: 14,
+  },
+
+  tipoContaContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
 });

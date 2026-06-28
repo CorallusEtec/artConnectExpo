@@ -10,6 +10,7 @@ import { AuthRegisterRequest } from "@/models/request/AuthRegisterRequest";
 import { schema } from "@/schemas/cadastroSchema";
 import { ArtistaColorTheme, ContratanteColorTheme } from "@/style/appTheme";
 import { style } from "@/style/pages/cadastro";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -109,11 +110,25 @@ export default function Cadastro() {
                       ]}
                       onPress={() => onChange(false)}
                     >
-                      <Text style={!value ? dynamicStyles.optionTextSelected : style.optionText}>
-                        Contratante
-                      </Text>
+                      <View style={style.tipoContaContent}>
+                        <MaterialCommunityIcons
+                          name={!value ? "radiobox-marked" : "radiobox-blank"}
+                          size={20}
+                          color={!value ? localTheme.colors.primary : "#9B9B9B"}
+                        />
+
+                        <Text
+                          style={
+                            !value
+                              ? dynamicStyles.optionTextSelected
+                              : style.optionText
+                          }
+                        >
+                          Contratante
+                        </Text>
+                      </View>
                     </TouchableOpacity>
-                    
+
                     <TouchableOpacity
                       style={[
                         style.tipoContaOption,
@@ -121,10 +136,25 @@ export default function Cadastro() {
                       ]}
                       onPress={() => onChange(true)}
                     >
-                      <Text style={value ? dynamicStyles.optionTextSelected : style.optionText}>
-                        Artista
-                      </Text>
+                      <View style={style.tipoContaContent}>
+                        <MaterialCommunityIcons
+                          name={value ? "radiobox-marked" : "radiobox-blank"}
+                          size={20}
+                          color={value ? localTheme.colors.primary : "#9B9B9B"}
+                        />
+
+                        <Text
+                          style={
+                            value
+                              ? dynamicStyles.optionTextSelected
+                              : style.optionText
+                          }
+                        >
+                          Artista
+                        </Text>
+                      </View>
                     </TouchableOpacity>
+                    
                   </View>
                 )}
               />
@@ -137,6 +167,7 @@ export default function Cadastro() {
                 render={({ field: { onBlur, onChange, value } }) => (
                   <>
                     <FormInput
+                      style={style.input}
                       label="Nome"
                       placeholder="Digite seu nome"
                       value={value}
@@ -159,6 +190,7 @@ export default function Cadastro() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <>
                     <FormInput
+                      style={style.input}
                       label="Email"
                       placeholder="Digite seu e-mail"
                       icon="email-outline"
@@ -183,6 +215,7 @@ export default function Cadastro() {
                 render={({ field: { value, onBlur, onChange } }) => (
                   <>
                     <FormPassInput
+                      style={style.input}
                       label="Senha"
                       placeholder="Digite sua senha"
                       value={value}
@@ -206,6 +239,7 @@ export default function Cadastro() {
                 render={({ field: { onBlur, onChange, value } }) => (
                   <>
                     <FormPassInput
+                      style={style.input}
                       label="Confirmar senha"
                       placeholder="Confirmar sua senha"
                       onBlur={onBlur}
