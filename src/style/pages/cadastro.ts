@@ -70,7 +70,7 @@ export const style = StyleSheet.create({
   },
 
   button: {
-    height: 48, 
+    height: 45, 
     borderRadius: 8, 
   },
 

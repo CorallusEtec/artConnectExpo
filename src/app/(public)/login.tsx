@@ -4,8 +4,8 @@ import { useLoginMutate } from "@/services/AuthService";
 import { style } from "@/style/pages/login";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Button, Checkbox, useTheme } from "react-native-paper";
+import { Pressable, View } from "react-native";
+import { Button, Checkbox, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login() {
   const theme = useTheme();
@@ -40,21 +40,27 @@ export default function Login() {
         onDismiss={() => setShowAlert(false)}
       />
 
-      <BannerLogo />
+      <BannerLogo size={'8%'}/>
       {/* resto da página */}
       <View style={style.view1}>
-        <Text style={[style.titulo, { fontWeight: 500 }]}>Login</Text>
+        <Text variant="headlineMedium" style={style.pageTitle}>
+          Bem-vindo de volta!
+        </Text>
+        <Text variant="bodyMedium">
+          Entre para continuar conectando-se com a arte
+        </Text>
 
         <View style={style.inputWrapper}>
           <InputIcon
             label="Email"
             placeholder="Digite seu Email"
+            outlineStyle={{ borderRadius: 8 }}
+            style={style.input}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             icon="email-outline"
-            outlineStyle={{ borderRadius: 8 }}
           />
         </View>
 
@@ -62,6 +68,8 @@ export default function Login() {
           <InputSenha
             label="Senha"
             placeholder="Digite sua Senha"
+            outlineStyle={{ borderRadius: 8 }}
+            style={style.input}
             value={senha}
             onChangeText={setSenha}
           />
@@ -88,6 +96,7 @@ export default function Login() {
             disabled={isPending}
             loading={isPending}
             onPress={() => login()}
+            style={style.button}
           >
             Login
           </Button>
@@ -99,22 +108,12 @@ export default function Login() {
           <View style={style.linhaOu} />
         </View>
 
-        {/*
-          <Button
-            onPress={() => router.navigate("/home")}
-            mode="outlined"
-            style={{ width: "80%", borderRadius: 12, borderColor: "#c6c6c6" }}
-          >
-            Continuar sem Login
-          </Button>
-        */}
-
         <Pressable onPress={() => router.navigate("/cadastro")}>
           <Text
             style={[
               style.textoPadrão,
               {
-                color: "#374151",
+                color: "#225aba",
                 textDecorationLine: "underline",
               },
             ]}
