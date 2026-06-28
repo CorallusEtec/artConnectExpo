@@ -1,12 +1,11 @@
 import Feather from "@expo/vector-icons/Feather";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { style } from "./style";
 import { useDynamicThemeStyles } from "@/style/useDynamicThemeStyles";
 import { useTheme } from "react-native-paper";
 import { MaskedTextInput } from "react-native-mask-text";
 
-import { adicionarContato, atualizarContato } from "./Actions";
 import { Contato, ContatoInputProps } from "./types";
 import { TipoContato } from "@/models/enumeration/TipoContato";
 
@@ -16,37 +15,52 @@ export default function ContatoInput({
   tipo,
   placeholder,
   onRemover,
-}: Omit<ContatoInputProps, 'onChange'>) {
+  onChange,
+}: ContatoInputProps) {
   const [lista, setLista] = useState<Contato[]>(valorInicial);
   const temContato = lista.length > 0;
   const isTelefone = tipo === TipoContato.TELEFONE;
   const theme = useTheme();
   const dynamic = useDynamicThemeStyles();
-  
+
   const isFirstRender = useRef(true);
-  const prevValorInicialRef = useRef<string>('');
+  const prevValorInicialRef = useRef<string>("");
 
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-
     const currentKey = JSON.stringify(valorInicial);
-    if (prevValorInicialRef.current === currentKey) {
-      return;
-    }
+    if (prevValorInicialRef.current === currentKey) return;
     prevValorInicialRef.current = currentKey;
-
     setLista(valorInicial);
   }, [valorInicial]);
 
-  async function handleRemover(index: number) {
-    await onRemover(index);
+  function handleAtualizar(index: number, valor: string) {
+    setLista((prev) => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], valor };
+      onChange(copy); 
+      return copy;
+    });
+  }
 
+  function handleAdicionar() {
+    setLista((prev) => {
+      const nova = [...prev, { valor: "", tipo, id: undefined }];
+      onChange(nova);
+      return nova;
+    });
+  }
+
+  async function handleRemover(index: number) {
+    const contato = lista[index];
+    await onRemover(contato);
     setLista((prev) => {
       const copy = [...prev];
       copy.splice(index, 1);
+      onChange(copy);
       return copy;
     });
   }
@@ -67,7 +81,7 @@ export default function ContatoInput({
               placeholderTextColor={theme.colors.onSurfaceVariant}
               value={contato.valor}
               keyboardType="numeric"
-              onChangeText={(text, rawText) => atualizarContato(setLista, index, rawText)}
+              onChangeText={(text, rawText) => handleAtualizar(index, rawText)}
             />
           ) : (
             <TextInput
@@ -75,7 +89,7 @@ export default function ContatoInput({
               placeholder={placeholder}
               placeholderTextColor={theme.colors.onSurfaceVariant}
               value={contato.valor}
-              onChangeText={(text) => atualizarContato(setLista, index, text)}
+              onChangeText={(text) => handleAtualizar(index, text)}
             />
           )}
 
@@ -88,7 +102,7 @@ export default function ContatoInput({
       {!temContato && (
         <TouchableOpacity
           style={[style.input, style.botaoAdicionarContato, dynamic.bgPrimary]}
-          onPress={() => adicionarContato(setLista, tipo)}
+          onPress={handleAdicionar}
         >
           <Text style={style.textoAdicionarContato}>+ Adicionar</Text>
         </TouchableOpacity>

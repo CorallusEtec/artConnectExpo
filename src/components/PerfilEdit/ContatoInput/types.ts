@@ -10,5 +10,5 @@ export type ContatoInputProps = {
   tipo: number;
   placeholder: string;
   onChange: (contatos: Contato[]) => void;
-  onRemover: (index: number) => void;
+  onRemover: (contato: Contato) => Promise<void>;
 };

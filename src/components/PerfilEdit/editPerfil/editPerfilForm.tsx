@@ -1,7 +1,7 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity } from "react-native";
 import { Button, Dialog, Portal, useTheme } from "react-native-paper";
@@ -16,9 +16,11 @@ import { PerfilFormData, perfilSchema } from "./validation";
 import { AlertMessage } from "@/components/AlertMessage";
 import { useAuth } from "@/contexts";
 import { TipoContato } from "@/models/enumeration/TipoContato";
+import ContatoService from "@/services/ContatoService";
 import { ArteGeneroFields } from "../ArteField";
 import { AvatarEditor } from "../AvatarEditor";
 import ContatoInput from "../ContatoInput";
+import { Contato } from "../ContatoInput/types";
 import { style } from "../edit";
 import { EnderecoFields } from "../EnderecoFields";
 import { FormField } from "../FormField";
@@ -29,21 +31,41 @@ export function EditPerfilForm() {
 
   const { loading, user, tipoUsuario, obterToken } = usePerfilData();
 
-  const { control, handleSubmit, formState: { isDirty } } = useForm<PerfilFormData>({
+  const { control, handleSubmit, reset } = useForm<PerfilFormData>({
     resolver: zodResolver(perfilSchema),
-    values: {
-      nome: user?.nome || "",
-      textoBio: user?.textoBio || "",
-      nomeLog: user?.nomeLog || "",
-      numLog: user?.numLog ? String(user.numLog) : "",
-      cep: user?.cep || "",
-      bairro: user?.bairro || "",
-      complemento: user?.complemento || "",
-      cidade: user?.cidade || "",
-      uf: user?.uf || "",
-      razaoSocial: (user as any)?.razaoSocial || "",
+    defaultValues: {
+      nome: "",
+      textoBio: "",
+      nomeLog: "",
+      numLog: "",
+      cep: "",
+      bairro: "",
+      complemento: "",
+      cidade: "",
+      uf: "",
+      razaoSocial: "",
     },
   });
+
+  const jaPopulou = useRef(false);
+
+  useEffect(() => {
+    if (user && !jaPopulou.current) {
+      jaPopulou.current = true;
+      reset({
+        nome: user.nome || "",
+        textoBio: user.textoBio || "",
+        nomeLog: user.nomeLog || "",
+        numLog: user.numLog ? String(user.numLog) : "",
+        cep: user.cep || "",
+        bairro: user.bairro || "",
+        complemento: user.complemento || "",
+        cidade: user.cidade || "",
+        uf: user.uf || "",
+        razaoSocial: (user as any)?.razaoSocial || "",
+      });
+    }
+  }, [user]);
 
   const foto = useFotoPerfil(user?.fotoPerfilUrl ?? null);
 
@@ -59,12 +81,15 @@ export function EditPerfilForm() {
 
   const salvar = useSalvarPerfil(tipoUsuario, obterToken, getValidateId);
 
-  const todosContatos = [
-    ...contatos.contatosTelefone,
-    ...contatos.contatosInstagram,
-    ...contatos.contatosTelegram,
-    ...contatos.contatosEmail,
-  ];
+  async function handleRemoverContato(contato: Contato) {
+    if (contato.id) {
+      const tokenParse = await obterToken();
+      if (!tokenParse) return;
+      await ContatoService.delete(contato.id, tokenParse.token);
+    }
+  }
+
+  const todosContatos = contatos.contatos;
 
   const onSubmit = (data: PerfilFormData) => {
     salvar.handleSalvar(
@@ -166,7 +191,8 @@ export function EditPerfilForm() {
           valorInicial={contatos.contatosEmail}
           tipo={TipoContato.EMAIL}
           placeholder="seuemail@exemplo.com"
-          onRemover={() => {}}
+          onRemover={handleRemoverContato}
+          onChange={(lista: Contato[]) => contatos.setContatosEmail(lista)}
         />
 
         <ContatoInput
@@ -174,7 +200,8 @@ export function EditPerfilForm() {
           valorInicial={contatos.contatosTelegram}
           tipo={TipoContato.TELEGRAM}
           placeholder="Digite seu usuário do Telegram"
-          onRemover={() => {}}
+          onRemover={handleRemoverContato}
+          onChange={(lista: Contato[]) => contatos.setContatosTelegram(lista)}
         />
 
         <ContatoInput
@@ -182,7 +209,8 @@ export function EditPerfilForm() {
           valorInicial={contatos.contatosInstagram}
           tipo={TipoContato.INSTAGRAM}
           placeholder="Digite seu instagram"
-          onRemover={() => {}}
+          onRemover={handleRemoverContato}
+          onChange={(lista: Contato[]) => contatos.setContatosInstagram(lista)}
         />
 
         <ContatoInput
@@ -190,7 +218,8 @@ export function EditPerfilForm() {
           valorInicial={contatos.contatosTelefone}
           tipo={TipoContato.TELEFONE}
           placeholder="(00) 00000-0000"
-          onRemover={() => {}}
+          onRemover={handleRemoverContato}
+          onChange={(lista: Contato[]) => contatos.setContatosTelefone(lista)}
         />
 
         <EnderecoFields control={control} />
@@ -198,7 +227,7 @@ export function EditPerfilForm() {
         <TouchableOpacity
           style={[style.botaoSalvar, { backgroundColor: theme.colors.primary }]}
           onPress={handleSubmit(onSubmit)}
-          disabled={salvar.saving || !isDirty}
+          disabled={salvar.saving}
         >
           {salvar.saving ? (
             <ActivityIndicator color="#fff" />

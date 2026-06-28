@@ -3,36 +3,55 @@ import { useEffect, useRef, useState } from "react";
 import { Contato } from "../ContatoInput/types";
 
 export function useContatos(contatosIniciais: any[] = []) {
-  const [contatosEmail, setContatosEmail] = useState<Contato[]>([]);
-  const [contatosTelegram, setContatosTelegram] = useState<Contato[]>([]);
-  const [contatosInstagram, setContatosInstagram] = useState<Contato[]>([]);
-  const [contatosTelefone, setContatosTelefone] = useState<Contato[]>([]);
-
+  const [contatos, setContatos] = useState<Contato[]>([]);
   const prevContatosRef = useRef<string>("");
-
-  function mapearContatos(tipo: number): Contato[] {
-    if (!contatosIniciais || contatosIniciais.length === 0) return [];
-    return contatosIniciais
-      .filter((c: any) => c.tipoContato?.idTipoContato === tipo)
-      .map((c: any): Contato => ({
-        id: c.idContato,
-        valor: c.valorContato || "",
-        tipo,
-      }));
-  }
 
   useEffect(() => {
     const currentKey = JSON.stringify(contatosIniciais);
     if (prevContatosRef.current === currentKey) return;
     prevContatosRef.current = currentKey;
 
-    setContatosEmail(mapearContatos(TipoContato.EMAIL));
-    setContatosTelegram(mapearContatos(TipoContato.TELEGRAM));
-    setContatosInstagram(mapearContatos(TipoContato.INSTAGRAM));
-    setContatosTelefone(mapearContatos(TipoContato.TELEFONE));
+    if (!contatosIniciais || contatosIniciais.length === 0) {
+      setContatos([]);
+      return;
+    }
+
+    const novoContatos: Contato[] = contatosIniciais.map((c: any) => ({
+      id: c.idContato,
+      valor: c.valorContato || "",
+      tipo: c.tipoContato?.idTipoContato,
+    }));
+
+    setContatos(novoContatos);
   }, [contatosIniciais]);
 
+  const contatosEmail = contatos.filter((c) => c.tipo === TipoContato.EMAIL);
+  const contatosTelegram = contatos.filter((c) => c.tipo === TipoContato.TELEGRAM);
+  const contatosInstagram = contatos.filter((c) => c.tipo === TipoContato.INSTAGRAM);
+  const contatosTelefone = contatos.filter((c) => c.tipo === TipoContato.TELEFONE);
+
+  const setContatosEmail = (lista: Contato[]) => {
+    const outros = contatos.filter((c) => c.tipo !== TipoContato.EMAIL);
+    setContatos([...outros, ...lista]);
+  };
+
+  const setContatosTelegram = (lista: Contato[]) => {
+    const outros = contatos.filter((c) => c.tipo !== TipoContato.TELEGRAM);
+    setContatos([...outros, ...lista]);
+  };
+
+  const setContatosInstagram = (lista: Contato[]) => {
+    const outros = contatos.filter((c) => c.tipo !== TipoContato.INSTAGRAM);
+    setContatos([...outros, ...lista]);
+  };
+
+  const setContatosTelefone = (lista: Contato[]) => {
+    const outros = contatos.filter((c) => c.tipo !== TipoContato.TELEFONE);
+    setContatos([...outros, ...lista]);
+  };
+
   return {
+    contatos,
     contatosEmail,
     setContatosEmail,
     contatosTelegram,

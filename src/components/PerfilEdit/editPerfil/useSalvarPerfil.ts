@@ -104,11 +104,11 @@ export function useSalvarPerfil(
 
       await salvarContatos(tokenParse.token, contatos);
 
+      setDialog(true);
+
       queryClient.invalidateQueries({
         queryKey: [getValidateId(), "profileData"],
       });
-
-      setDialog(true); 
     } catch (err: any) {
       setError(err.message || "Não foi possível salvar as alterações");
     } finally {

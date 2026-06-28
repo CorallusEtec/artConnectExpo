@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts";
@@ -8,6 +8,12 @@ export function useFotoPerfil(fotoInicial: string | null) {
   const [fotoUri, setFotoUri] = useState<string | null>(fotoInicial);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (fotoInicial) {
+      setFotoUri(fotoInicial);
+    }
+  }, [fotoInicial]);
 
   const { getValidateId } = useAuth();
   const queryClient = useQueryClient();
@@ -49,7 +55,6 @@ export function useFotoPerfil(fotoInicial: string | null) {
         name: imagemSelecionada.fileName || `foto-perfil-${Date.now()}.jpg`,
         type: imagemSelecionada.mimeType || "image/jpeg",
       };
-      
 
       await usuarioService.updateFotoPerfil(arquivo);
 
