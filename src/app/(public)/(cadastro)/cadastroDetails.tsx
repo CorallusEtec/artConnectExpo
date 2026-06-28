@@ -1,9 +1,10 @@
 import { AvatarRender } from "@/components";
 import { DialogToLogin } from "@/components/Cadastro/DialogToLogin";
-import { FormInput } from "@/components/Form";
+import { FormButton, FormInput } from "@/components/Form";
 import { useCadastro } from "@/contexts/CadastroContext";
 import { schema } from "@/schemas/cadastroEndereco";
 import { useCadastroMutate } from "@/services/AuthService";
+import { ArtistaColorTheme, ContratanteColorTheme } from "@/style/appTheme";
 import { style } from "@/style/pages/cadastroDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
@@ -12,6 +13,10 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, ScrollView, View } from "react-native";
 import { Button, IconButton, Text } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { MD3LightTheme, PaperProvider } from "react-native-paper";
+
 import z from "zod";
 
 /**
@@ -86,37 +91,70 @@ export default function Usuario() {
     proximaEtapa();
   }
 
+  const isArtista = cadastroRequest.current.tipoConta === "ARTISTA";
+  const localTheme = {
+    ...MD3LightTheme,
+    colors: {
+      ...(isArtista
+        ? ArtistaColorTheme
+        : ContratanteColorTheme).colors,
+    },
+  };
+
+  const dynamicStyles = {
+    title: {
+      color: localTheme.colors.primary,
+      fontWeight: "600" as const,
+    },
+
+    sectionTitle: {
+      color: localTheme.colors.primary,
+      fontWeight: "600" as const,
+    },
+
+    skipButton: {
+      color: localTheme.colors.primary,
+      fontWeight: "600" as const,
+    },
+
+    avatarEdit: {
+      color: localTheme.colors.primary,
+    },
+  };
+
   return (
-    <KeyboardAvoidingView behavior="padding" style={style.container}>
+    <PaperProvider theme={localTheme}>
+    <SafeAreaView style={style.container}>
+    <KeyboardAvoidingView behavior="padding" >
       <DialogToLogin visible={isSuccess} />
       <View style={style.titleContainer}>
-        <Text variant="headlineSmall">
-          Bem vindo(a), {cadastroRequest.current.nome}
+        <Text variant="headlineMedium" style={dynamicStyles.title}> 
+          Complete seu perfil 
         </Text>
         <Text variant="bodyMedium">
           Complete seu perfil para ter mais visibilidade.
         </Text>
-        <Button onPress={proximaEtapa} mode="text">
+        <Button onPress={proximaEtapa} mode="text" textColor={localTheme.colors.primary}>
           Agora Não
         </Button>
       </View>
 
       <ScrollView>
         <View style={style.avatarViewContainer}>
-          <View style={style.avatarContainer}>
-            <Text variant="bodyLarge">Imagem de Perfil</Text>
-            <AvatarRender
-              uri={imagem.assets == null ? undefined : imagem.assets[0].uri}
-              nome={cadastroRequest.current.nome}
-            />
-          </View>
+          <AvatarRender 
+            uri={imagem.assets == null ? undefined : imagem.assets[0].uri}
+            nome={cadastroRequest.current.nome}
+            size={75}
+          />
           <View style={style.avatarActionsContainer}>
             <IconButton
+              size={25}
               iconColor="red"
               icon="delete"
               onPress={() => setImagem({} as ImagePicker.ImagePickerResult)}
             />
             <IconButton
+              size={25}
               icon="image-edit-outline"
               onPress={() => pegarImagem()}
             />
@@ -124,7 +162,7 @@ export default function Usuario() {
         </View>
 
         <View style={style.enderencoContainer}>
-          <Text variant="bodyLarge">Endereço</Text>
+          <Text variant="bodyLarge" style={{fontWeight: 500}}>Endereço</Text>
           <Controller
             name="logradouro"
             control={control}
@@ -132,11 +170,13 @@ export default function Usuario() {
               <FormInput
                 label="Logradouro *"
                 placeholder="Digite seu logradouro"
+                outlineStyle={{ borderRadius: 8 }}
+                style={style.input}
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 inputMode="text"
-                icon="home-outline"
+                icon="home"
                 error={!!errors.logradouro}
               />
             )}
@@ -150,11 +190,12 @@ export default function Usuario() {
                   label="CEP *"
                   placeholder="Digite seu CEP"
                   value={value}
-                  style={{ width: "65%" }}
+                  outlineStyle={{ borderRadius: 8 }}
+                  style={[style.input, { width: "65%" }]}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   inputMode="numeric"
-                  icon="mailbox"
+                  icon="map-marker-radius-outline"
                   error={!!errors.cep}
                 />
               )}
@@ -166,10 +207,12 @@ export default function Usuario() {
                 <FormInput
                   label="N° *"
                   value={value ? String(value) : ""}
-                  style={{ width: "30%" }}
+                  outlineStyle={{ borderRadius: 8 }}
+                  style={[style.input, { width: "30%" }]}
                   onBlur={onBlur}
                   onChangeText={(text) => onChange(Number(text))}
                   inputMode="numeric"
+                  icon="numeric"
                   error={!!errors.numLog}
                 />
               )}
@@ -183,9 +226,12 @@ export default function Usuario() {
               <FormInput
                 label="Complemento"
                 placeholder="Apartamento, casa, etc"
+                outlineStyle={{ borderRadius: 8 }}
+                style={style.input}
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
+                icon="office-building-outline"
                 inputMode="text"
               />
             )}
@@ -198,10 +244,13 @@ export default function Usuario() {
               <FormInput
                 label="Bairro *"
                 placeholder="Digite seu bairro"
+                outlineStyle={{ borderRadius: 8 }}
+                style={style.input}
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 inputMode="text"
+                icon="home-group"
                 error={!!errors.bairro}
               />
             )}
@@ -213,10 +262,13 @@ export default function Usuario() {
               <FormInput
                 label="Cidade *"
                 placeholder="Digite sua cidade"
+                outlineStyle={{ borderRadius: 8 }}
+                style={style.input}
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 inputMode="text"
+                icon="city-variant-outline"
                 error={!!errors.cidade}
               />
             )}
@@ -228,30 +280,30 @@ export default function Usuario() {
               <FormInput
                 label="UF *"
                 placeholder="Digite sua UF"
+                outlineStyle={{ borderRadius: 8 }}
+                style={style.input}
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 inputMode="text"
+                icon="map-outline"
                 error={!!errors.uf}
               />
             )}
           />
         </View>
 
-        <View style={style.actionsContainer}>
-          <Button
-            style={{ marginLeft: 10 }}
-            mode="contained"
-            disabled={isPending}
-            loading={isPending}
+        <View style={style.btnGroup}>
+          <FormButton
+            style={style.button}
             onPress={handleSubmit(finalizarCadastro)}
-          >
-            {cadastroRequest.current.tipoConta == "ARTISTA"
-              ? "Próxima etapa"
-              : "Finalizar cadastro"}
-          </Button>
+            mode="contained"
+            title="Finalizar Cadastro"
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    </SafeAreaView>
+    </PaperProvider>
   );
 }

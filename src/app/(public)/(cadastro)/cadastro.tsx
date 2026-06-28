@@ -82,9 +82,7 @@ export default function Cadastro() {
       <KeyboardAvoidingView style={style.container} behavior="padding">
         <SafeAreaView style={style.scrollContent}>
         <ScrollView >
-          
             <BannerLogo size={'8%'}/>
-
           <View style={style.formContainer}>
             <Text variant="headlineSmall" style={style.pageTitle}>
               Criar conta
@@ -117,13 +115,7 @@ export default function Cadastro() {
                           color={!value ? localTheme.colors.primary : "#9B9B9B"}
                         />
 
-                        <Text
-                          style={
-                            !value
-                              ? dynamicStyles.optionTextSelected
-                              : style.optionText
-                          }
-                        >
+                        <Text style={!value ? dynamicStyles.optionTextSelected : style.optionText}>
                           Contratante
                         </Text>
                       </View>
@@ -143,13 +135,7 @@ export default function Cadastro() {
                           color={value ? localTheme.colors.primary : "#9B9B9B"}
                         />
 
-                        <Text
-                          style={
-                            value
-                              ? dynamicStyles.optionTextSelected
-                              : style.optionText
-                          }
-                        >
+                        <Text style={value ? dynamicStyles.optionTextSelected : style.optionText}>
                           Artista
                         </Text>
                       </View>

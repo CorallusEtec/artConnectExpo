@@ -8,26 +8,43 @@ export const style = StyleSheet.create({
   },
 
   titleContainer: {
-    marginTop: 20,
     alignItems: "center",
   },
 
   avatarViewContainer: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-around",
-    gap: 50,
+    marginTop: 5,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  input: {
+    height: 45,
   },
 
   avatarContainer: {
     alignItems: "center",
+    width: 50
+
   },
   avatarActionsContainer: {
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   enderencoContainer: {
     paddingHorizontal: 20,
-    marginTop: 20,
+    gap: 7
+  },
+
+  button: {
+    height: 48, 
+    borderRadius: 8, 
+    width: '90%'
+  },
+
+  btnGroup: {
+    marginTop: 12,
+    alignItems: 'center'
   },
 
   cepRow: { flexDirection: "row", justifyContent: "space-between" },
