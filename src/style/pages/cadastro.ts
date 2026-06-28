@@ -15,6 +15,9 @@ export const style = StyleSheet.create({
   formContainer: {
     marginTop: 20,
     flex: 1,
+    width: "100%",
+    maxWidth: 500,
+    alignSelf: "center",
   },
 
   pageTitle: {
@@ -31,7 +34,7 @@ export const style = StyleSheet.create({
   },
 
   tipoContaContainer: {
-    marginBottom: 12,
+    marginBottom: 24,
   },
 
   tipoContaLabel: {
@@ -49,9 +52,9 @@ export const style = StyleSheet.create({
   tipoContaOption: {
     flex: 1,
     height: 45,
-    borderRadius: 5,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#666666',
+    borderColor: "#666666",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -67,7 +70,8 @@ export const style = StyleSheet.create({
   },
 
   button: {
-    height: 45,
+    height: 48, 
+    borderRadius: 8, 
   },
 
   senhaHelper: {

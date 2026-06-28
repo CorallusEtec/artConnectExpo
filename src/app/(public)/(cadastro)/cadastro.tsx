@@ -167,6 +167,7 @@ export default function Cadastro() {
                 render={({ field: { onBlur, onChange, value } }) => (
                   <>
                     <FormInput
+                      outlineStyle={{ borderRadius: 8 }}
                       style={style.input}
                       label="Nome"
                       placeholder="Digite seu nome"
@@ -190,6 +191,7 @@ export default function Cadastro() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <>
                     <FormInput
+                      outlineStyle={{ borderRadius: 8 }}
                       style={style.input}
                       label="Email"
                       placeholder="Digite seu e-mail"
@@ -215,6 +217,7 @@ export default function Cadastro() {
                 render={({ field: { value, onBlur, onChange } }) => (
                   <>
                     <FormPassInput
+                      outlineStyle={{ borderRadius: 8 }}
                       style={style.input}
                       label="Senha"
                       placeholder="Digite sua senha"
@@ -223,9 +226,6 @@ export default function Cadastro() {
                       onChangeText={onChange}
                       error={!!errors.senha}
                     />
-                    <Text variant="bodySmall" style={style.senhaHelper}>
-                      Mínimo de 6 caracteres.
-                    </Text>
                     <FormHelperText visible={!!errors.senha}>
                       {errors.senha?.message}
                     </FormHelperText>
@@ -239,6 +239,7 @@ export default function Cadastro() {
                 render={({ field: { onBlur, onChange, value } }) => (
                   <>
                     <FormPassInput
+                      outlineStyle={{ borderRadius: 8 }}
                       style={style.input}
                       label="Confirmar senha"
                       placeholder="Confirmar sua senha"
@@ -257,6 +258,7 @@ export default function Cadastro() {
 
             <View style={style.btnGroup}>
               <FormButton
+              style={style.button}
                 onPress={handleSubmit(onSubmit)}
                 mode="contained"
                 title="Cadastrar"
