@@ -12,7 +12,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, ScrollView, View } from "react-native";
-import { Button, IconButton, Text } from "react-native-paper";
+import { Button, IconButton, Portal, Text, Modal } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
@@ -27,6 +27,7 @@ import z from "zod";
  * principalmente a parte do formulário, que tem muitos campos e pode ser dividido em componentes menores
  */
 export default function Usuario() {
+  const [fotoModalVisible, setFotoModalVisible] = useState(false);
   const { cadastroRequest, fotoPerfil } = useCadastro();
   const { mutate, isPending, error, isSuccess } = useCadastroMutate();
   const [imagem, setImagem] = useState<ImagePicker.ImagePickerResult>(
@@ -147,17 +148,13 @@ export default function Usuario() {
             size={75}
           />
           <View style={style.avatarActionsContainer}>
-            <IconButton
-              size={25}
-              iconColor="red"
-              icon="delete"
-              onPress={() => setImagem({} as ImagePicker.ImagePickerResult)}
-            />
-            <IconButton
-              size={25}
-              icon="image-edit-outline"
-              onPress={() => pegarImagem()}
-            />
+            <Button
+              mode="text"
+              icon="camera"
+              onPress={() => setFotoModalVisible(true)}
+            >
+              Alterar foto
+            </Button>
           </View>
         </View>
 
@@ -302,6 +299,54 @@ export default function Usuario() {
           />
         </View>
       </ScrollView>
+
+      <Portal>
+        <Modal
+          visible={fotoModalVisible}
+          onDismiss={() => setFotoModalVisible(false)}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            marginHorizontal: 30,
+            borderRadius: 20,
+            paddingVertical: 10,
+            width: 200,
+            height: 125,
+            alignSelf: 'center'
+          }}
+        >
+          <Button
+            icon="image-edit-outline"
+            mode="text"
+            onPress={() => {
+              setFotoModalVisible(false);
+              pegarImagem();
+            }}
+          >
+            Alterar foto
+          </Button>
+
+          {imagem.assets && (
+            <Button
+              icon="delete"
+              textColor="red"
+              mode="text"
+              onPress={() => {
+                setImagem({} as ImagePicker.ImagePickerResult);
+                setFotoModalVisible(false);
+              }}
+            >
+              Excluir foto
+            </Button>
+          )}
+
+          <Button
+            mode="text"
+            onPress={() => setFotoModalVisible(false)}
+          >
+            Fechar
+          </Button>
+        </Modal>
+      </Portal>
     </KeyboardAvoidingView>
     </SafeAreaView>
     </PaperProvider>
