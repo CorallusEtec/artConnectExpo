@@ -8,50 +8,36 @@ import { useGeneroArteByArte } from "@/services/GeneroArteService";
 import { style } from "@/style/pages/cadastroArtista";
 import { useEffect, useState } from "react";
 import { FlatList, StatusBar, TouchableOpacity, View } from "react-native";
-import {
-    Button,
-    Card,
-    Chip,
-    Divider,
-    IconButton,
-    List,
-    Text,
-} from "react-native-paper";
+import { Button, Chip, Divider, IconButton, List, Text } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CadastroArtista() {
   const { cadastroRequest, fotoPerfil } = useCadastro();
   const [arte, setArte] = useState<ArteResponse | undefined>();
-  const [card, setCard] = useState(true);
+  const [expanded, setExpanded] = useState(true);
   const { data } = useArteList();
   const [generosArte, setGeneroArte] = useState<GeneroArteResponse[]>([]);
   const { mutate, isPending, isSuccess } = useCadastroMutate();
   const { data: generoData, refetch } = useGeneroArteByArte(
-    arte == undefined ? 0 : arte.id,
+    arte == undefined ? 0 : arte.id
   );
-  const [dialog, setDialog] = useState(false);
 
   useEffect(() => {
     refetch();
   }, [arte?.id]);
 
-  function selectArte(arte?: ArteResponse) {
-    setArte(arte);
-    setCard(false);
+  function selectArte(item?: ArteResponse) {
+    setArte(item);
+    setExpanded(false);
     setGeneroArte([]);
   }
 
-  function appendGenero(genero: GeneroArteResponse) {
-    setGeneroArte((prev) => [...prev, genero]);
-  }
-  function removeGenero(generoId: number) {
-    setGeneroArte((prev) => prev.filter((g) => g.id != generoId));
-  }
   function toggleGenero(genero: GeneroArteResponse) {
-    if (generosArte.find((r) => r.id == genero.id)) {
-      removeGenero(genero.id);
-    } else {
-      appendGenero(genero);
-    }
+    setGeneroArte((prev) =>
+      prev.find((g) => g.id === genero.id)
+        ? prev.filter((g) => g.id !== genero.id)
+        : [...prev, genero]
+    );
   }
 
   function submit() {
@@ -64,122 +50,129 @@ export default function CadastroArtista() {
     if (arte) {
       cadastroRequest.current.details = {
         ...cadastroRequest.current.details,
-        generosArte: generosArte,
-        arte: arte,
+        generosArte,
+        arte,
       };
     }
+
     formData.append("principal", JSON.stringify(cadastroRequest.current));
     mutate(formData);
   }
+
   return (
     <>
+    <SafeAreaView style={style.container}>
       <DialogToLogin visible={isSuccess} />
       <StatusBar hidden />
-      <View style={style.container}>
-        <View style={style.titleContainer}>
-          <Text variant="headlineSmall">Qual o seu tipo de arte?</Text>
-          <Text variant="bodyMedium">
-            Selecione o tipo de arte que você trabalha.
+
+      <View>
+
+        {/* HEADER */}
+        <View style={style.header}>
+          <Text variant="headlineSmall" style={style.title}>
+            Qual o seu tipo de arte?
           </Text>
-          <Button onPress={submit} mode="text">
-            Agora não
-          </Button>
+
+          <Text variant="bodyMedium" style={style.subtitle}>
+            Escolha sua área principal de atuação
+          </Text>
         </View>
 
-        <Card>
-          <View style={style.cardHeader}>
-            <Text variant="titleSmall">
-              {arte ? "Alterar arte" : "Selecione uma arte"}
+        {/* SELETOR DE ARTE */}
+        <View style={style.section}>
+          <View style={style.sectionHeader}>
+            <Text variant="titleMedium">
+              {arte ? "Arte selecionada" : "Selecione uma arte"}
             </Text>
+
             <IconButton
-              onPress={() => setCard((prev) => !prev)}
-              icon={card ? "menu-up" : "menu-down"}
+              icon={expanded ? "chevron-up" : "chevron-down"}
+              onPress={() => setExpanded((p) => !p)}
             />
           </View>
-          {card && (
-            <Card.Content>
+
+          {expanded && (
+            <View style={style.card}>
               <FlatList
-                style={{ maxHeight: 220 }}
                 data={data?.data.content || []}
-                renderItem={({ item }) => (
-                  <>
-                    {arte?.id == item.id ? (
-                      <TouchableOpacity onPress={() => selectArte(undefined)}>
-                        <List.Item
-                          right={(props) => (
-                            <List.Icon icon="close" {...props} />
-                          )}
-                          title={item.nomeArte}
-                        />
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity
-                        onPress={() => {
-                          selectArte(item);
-                        }}
-                      >
-                        <List.Item title={item.nomeArte} />
-                      </TouchableOpacity>
-                    )}
-                    <Divider />
-                  </>
-                )}
+                keyExtractor={(item) => String(item.id)}
+                ItemSeparatorComponent={() => <Divider />}
+                renderItem={({ item }) => {
+                  const selected = arte?.id === item.id;
+
+                  return (
+                    <TouchableOpacity onPress={() => selectArte(selected ? undefined : item)}>
+                      <List.Item
+                        title={item.nomeArte}
+                        right={
+                          selected
+                            ? (props) => <List.Icon {...props} icon="check" />
+                            : undefined
+                        }
+                      />
+                    </TouchableOpacity>
+                  );
+                }}
               />
-            </Card.Content>
+            </View>
           )}
-        </Card>
+        </View>
 
-        <View style={style.arteChipContainer}>
-          {arte && (
-            <Chip
-              closeIcon="close"
-              onPress={() => setArte(undefined)}
-              onClose={() => setArte(undefined)}
-              compact
-              mode="flat"
-            >
-              {arte?.nomeArte}
+        {/* CHIP ARTE SELECIONADA */}
+        {arte && (
+          <View style={style.chipSection}>
+            <Chip icon="palette" onClose={() => setArte(undefined)}>
+              {arte.nomeArte}
             </Chip>
-          )}
-        </View>
-        <View style={style.titleContainer}>
-          <Text variant="bodyLarge">Adicione os subgêneros dessa arte</Text>
-        </View>
-        <View style={style.arteChipContainer}>
-          {generoData?.data && (
-            <FlatList
-              data={generoData?.data}
-              contentContainerStyle={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 10,
-              }}
-              renderItem={({ item }) => (
-                <Chip
-                  selected={
-                    generosArte.filter((r) => r.id == item.id).length != 0
-                  }
-                  onPress={() => toggleGenero(item)}
-                  mode="outlined"
-                >
-                  {item.nomeGeneroArte}
-                </Chip>
-              )}
-            />
-          )}
-        </View>
+          </View>
+        )}
 
-        <View style={style.finishContainer}>
+        {/* SUBGÊNEROS */}
+        {arte && (
+          <View style={style.section}>
+            <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+              Subgêneros
+            </Text>
+
+            {generoData?.data?.length ? (
+              <View style={style.chipWrap}>
+                {generoData.data.map((item) => {
+                  const selected = generosArte.some((g) => g.id === item.id);
+                  return (
+                    <Chip
+                      key={item.id}
+                      selected={selected}
+                      onPress={() => toggleGenero(item)}
+                      mode="outlined"
+                      style={{ margin: 4 }}
+                    >
+                      {item.nomeGeneroArte}
+                    </Chip>
+                  );
+                })}
+              </View>
+            ) : (
+              <Text style={{ opacity: 0.6 }}>
+                Nenhum subgênero disponível para essa arte
+              </Text>
+            )}
+          </View>
+        )}
+
+        {/* BOTÃO FINAL */}
+        <View style={style.footer}>
           <Button
+            mode="contained"
+            onPress={submit}
             loading={isPending}
             disabled={isPending}
-            onPress={submit}
-            mode="contained"
+            style={style.button}
           >
-            Finalizar Cadastro
+            Finalizar cadastro
           </Button>
         </View>
       </View>
+      </SafeAreaView>
     </>
   );
 }

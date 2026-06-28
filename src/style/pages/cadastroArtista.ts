@@ -2,23 +2,63 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   container: {
-    paddingTop: 20,
     flex: 1,
+    paddingTop: 20,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
   },
-  titleContainer: {
+
+  header: {
     alignItems: "center",
+    marginBottom: 20,
+    marginTop: 25,
+    gap: 6,
+  },
+
+  title: {
+    fontWeight: "700",
+    textAlign: "center",
+  },
+
+  subtitle: {
+    opacity: 0.6,
+    textAlign: "center",
+  },
+
+  section: {
     marginBottom: 20,
   },
 
-  cardHeader: {
+  sectionHeader: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
     justifyContent: "space-between",
+    alignItems: "center",
   },
-  arteChipContainer: { alignItems: "center", padding: 20 },
 
-  finishContainer: {
-    paddingHorizontal: 50,
+  card: {
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "#f7f7f7",
+    marginTop: 10,
+  },
+
+  chipSection: {
+    alignItems: "center",
+    marginVertical: 10,
+  },
+
+  chipWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+
+  footer: {
+    marginTop: "auto",
+    paddingVertical: 20,
+  },
+
+  button: { 
+    borderRadius: 8, 
   },
 });

@@ -244,7 +244,7 @@ export default function Cadastro() {
 
             <View style={style.btnGroup}>
               <FormButton
-              style={style.button}
+                style={style.button}
                 onPress={handleSubmit(onSubmit)}
                 mode="contained"
                 title="Cadastrar"

@@ -9,7 +9,7 @@ const axiosClient = axios.create({
  * Se estiver no web use 'localhost'
  * Se estiver no dispositivo fisico, use o ip da máquina
  */
-const domain = "10.0.0.179";
+const domain = "192.168.15.5";
 
 const config = {
   axiosClient,
