@@ -1,21 +1,43 @@
-import { gStyles } from "@/style/gStyle";
+import { View, Text, TextInput, TextInputProps } from "react-native";
+import { useTheme } from "react-native-paper";
 import { style } from "./edit";
-import { Text, TextInput, TextInputProps } from "react-native";
 
-type Props = TextInputProps & {
+interface FormFieldProps extends TextInputProps {
   label: string;
+  error?: string;
   multiline?: boolean;
-};
+}
 
-export function FormField({ label, multiline, style: inputStyle, ...rest }: Props) {
+export function FormField({ 
+  label, 
+  error, 
+  multiline, 
+  style: customStyle, 
+  ...props 
+}: FormFieldProps) {
+  const theme = useTheme();
+
   return (
-    <>
-      <Text style={style.label}>{label}</Text>
+    <View style={{ marginTop: 16 }}>
+      <Text style={[style.label, { color: theme.colors.onSurface }]}>
+        {label}
+      </Text>
       <TextInput
-        style={multiline ? [style.input, style.textarea] : style.input}
-        placeholderTextColor={gStyles.cinza[500]}
-        {...rest}
+        style={[
+          style.input,
+          multiline && style.textarea,
+          error && { borderColor: theme.colors.error, borderWidth: 1 },
+          customStyle,
+        ]}
+        multiline={multiline}
+        placeholderTextColor={theme.colors.onSurfaceVariant}
+        {...props}
       />
-    </>
+      {error && (
+        <Text style={{ color: theme.colors.error, fontSize: 12, marginTop: 4 }}>
+          {error}
+        </Text>
+      )}
+    </View>
   );
 }

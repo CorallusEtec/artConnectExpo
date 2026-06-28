@@ -1,73 +1,115 @@
-import { style } from "./edit";
 import { View } from "react-native";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { FormField } from "./FormField";
-import { FormPerfil } from "./useEditPerfil";
+import { style } from "./edit";
+import { PerfilFormData } from "./editPerfil/validation";
 
-type Props = {
-  form: FormPerfil;
-  onChange: (campo: keyof FormPerfil, valor: string) => void;
+type EnderecoFieldsProps = {
+  control: Control<PerfilFormData>;
 };
 
-export function EnderecoFields({ form, onChange }: Props) {
+export function EnderecoFields({ control }: EnderecoFieldsProps) {
   return (
     <>
-      <FormField
-        label="Logradouro"
-        placeholder="Nome do logradouro"
-        value={form.nomeLog}
-        onChangeText={(text) => onChange("nomeLog", text)}
+      <Controller
+        control={control}
+        name="nomeLog"
+        render={({ field: { onChange, value } }) => (
+          <FormField
+            label="Logradouro"
+            placeholder="Nome do logradouro"
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
       />
 
       <View style={style.linha}>
         <View style={{ flex: 2 }}>
-          <FormField
-            label="Número"
-            placeholder="Número"
-            keyboardType="numeric"
-            value={form.numLog}
-            onChangeText={(text) => onChange("numLog", text)}
+          <Controller
+            control={control}
+            name="numLog"
+            render={({ field: { onChange, value } }) => (
+              <FormField
+                label="Número"
+                placeholder="Número"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
         </View>
         <View style={{ flex: 1, marginLeft: 10 }}>
-          <FormField
-            label="CEP"
-            placeholder="CEP"
-            keyboardType="numeric"
-            value={form.cep}
-            onChangeText={(text) => onChange("cep", text)}
+          <Controller
+            control={control}
+            name="cep"
+            render={({ field: { onChange, value } }) => (
+              <FormField
+                label="CEP"
+                placeholder="CEP"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
         </View>
       </View>
 
-      <FormField
-        label="Bairro"
-        placeholder="Bairro"
-        value={form.bairro}
-        onChangeText={(text) => onChange("bairro", text)}
+      <Controller
+        control={control}
+        name="bairro"
+        render={({ field: { onChange, value } }) => (
+          <FormField
+            label="Bairro"
+            placeholder="Bairro"
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
       />
 
-      <FormField
-        label="Complemento"
-        placeholder="Complemento"
-        value={form.complemento}
-        onChangeText={(text) => onChange("complemento", text)}
+      <Controller
+        control={control}
+        name="complemento"
+        render={({ field: { onChange, value } }) => (
+          <FormField
+            label="Complemento"
+            placeholder="Complemento"
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
       />
 
       <View style={style.linha}>
         <View style={{ flex: 2 }}>
-          <FormField
-            label="Cidade"
-            placeholder="Cidade"
-            value={form.cidade}
-            onChangeText={(text) => onChange("cidade", text)}
+          <Controller
+            control={control}
+            name="cidade"
+            render={({ field: { onChange, value } }) => (
+              <FormField
+                label="Cidade"
+                placeholder="Cidade"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
         </View>
         <View style={{ flex: 1, marginLeft: 10 }}>
-          <FormField
-            label="UF"
-            placeholder="UF"
-            value={form.uf}
-            onChangeText={(text) => onChange("uf", text)}
+          <Controller
+            control={control}
+            name="uf"
+            render={({ field: { onChange, value } }) => (
+              <FormField
+                label="UF"
+                placeholder="UF"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
           />
         </View>
       </View>

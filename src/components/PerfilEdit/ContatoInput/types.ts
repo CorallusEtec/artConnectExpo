@@ -1,14 +1,14 @@
-export interface Contato {
+export type Contato = {
   id?: number;
   valor: string;
   tipo: number;
-}
+};
 
-export interface ContatoInputProps {
+export type ContatoInputProps = {
   titulo: string;
   valorInicial?: Contato[];
   tipo: number;
   placeholder: string;
-  onChange: (lista: Contato[]) => void;
-  onRemover: (index: number) => void;
-}
+  onChange: (contatos: Contato[]) => void;
+  onRemover: (contato: Contato) => Promise<void>;
+};
