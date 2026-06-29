@@ -18,13 +18,6 @@ export function ChatMessageList() {
   if (isLoading) return <></>;
   return (
     <FlatList
-      onEndReachedThreshold={0.1}
-      ListFooterComponent={renderFooter}
-      onEndReached={() => {
-        if (hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      }}
       style={style.container}
       inverted
       data={data?.pages.flatMap((page) => page.data.content) ?? []}

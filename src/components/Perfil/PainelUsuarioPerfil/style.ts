@@ -10,19 +10,19 @@ export const style = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8, 
+    gap: 8,
   },
 
   avatarWrapper: {
     alignItems: "center",
     flexShrink: 0,
-    width: 120, 
+    width: 120,
   },
 
   avatarBorder: {
     borderRadius: 1000,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: "white",
     padding: 3,
   },
 
@@ -33,7 +33,7 @@ export const style = StyleSheet.create({
     marginTop: 6,
     textAlign: "center",
     flexWrap: "wrap",
-    maxWidth: 120, 
+    maxWidth: 120,
   },
 
   tipoContaLabel: {
@@ -45,19 +45,19 @@ export const style = StyleSheet.create({
 
   statsRow: {
     flexDirection: "row",
-    gap: 4, 
+    gap: 4,
     flexShrink: 1,
   },
 
   statCard: {
     flex: 1,
     borderRadius: 12,
-    paddingVertical: 6, 
-    paddingHorizontal: 2, 
+    paddingVertical: 6,
+    paddingHorizontal: 2,
     alignItems: "center",
     justifyContent: "center",
-    gap: 2, 
-    minWidth: 50, 
+    gap: 2,
+    minWidth: 50,
   },
 
   statCardInner: {
@@ -68,14 +68,14 @@ export const style = StyleSheet.create({
 
   statLabel: {
     color: "rgba(255,255,255,0.85)",
-    fontSize: 12, 
+    fontSize: 12,
     textAlign: "center",
   },
 
   statValue: {
     color: "white",
     fontWeight: "700",
-    fontSize: 16, 
+    fontSize: 16,
     textAlign: "center",
   },
 
@@ -128,12 +128,25 @@ export const style = StyleSheet.create({
   },
 
   actionButton: {
-    marginTop: 16,
-    marginHorizontal: 20,
+    alignItems: "center",
     borderRadius: 12,
     backgroundColor: "white",
     paddingVertical: 8,
-    alignItems: "center",
+    justifyContent: "center",
+    minWidth: "80%",
+  },
+
+  reportButton: {
+    borderRadius: 12,
+    padding: 8,
+  },
+
+  actionContainer: {
+    marginTop: 16,
+    gap: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginHorizontal: 20,
   },
 
   actionButtonText: {

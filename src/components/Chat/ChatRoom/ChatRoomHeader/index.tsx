@@ -2,22 +2,21 @@ import { AvatarRender } from "@/components/AvatarRender";
 import { useUsuarioByIdQuery } from "@/services/UsuarioService";
 import { AppUtils } from "@/utils/AppUtils";
 import { router, useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
-import { Appbar, Text, TouchableRipple } from "react-native-paper";
+import { Pressable, View } from "react-native";
+import { Appbar, Text } from "react-native-paper";
 import { style } from "./style";
 
 export function ChatRoomHeader() {
   const { id } = useLocalSearchParams();
   const { data } = useUsuarioByIdQuery(Number(id));
   return (
-    <Appbar.Header>
-      <Appbar.BackAction onPress={() => router.navigate("/contacts")} />
-      <TouchableRipple
-        onPress={() => router.navigate(`/${id}`)}
-        rippleColor="rgba(0,0,0,.79)"
-        style={style.content}
-      >
-        <>
+    <Appbar.Header style={style.container}>
+      <View style={style.leftActionContainer}>
+        <Appbar.BackAction onPress={() => router.navigate("/contacts")} />
+        <Pressable
+          onPress={() => router.navigate(`/${id}`)}
+          style={style.content}
+        >
           <AvatarRender
             nome={data?.data.nome}
             uri={data?.data.fotoPerfilUrl}
@@ -29,8 +28,9 @@ export function ChatRoomHeader() {
               {AppUtils.capitalize(data?.data.tipoConta ?? "")}
             </Text>
           </View>
-        </>
-      </TouchableRipple>
+        </Pressable>
+      </View>
+      <Appbar.Action icon="flag-outline" />
     </Appbar.Header>
   );
 }

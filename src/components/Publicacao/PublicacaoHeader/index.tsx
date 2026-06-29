@@ -4,10 +4,10 @@ import { usePublicacao } from "@/contexts/PublicacaoContext";
 import { usePublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
 import { navegarParaPerfil } from "@/utils/NavigationUtils";
-import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { Card, IconButton, Menu } from "react-native-paper";
+import { Card, useTheme } from "react-native-paper";
+import { PublicacaoHeaderMenu } from "./PublicacaoHeaderMenu";
 import { style } from "./style";
 
 /**
@@ -19,6 +19,7 @@ export function PublicacaoHeader() {
   const { idPublicacao } = usePublicacao();
   const { getValidateId } = useAuth();
   const { data, isLoading } = usePublicacaoQuery(idPublicacao);
+  const theme = useTheme();
 
   if (isLoading) return <></>;
 
@@ -49,21 +50,10 @@ export function PublicacaoHeader() {
         </View>
       </Pressable>
 
-      <Menu
+      <PublicacaoHeaderMenu
         visible={menu}
-        anchor={
-          <IconButton icon="dots-vertical" onPress={() => setMenu(true)} />
-        }
-        anchorPosition="bottom"
-        onDismiss={() => setMenu(false)}
-      >
-        <Menu.Item
-          title="Denunciar"
-          leadingIcon={() => (
-            <Feather name="alert-circle" size={24} color="black" />
-          )}
-        />
-      </Menu>
+        toggleVisible={() => setMenu((prev) => !prev)}
+      />
     </Card.Content>
   );
 }

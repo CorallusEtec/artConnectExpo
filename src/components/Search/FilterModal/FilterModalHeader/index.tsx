@@ -11,23 +11,19 @@ export function FilterModalHeader({
   setModal: (value: boolean) => void;
   onLimpar: () => void;
 }) {
-
-  
   return (
     <View style={style.header}>
-      <Text style={style.title}>Filtros de {tipoFiltro=="Usuario"?"Usuário":"Publicação"}</Text>
+      <Text style={style.title}>
+        Filtros de {tipoFiltro.current == "Usuario" ? "Usuário" : "Publicação"}
+      </Text>
       <View style={style.headerRight}>
-        <Text
-          style={style.clearText}
-          onPress={onLimpar}
-        >
-          Limpar filtros
-        </Text>
+        <IconButton icon="filter-off-outline" onPress={onLimpar} size={22} />
+
         <IconButton
           icon="close"
           size={24}
           iconColor="#666"
-          onPress={() =>setModal(false)}
+          onPress={() => setModal(false)}
           style={style.closeButton}
         />
       </View>

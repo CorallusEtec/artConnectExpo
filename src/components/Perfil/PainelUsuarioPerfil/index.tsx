@@ -5,7 +5,14 @@ import { usePerfilPublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
 import { iconePorTipoContato, linkPorContato } from "@/utils/ContatoUtils";
 import { Linking, Pressable, View } from "react-native";
-import { ActivityIndicator, Chip, Icon, Text, TouchableRipple, useTheme } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Chip,
+  Icon,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from "react-native-paper";
 import { style } from "./style";
 
 type AcaoBotao = {
@@ -23,8 +30,11 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
   const { dataPerfil } = usePerfil();
   const { getValidateId } = useAuth();
   const theme = useTheme();
-  const { data: publicacoesData } = usePerfilPublicacaoQuery(dataPerfil?.id ?? 0);
-  const totalPublicacoes = publicacoesData?.totalElements ?? dataPerfil?.publicacoes?.length ?? 0;
+  const { data: publicacoesData } = usePerfilPublicacaoQuery(
+    dataPerfil?.id ?? 0,
+  );
+  const totalPublicacoes =
+    publicacoesData?.totalElements ?? dataPerfil?.publicacoes?.length ?? 0;
 
   const contatos = dataPerfil?.contatos ?? [];
   const arte = dataPerfil?.arte;
@@ -43,12 +53,11 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
           <View style={style.avatarBorder}>
             <AvatarRender
               nome={dataPerfil?.nome}
-              size={80} 
+              size={80}
               uri={dataPerfil?.fotoPerfilUrl}
             />
           </View>
-          <Text style={style.nomeLabel} numberOfLines={2} 
-          >
+          <Text style={style.nomeLabel} numberOfLines={2}>
             {dataPerfil?.nome}
           </Text>
           {dataPerfil && (
@@ -59,16 +68,22 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
         </View>
 
         <View style={style.statsRow}>
-          <View style={[style.statCard, { backgroundColor: "rgba(255,255,255,0.15)" }]}>
+          <View
+            style={[
+              style.statCard,
+              { backgroundColor: "rgba(255,255,255,0.15)" },
+            ]}
+          >
             <Icon source="text-box-outline" size={24} color="white" />
             <Text style={style.statLabel}>Posts</Text>
-            <Text style={style.statValue}>
-              {totalPublicacoes}
-            </Text>
+            <Text style={style.statValue}>{totalPublicacoes}</Text>
           </View>
 
           <TouchableRipple
-            style={[style.statCard, { backgroundColor: "rgba(255,255,255,0.15)" }]}
+            style={[
+              style.statCard,
+              { backgroundColor: "rgba(255,255,255,0.15)" },
+            ]}
             onPress={() => {}}
             rippleColor="rgba(255,255,255,0.2)"
             borderless
@@ -76,12 +91,17 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
             <View style={style.statCardInner}>
               <Icon source="account-group-outline" size={24} color="white" />
               <Text style={style.statLabel}>Seguidores</Text>
-              <Text style={style.statValue}>{dataPerfil?.totalSeguindo ?? 0}</Text>
+              <Text style={style.statValue}>
+                {dataPerfil?.totalSeguindo ?? 0}
+              </Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple
-            style={[style.statCard, { backgroundColor: "rgba(255,255,255,0.15)" }]}
+            style={[
+              style.statCard,
+              { backgroundColor: "rgba(255,255,255,0.15)" },
+            ]}
             onPress={() => {}}
             rippleColor="rgba(255,255,255,0.2)"
             borderless
@@ -89,7 +109,9 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
             <View style={style.statCardInner}>
               <Icon source="account-outline" size={24} color="white" />
               <Text style={style.statLabel}>Seguindo</Text>
-              <Text style={style.statValue}>{dataPerfil?.totalSeguidores ?? 0}</Text>
+              <Text style={style.statValue}>
+                {dataPerfil?.totalSeguidores ?? 0}
+              </Text>
             </View>
           </TouchableRipple>
         </View>
@@ -133,7 +155,9 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
                 onPress={() => handleAbrirContato(link)}
               >
                 <Icon
-                  source={iconePorTipoContato(contato.tipoContato?.idTipoContato)}
+                  source={iconePorTipoContato(
+                    contato.tipoContato?.idTipoContato,
+                  )}
                   size={18}
                   color="white"
                 />
@@ -144,29 +168,51 @@ export function PainelUsuarioPerfil({ acaoBotao }: Props) {
         </View>
       )}
 
-      {acaoBotao && (
-        <Pressable
-          style={[
-            style.actionButton,
-            acaoBotao.buttonColor ? { backgroundColor: acaoBotao.buttonColor } : {},
-          ]}
-          onPress={acaoBotao.onPress}
-          disabled={acaoBotao.loading}
-        >
-          {acaoBotao.loading ? (
-            <ActivityIndicator size={18} color={theme.colors.primary} />
-          ) : (
-            <Text
-              style={[
-                style.actionButtonText,
-                { color: acaoBotao.buttonColor ? "white" : theme.colors.primary },
-              ]}
-            >
-              {acaoBotao.label}
-            </Text>
-          )}
-        </Pressable>
-      )}
+      <View style={style.actionContainer}>
+        {acaoBotao && (
+          <Pressable
+            style={[
+              style.actionButton,
+              acaoBotao.buttonColor
+                ? { backgroundColor: acaoBotao.buttonColor }
+                : {},
+            ]}
+            onPress={acaoBotao.onPress}
+            disabled={acaoBotao.loading}
+          >
+            {acaoBotao.loading ? (
+              <ActivityIndicator size={18} color={theme.colors.primary} />
+            ) : (
+              <Text
+                style={[
+                  style.actionButtonText,
+                  {
+                    color: acaoBotao.buttonColor
+                      ? "white"
+                      : theme.colors.primary,
+                  },
+                ]}
+              >
+                {acaoBotao.label}
+              </Text>
+            )}
+          </Pressable>
+        )}
+        {dataPerfil?.id != getValidateId() && (
+          <Pressable
+            style={[
+              style.reportButton,
+              { backgroundColor: theme.colors.backdrop },
+            ]}
+          >
+            <Icon
+              source="flag-outline"
+              size={22}
+              color={theme.colors.onPrimary}
+            />
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }

@@ -5,7 +5,7 @@ import { Appbar, Text, useTheme } from "react-native-paper";
 import { style } from "./style";
 
 export function HeaderPerfil() {
-  const { setModalConfig, dataPerfil } = usePerfil();
+  const { dataPerfil } = usePerfil();
   const { getValidateId } = useAuth();
   const theme = useTheme();
 

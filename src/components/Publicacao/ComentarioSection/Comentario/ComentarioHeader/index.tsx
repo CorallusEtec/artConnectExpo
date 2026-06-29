@@ -1,18 +1,20 @@
-import { useAuth } from "@/contexts";
+import { AvatarRender } from "@/components/AvatarRender";
+import { useAuth, usePublicacao } from "@/contexts";
 import { useComentario } from "@/contexts/ComentarioContext";
 import { useComentarioQuery } from "@/services/ComentarioService";
 import { AppUtils } from "@/utils/AppUtils";
 import { navegarParaPerfil } from "@/utils/NavigationUtils";
-import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { Avatar, Card, IconButton, Menu } from "react-native-paper";
+import { Card } from "react-native-paper";
+import { ComentarioHeaderMenu } from "./ComentarioHeaderMenu";
 import { ComentrarioToggleAction } from "./ComentarioToggleAction";
 import { style } from "./style";
 
 export function ComentarioHeader() {
   const [menu, setMenu] = useState(false);
   const { comentarioId } = useComentario();
+  const { setComentarioSection } = usePublicacao();
   const { getValidateId } = useAuth();
   const { data } = useComentarioQuery(comentarioId);
 
@@ -20,13 +22,14 @@ export function ComentarioHeader() {
     <Card.Content style={style.headerContainer}>
       <Pressable
         style={style.headerContent}
-        onPress={() =>
-          navegarParaPerfil(getValidateId(), data?.data.usuario.id)
-        }
+        onPress={() => {
+          setComentarioSection(false);
+          navegarParaPerfil(getValidateId(), data?.data.usuario.id);
+        }}
       >
-        {/* ENQUANTO NÃO CARREGA A FOTO DE PERFIL OU SE NÃO TIVER */}
-        <Avatar.Text
-          label={data?.data.usuario.nome.charAt(0) || ""}
+        <AvatarRender
+          nome={data?.data.usuario.nome}
+          uri={data?.data.usuario.fotoPerfilUrl}
           size={32}
         />
         <View style={style.metadataPubli}>
@@ -42,21 +45,10 @@ export function ComentarioHeader() {
       <View style={style.actionContainer}>
         <ComentrarioToggleAction />
 
-        <Menu
+        <ComentarioHeaderMenu
+          toggleVisible={() => setMenu((prev) => !prev)}
           visible={menu}
-          anchor={
-            <IconButton icon="dots-vertical" onPress={() => setMenu(true)} />
-          }
-          anchorPosition="bottom"
-          onDismiss={() => setMenu(false)}
-        >
-          <Menu.Item
-            title="Denunciar"
-            leadingIcon={() => (
-              <Feather name="alert-circle" size={24} color="black" />
-            )}
-          />
-        </Menu>
+        />
       </View>
     </Card.Content>
   );
