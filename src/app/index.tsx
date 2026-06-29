@@ -10,5 +10,6 @@ export default function Index() {
 
   if (isAuth) return <Redirect href="/(home)/(tabs)/home" />;
 
-  return <Redirect href="/(public)/login" />;
+   return <Redirect href="/(public)/login" />;
+  //return <Redirect href="/(public)/(cadastro)/cadastroArtista" />;
 }

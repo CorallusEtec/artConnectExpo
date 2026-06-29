@@ -42,4 +42,20 @@ export const style = StyleSheet.create({
   textoDetalhe: {
     fontSize: 13,
   },
+
+  pageTitle: {
+    fontWeight: 600,
+    color: "#1A1A1A",
+    marginBottom: 2,
+    fontSize: 22,
+  },
+
+  input: {
+    height: 45,
+  },
+
+  button: {
+    height: 45, 
+    borderRadius: 8, 
+  },
 });
