@@ -130,7 +130,7 @@ export const style = StyleSheet.create({
   actionButton: {
     marginTop: 16,
     marginHorizontal: 20,
-    borderRadius: 15,
+    borderRadius: 12,
     backgroundColor: "white",
     paddingVertical: 8,
     alignItems: "center",
