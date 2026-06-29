@@ -9,16 +9,19 @@ export function HeaderPerfil() {
   const { getValidateId } = useAuth();
   const theme = useTheme();
 
+  const isOwnProfile = dataPerfil?.id === getValidateId();
+
   return (
     <Appbar.Header
       style={[style.navbar, { backgroundColor: theme.colors.primary }]}
     >
       <Appbar.Action
         icon="arrow-left"
-        size={34}
+        size={26}
         onPress={router.back}
         color={theme.colors.onPrimary}
       />
+
       <Appbar.Content
         title={
           <Text
@@ -26,17 +29,16 @@ export function HeaderPerfil() {
             style={[style.title, { color: theme.colors.onPrimary }]}
             variant="titleMedium"
           >
-            {dataPerfil?.id == getValidateId()
-              ? "Seu Perfil"
-              : dataPerfil!.nome}
+            {isOwnProfile ? "Seu Perfil" : dataPerfil?.nome}
           </Text>
         }
       />
-      {dataPerfil?.id !== getValidateId() && (
+
+      {!isOwnProfile && (
         <Appbar.Action
-          onPress={() => router.navigate(`/chat/${dataPerfil?.id}`)}
-          color={theme.colors.onPrimary}
           icon="message"
+          color={theme.colors.onPrimary}
+          onPress={() => router.navigate(`/chat/${dataPerfil?.id}`)}
         />
       )}
     </Appbar.Header>

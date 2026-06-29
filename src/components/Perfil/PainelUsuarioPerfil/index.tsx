@@ -1,23 +1,34 @@
 import { AvatarRender } from "@/components/AvatarRender";
-import { usePerfil } from "@/contexts";
+import { useAuth, usePerfil } from "@/contexts";
 import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
+import { usePerfilPublicacaoQuery } from "@/services/PublicacaoService";
 import { AppUtils } from "@/utils/AppUtils";
 import { iconePorTipoContato, linkPorContato } from "@/utils/ContatoUtils";
 import { Linking, Pressable, View } from "react-native";
-import { Chip, Icon, Text, TouchableRipple, useTheme } from "react-native-paper";
+import { ActivityIndicator, Chip, Icon, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { style } from "./style";
 
-export function PainelUsuarioPerfil() {
-  const { dataPerfil } = usePerfil();
+type AcaoBotao = {
+  label: string;
+  onPress: () => void;
+  loading?: boolean;
+  buttonColor?: string;
+};
 
-  console.log("dataPerfil.arte:", dataPerfil?.arte);
-  console.log("dataPerfil.generosArte:", dataPerfil?.generosArte);
+type Props = {
+  acaoBotao?: AcaoBotao;
+};
+
+export function PainelUsuarioPerfil({ acaoBotao }: Props) {
+  const { dataPerfil } = usePerfil();
+  const { getValidateId } = useAuth();
+  const theme = useTheme();
+  const { data: publicacoesData } = usePerfilPublicacaoQuery(dataPerfil?.id ?? 0);
+  const totalPublicacoes = publicacoesData?.totalElements ?? dataPerfil?.publicacoes?.length ?? 0;
 
   const contatos = dataPerfil?.contatos ?? [];
   const arte = dataPerfil?.arte;
   const generosArte: GeneroArteResponse[] = dataPerfil?.generosArte ?? [];
-
-  const theme = useTheme();
 
   async function handleAbrirContato(link: string | null) {
     if (!link) return;
@@ -26,59 +37,59 @@ export function PainelUsuarioPerfil() {
   }
 
   return (
-    <View style={[style.fundo, {backgroundColor: theme.colors.primary}]}>
+    <View style={[style.fundo, { backgroundColor: theme.colors.primary }]}>
       <View style={style.headerRow}>
-        <View style={style.profile}>
-          <AvatarRender
-            nome={dataPerfil?.nome}
-            size={92}
-            uri={dataPerfil?.fotoPerfilUrl}
-          />
-          <Text style={style.nomeLabel}>{dataPerfil?.nome}</Text>
+        <View style={style.avatarWrapper}>
+          <View style={style.avatarBorder}>
+            <AvatarRender
+              nome={dataPerfil?.nome}
+              size={80} 
+              uri={dataPerfil?.fotoPerfilUrl}
+            />
+          </View>
+          <Text style={style.nomeLabel} numberOfLines={2} 
+          >
+            {dataPerfil?.nome}
+          </Text>
           {dataPerfil && (
-            <Text style={style.infoLabel}>
+            <Text style={style.tipoContaLabel}>
               {AppUtils.capitalize(dataPerfil.tipoConta)}
             </Text>
           )}
         </View>
 
-        <View style={style.infosProfile}>
-          <View style={style.infoDuo}>
-            <Text variant="bodyLarge" style={style.infoLabel}>
-              Posts
-            </Text>
-            <Text variant="titleMedium" style={style.infoValue}>
-              {(dataPerfil?.publicacoes && dataPerfil.publicacoes.length) || 0}
+        <View style={style.statsRow}>
+          <View style={[style.statCard, { backgroundColor: "rgba(255,255,255,0.15)" }]}>
+            <Icon source="text-box-outline" size={24} color="white" />
+            <Text style={style.statLabel}>Posts</Text>
+            <Text style={style.statValue}>
+              {totalPublicacoes}
             </Text>
           </View>
 
           <TouchableRipple
-            style={style.infoDuoTouchable}
+            style={[style.statCard, { backgroundColor: "rgba(255,255,255,0.15)" }]}
             onPress={() => {}}
-            rippleColor="rgba(255, 255, 255, .2)"
+            rippleColor="rgba(255,255,255,0.2)"
+            borderless
           >
-            <View style={style.infoDuo}>
-              <Text variant="bodyLarge" style={style.infoLabel}>
-                Seguidores
-              </Text>
-              <Text variant="titleMedium" style={style.infoValue}>
-                {dataPerfil?.totalSeguidores ?? 0}
-              </Text>
+            <View style={style.statCardInner}>
+              <Icon source="account-group-outline" size={24} color="white" />
+              <Text style={style.statLabel}>Seguidores</Text>
+              <Text style={style.statValue}>{dataPerfil?.totalSeguindo ?? 0}</Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple
-            style={style.infoDuoTouchable}
+            style={[style.statCard, { backgroundColor: "rgba(255,255,255,0.15)" }]}
             onPress={() => {}}
-            rippleColor="rgba(255, 255, 255, .2)"
+            rippleColor="rgba(255,255,255,0.2)"
+            borderless
           >
-            <View style={style.infoDuo}>
-              <Text variant="bodyLarge" style={style.infoLabel}>
-                Seguindo
-              </Text>
-              <Text variant="titleMedium" style={style.infoValue}>
-                {dataPerfil?.totalSeguindo ?? 0}
-              </Text>
+            <View style={style.statCardInner}>
+              <Icon source="account-outline" size={24} color="white" />
+              <Text style={style.statLabel}>Seguindo</Text>
+              <Text style={style.statValue}>{dataPerfil?.totalSeguidores ?? 0}</Text>
             </View>
           </TouchableRipple>
         </View>
@@ -114,7 +125,6 @@ export function PainelUsuarioPerfil() {
         <View style={style.contatosContainer}>
           {contatos.map((contato, index) => {
             const link = linkPorContato(contato);
-
             return (
               <Pressable
                 key={contato.idContato ?? index}
@@ -132,6 +142,30 @@ export function PainelUsuarioPerfil() {
             );
           })}
         </View>
+      )}
+
+      {acaoBotao && (
+        <Pressable
+          style={[
+            style.actionButton,
+            acaoBotao.buttonColor ? { backgroundColor: acaoBotao.buttonColor } : {},
+          ]}
+          onPress={acaoBotao.onPress}
+          disabled={acaoBotao.loading}
+        >
+          {acaoBotao.loading ? (
+            <ActivityIndicator size={18} color={theme.colors.primary} />
+          ) : (
+            <Text
+              style={[
+                style.actionButtonText,
+                { color: acaoBotao.buttonColor ? "white" : theme.colors.primary },
+              ]}
+            >
+              {acaoBotao.label}
+            </Text>
+          )}
+        </Pressable>
       )}
     </View>
   );
