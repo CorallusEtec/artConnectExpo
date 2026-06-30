@@ -7,6 +7,7 @@ export const style = StyleSheet.create({
   },
   categoriaSection: {
     marginBottom: 8,
+    borderRadius: 10,
   },
   categoriaLabel: {
     textTransform: "uppercase",
@@ -16,9 +17,11 @@ export const style = StyleSheet.create({
   },
   listSection: {
     marginTop: 0,
+    borderRadius: 10,
     padding: 0,
   },
   accordion: {
+    backgroundColor: "red",
     borderWidth: 1,
     borderRadius: 10,
     marginBottom: 6,

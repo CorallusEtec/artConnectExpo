@@ -1,6 +1,6 @@
-import { getFaqCategorias, getFaqPorCategoria } from "./data";
 import { View } from "react-native";
 import { Icon, List, Text, useTheme } from "react-native-paper";
+import { getFaqCategorias, getFaqPorCategoria } from "./data";
 import { style } from "./style";
 
 export function FaqAccordion() {
@@ -27,7 +27,10 @@ export function FaqAccordion() {
                 titleStyle={[style.pergunta, { color: theme.colors.onSurface }]}
                 style={[
                   style.accordion,
-                  { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant },
+                  {
+                    backgroundColor: theme.colors.surface,
+                    borderColor: theme.colors.outlineVariant,
+                  },
                 ]}
                 right={({ isExpanded }) => (
                   <Icon
@@ -40,8 +43,11 @@ export function FaqAccordion() {
                 <List.Item
                   title={item.resposta}
                   titleNumberOfLines={10}
-                  titleStyle={[style.resposta, { color: theme.colors.onSurfaceVariant }]}
-                  style={{ backgroundColor: theme.colors.primaryContainer }}
+                  titleStyle={[
+                    style.resposta,
+                    { color: theme.colors.onSurfaceVariant },
+                  ]}
+                  style={{ backgroundColor: theme.colors.inverseOnSurface }}
                 />
               </List.Accordion>
             ))}

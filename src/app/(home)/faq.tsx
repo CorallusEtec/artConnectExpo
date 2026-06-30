@@ -1,18 +1,15 @@
 import { FaqAccordion } from "@/components/FAQ";
+import { style } from "@/style/pages/faq";
 import { router } from "expo-router";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Appbar, Text, useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { style } from "@/style/pages/faq"
 
 export default function Faq() {
   const theme = useTheme();
 
   return (
     <View style={style.container}>
-      <Appbar.Header
-        style={{ backgroundColor: theme.colors.primary }}
-      >
+      <Appbar.Header style={{ backgroundColor: theme.colors.primary }}>
         <Appbar.Action
           icon="arrow-left"
           size={26}
@@ -31,10 +28,18 @@ export default function Faq() {
         />
       </Appbar.Header>
 
-      <View style={[style.subtitleContainer, { backgroundColor: theme.colors.primaryContainer }]}>
+      <View
+        style={[
+          style.subtitleContainer,
+          { backgroundColor: theme.colors.primaryContainer },
+        ]}
+      >
         <Text
           variant="bodySmall"
-          style={{ color: theme.colors.onPrimaryContainer, textAlign: "center" }}
+          style={{
+            color: theme.colors.onPrimaryContainer,
+            textAlign: "center",
+          }}
         >
           Não encontrou sua resposta? Entre em contato pelo e-mail{" "}
           <Text style={{ fontWeight: "700" }}>suporte@artconnect.com.br</Text>
@@ -47,4 +52,3 @@ export default function Faq() {
     </View>
   );
 }
-
