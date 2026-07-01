@@ -4,17 +4,18 @@ import config from "./config";
 
 export function useSeguidaMutation(seguidoId: number) {
   const queryClient = useQueryClient();
-  const { getValidateToken } = useAuth();
+  const { getValidateToken, getValidateId } = useAuth();
 
   return useMutation({
     mutationFn: () =>
-      config.axiosClient.post(
-        `${config.apiUrl}/seguida/${seguidoId}`,
-        null,
-        { headers: { Authorization: `Bearer ${getValidateToken()}` } },
-      ),
+      config.axiosClient.post(`${config.apiUrl}/seguida/${seguidoId}`, null, {
+        headers: { Authorization: `Bearer ${getValidateToken()}` },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [seguidoId, "profileData"] });
+      queryClient.invalidateQueries({
+        queryKey: [getValidateId(), "profileData"],
+      });
       queryClient.invalidateQueries({ queryKey: [seguidoId, "isFollowing"] });
     },
   });

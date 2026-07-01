@@ -29,7 +29,11 @@ export function Header() {
           />
         )}
       </View>
-      <IconButton icon="cog" size={30} onPress={() => setModalConfig(true)} />
+      <IconButton
+        icon="cog-outline"
+        size={30}
+        onPress={() => setModalConfig(true)}
+      />
       {/* Modal de configurações do aplicativo */}
       <ModalSettings
         modalConfig={modalConfig}

@@ -5,7 +5,7 @@ export const style = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     elevation: 0,
-    height: 20
+    height: 20,
   },
   title: {
     fontWeight: "700",

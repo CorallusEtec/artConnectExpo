@@ -76,17 +76,18 @@ export const style = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: gStyles.cinza[500],
-    alignSelf: 'flex-start'
+    alignSelf: "flex-start",
   },
   previewWrapper: {
     borderRadius: 12,
     overflow: "hidden",
+    height: 200,
     backgroundColor: "#f5f5f5",
   },
 
   previewImage: {
     width: "100%",
-    aspectRatio: 1
+    aspectRatio: 1,
   },
 
   previewVideo: {
@@ -115,9 +116,10 @@ export const style = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    backgroundColor: "black",
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 50,
   },
   video: {

@@ -5,7 +5,7 @@ import { style } from "@/style/pages/login";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
-import { Button, Checkbox, Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login() {
   const theme = useTheme();
@@ -40,7 +40,7 @@ export default function Login() {
         onDismiss={() => setShowAlert(false)}
       />
 
-      <BannerLogo size={'8%'}/>
+      <BannerLogo size={"8%"} />
       {/* resto da página */}
       <View style={style.view1}>
         <Text variant="headlineMedium" style={style.pageTitle}>
@@ -73,21 +73,6 @@ export default function Login() {
             value={senha}
             onChangeText={setSenha}
           />
-        </View>
-
-        <View style={style.inputWrapper}>
-          <Pressable
-            onPress={() => setChecked(!checked)}
-            // inline
-            style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-          >
-            <Checkbox
-              status={checked ? "checked" : "unchecked"}
-              onPress={() => setChecked(!checked)}
-              color={checked ? theme.colors.primary : undefined}
-            />
-            <Text style={style.textoPadrão}>Lembre-se de Mim</Text>
-          </Pressable>
         </View>
 
         <View style={style.inputWrapper}>
