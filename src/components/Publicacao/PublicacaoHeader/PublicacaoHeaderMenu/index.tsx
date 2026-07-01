@@ -27,7 +27,6 @@ export function PublicacaoHeaderMenu({
         anchorPosition="bottom"
         onDismiss={toggleVisible}
       >
-        <Menu.Item title="TReste" />
         {getValidateId() !== data?.data.publicacao.autor.id && (
           <Menu.Item
             title="Denunciar"

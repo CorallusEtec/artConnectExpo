@@ -9,7 +9,8 @@ export function ChatContactsHistoryList() {
   const { data, isLoading } = useGetChatHistory();
 
   if (isLoading) return <ActivityIndicator />;
-  return (
+
+  if (data?.data != undefined && data?.data.length > 0) {
     <FlatList
       scrollEnabled={false}
       data={data?.data ?? []}
@@ -27,6 +28,16 @@ export function ChatContactsHistoryList() {
           title={<Text variant="titleSmall">{item.nome}</Text>}
         />
       )}
-    />
-  );
+    />;
+  } else {
+    return (
+      <List.Item
+        title={
+          <Text variant="labelMedium">
+            Seu histórico de conversas aparecerá aqui
+          </Text>
+        }
+      />
+    );
+  }
 }

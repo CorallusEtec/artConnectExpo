@@ -6,8 +6,12 @@ export const style = (theme: MD3Theme) =>
     container: {
       borderRadius: theme.roundness,
       backgroundColor: theme.colors.surface,
-      margin: 30,
+      margin: 10,
     },
+    titleContainer: {
+      alignItems: "center",
+    },
+    title: {},
     subtitle: {
       textAlign: "center",
     },

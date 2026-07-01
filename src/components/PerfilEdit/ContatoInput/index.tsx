@@ -1,13 +1,13 @@
+import { useDynamicThemeStyles } from "@/style/useDynamicThemeStyles";
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useRef, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { style } from "./style";
-import { useDynamicThemeStyles } from "@/style/useDynamicThemeStyles";
-import { useTheme } from "react-native-paper";
 import { MaskedTextInput } from "react-native-mask-text";
+import { useTheme } from "react-native-paper";
+import { style } from "./style";
 
-import { Contato, ContatoInputProps } from "./types";
 import { TipoContato } from "@/models/enumeration/TipoContato";
+import { Contato, ContatoInputProps } from "./types";
 
 export default function ContatoInput({
   titulo,
@@ -38,12 +38,10 @@ export default function ContatoInput({
   }, [valorInicial]);
 
   function handleAtualizar(index: number, valor: string) {
-    setLista((prev) => {
-      const copy = [...prev];
-      copy[index] = { ...copy[index], valor };
-      onChange(copy); 
-      return copy;
-    });
+    const novaLista = [...lista];
+    novaLista[index] = { ...novaLista[index], valor };
+    setLista(novaLista);
+    onChange(novaLista);
   }
 
   function handleAdicionar() {

@@ -34,17 +34,10 @@ export function ModalSettings({
           <IconButton icon="close" onPress={() => setModalConfig(false)} />
         </View>
         <Menu.Item
-          leadingIcon="account-cog"
-          titleStyle={{ color: theme.colors.primary }}
-          style={{ borderColor: theme.colors.primary }}
-          title="Preferências do usuários"
-          onPress={() => signOut()}
-        />
-        <Menu.Item
           leadingIcon="message-question-outline"
           titleStyle={{ color: theme.colors.primary }}
           style={{ borderColor: theme.colors.primary }}
-          title="FAQ - Perguntas frenquêntes"
+          title="Perguntas frequentes"
           onPress={() => signOut()}
         />
         <Menu.Item

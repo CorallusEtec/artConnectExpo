@@ -19,7 +19,7 @@ import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
 export function useFeedQuery(
-  params: PublicacaoPageParams = {},
+  params: PublicacaoPageParams = { tipoStatus: "ATIVO" },
   page: "feed" | "perfil",
 ) {
   const query = useInfiniteQuery({

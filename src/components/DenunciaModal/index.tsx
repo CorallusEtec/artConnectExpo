@@ -48,11 +48,16 @@ export function DenunciaModal({
           <View style={getStyle.container}>
             <Appbar.Header>
               <Appbar.Action icon="close" onPress={toggleVIsible} />
-              <Text variant="labelLarge">
-                Denunciar {AppUtils.capitalize(tipoDenuncia)}
-              </Text>
+
+              <Appbar.Content
+                title={
+                  <Text variant="bodyMedium" style={getStyle.title}>
+                    Denunciar {AppUtils.capitalize(tipoDenuncia)}
+                  </Text>
+                }
+              />
             </Appbar.Header>
-            <Text style={getStyle.subtitle} variant="bodyLarge">
+            <Text style={getStyle.subtitle} variant="labelMedium">
               Qual o motivo da denuncia?
             </Text>
             <List.Section>
@@ -60,7 +65,7 @@ export function DenunciaModal({
                 <View key={d.id}>
                   <List.Item
                     onPress={() => sendDenuncia(d.titulo)}
-                    title={d.titulo}
+                    title={<Text variant="labelLarge">{d.titulo}</Text>}
                     right={(props) => (
                       <Icon source="chevron-down" size={22} {...props} />
                     )}
@@ -69,6 +74,11 @@ export function DenunciaModal({
                 </View>
               ))}
             </List.Section>
+            <View style={{ alignItems: "center" }}>
+              <Text style={{ color: theme.colors.scrim }} variant="bodySmall">
+                Sua denúncia é anônima e será analisada
+              </Text>
+            </View>
           </View>
         </View>
       </Modal>

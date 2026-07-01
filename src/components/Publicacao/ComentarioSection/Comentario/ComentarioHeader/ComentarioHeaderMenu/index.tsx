@@ -26,7 +26,6 @@ export function ComentarioHeaderMenu({
         anchorPosition="bottom"
         onDismiss={toggleVisible}
       >
-        <Menu.Item title="Teste" />
         {getValidateId() !== data?.data.usuario.id && (
           <Menu.Item
             title="Denunciar"
