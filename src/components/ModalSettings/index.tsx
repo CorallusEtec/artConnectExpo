@@ -1,5 +1,4 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { usePerfil } from "@/contexts/PerfilContext";
 import { View } from "react-native";
 import {
   IconButton,
@@ -10,10 +9,21 @@ import {
   useTheme,
 } from "react-native-paper";
 import { style } from "./style";
+import { router } from "expo-router";
 
-export function ModalSettings() {
+export function ModalSettings({
+  modalConfig,
+  setModalConfig,
+}: {
+  modalConfig: boolean;
+  setModalConfig: (valor: boolean) => void;
+}) {
   const { signOut } = useAuth();
-  const { modalConfig, setModalConfig } = usePerfil();
+
+  function handleFaq() {
+    setModalConfig(false);
+    router.navigate("/(home)/faq");
+  }
 
   const theme = useTheme();
   return (
@@ -30,18 +40,11 @@ export function ModalSettings() {
           <IconButton icon="close" onPress={() => setModalConfig(false)} />
         </View>
         <Menu.Item
-          leadingIcon="account-cog"
-          titleStyle={{ color: theme.colors.primary }}
-          style={{ borderColor: theme.colors.primary }}
-          title="Preferências do usuários"
-          onPress={() => signOut()}
-        />
-        <Menu.Item
           leadingIcon="message-question-outline"
           titleStyle={{ color: theme.colors.primary }}
           style={{ borderColor: theme.colors.primary }}
           title="FAQ - Perguntas frenquêntes"
-          onPress={() => signOut()}
+          onPress={handleFaq}
         />
         <Menu.Item
           leadingIcon="logout"

@@ -9,3 +9,5 @@ export type TipoStatus = "ATIVO" | "INATIVO" | "BLOQUEADO" | "PENDENTE";
 
 /** Serve para tipar os tipos de componentes 'reagiveis' da aplicação */
 export type TipoRecurso = "COMENTARIO" | "PUBLICACAO";
+
+export type TipoDenuncia = "COMENTARIO" | "USUARIO" | "PUBLICACAO";

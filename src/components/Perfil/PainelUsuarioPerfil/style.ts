@@ -2,81 +2,97 @@ import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
   fundo: {
-    paddingTop: 10,
-    paddingBottom: 35,
+    paddingTop: 16,
+    paddingBottom: 28,
     paddingHorizontal: 20,
   },
 
   headerRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
+    gap: 8,
   },
 
-  profile: {
-    flexShrink: 1,
-    flexGrow: 0,
+  avatarWrapper: {
     alignItems: "center",
-    paddingRight: 12,
+    flexShrink: 0,
+    width: 120,
+  },
+
+  avatarBorder: {
+    borderRadius: 1000,
+    borderWidth: 1,
+    borderColor: "white",
+    padding: 3,
   },
 
   nomeLabel: {
-    textAlign: "center",
     color: "white",
-    fontWeight: "600",
-    fontSize: 15,
+    fontWeight: "700",
+    fontSize: 14,
     marginTop: 6,
+    textAlign: "center",
+    flexWrap: "wrap",
+    maxWidth: 120,
+  },
+
+  tipoContaLabel: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 12,
+    marginTop: 2,
+    textAlign: "center",
+  },
+
+  statsRow: {
+    flexDirection: "row",
+    gap: 4,
     flexShrink: 1,
+  },
+
+  statCard: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 2,
+    minWidth: 50,
+  },
+
+  statCardInner: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+
+  statLabel: {
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 12,
+    textAlign: "center",
+  },
+
+  statValue: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
+    textAlign: "center",
   },
 
   bioContainer: {
     marginTop: 16,
-    marginBottom: 6,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
   },
 
   bioText: {
-    color: "white",
+    color: "rgba(255,255,255,0.9)",
     textAlign: "center",
     lineHeight: 20,
   },
 
-  infosProfile: {
-    flexDirection: "row",
-    flexShrink: 0,
-    minWidth: 150,
-    justifyContent: "space-between",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-
-  infoDuoTouchable: {
-    borderRadius: 8,
-    marginLeft: 10,
-  },
-
-  infoDuo: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 4,
-    paddingHorizontal: 2,
-  },
-
-  infoLabel: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "400",
-  },
-
-  infoValue: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold",
-    marginTop: 2,
-  },
-
   contatosContainer: {
     marginTop: 10,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     gap: 6,
   },
 
@@ -97,13 +113,12 @@ export const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 6,
-    marginTop: 10,
-    paddingHorizontal: 6,
+    marginTop: 12,
+    paddingHorizontal: 4,
   },
 
   artChip: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
 
   artChipText: {
@@ -112,4 +127,30 @@ export const style = StyleSheet.create({
     marginVertical: 0,
   },
 
+  actionButton: {
+    alignItems: "center",
+    borderRadius: 12,
+    backgroundColor: "white",
+    paddingVertical: 8,
+    justifyContent: "center",
+    minWidth: "80%",
+  },
+
+  reportButton: {
+    borderRadius: 12,
+    padding: 8,
+  },
+
+  actionContainer: {
+    marginTop: 16,
+    gap: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginHorizontal: 20,
+  },
+
+  actionButtonText: {
+    fontWeight: "600",
+    fontSize: 14,
+  },
 });

@@ -17,11 +17,6 @@ export const style = StyleSheet.create({
     fontWeight: "700",
     color: "#333",
   },
-  clearText: {
-    color: "#EF4444",
-    fontSize: 14,
-    fontWeight: "600",
-  },
   closeButton: {
     margin: 0,
   },

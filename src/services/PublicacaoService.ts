@@ -7,18 +7,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PublicacaoPageParams } from "@/models/request/pageable/PublicacaoPageParams";
 import { PublicacaoResponse } from "@/models/response/Publicacao/PublicacaoResponse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { router } from "expo-router";
 import { Platform } from "react-native";
 import { ErroValidacao } from "./ErroValidacao";
 import config from "./config";
 
 export function useFeedQuery(
-  params: PublicacaoPageParams = {},
+  params: PublicacaoPageParams = { tipoStatus: "ATIVO" },
   page: "feed" | "perfil",
 ) {
-  const query = useQuery({
+  const query = useInfiniteQuery({
+    initialPageParam: 0,
     queryKey: [page, params],
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.data.last
+        ? undefined
+        : lastPage.data.pageable.pageNumber + 1;
+    },
     queryFn: () => PublicacaoService.listar(params),
   });
   return query;

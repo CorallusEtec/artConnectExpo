@@ -65,7 +65,6 @@ export default function MediaPreview({ midia, tipoMidia }: Props) {
   const maxHeight = height * 0.4;
 
   const videoUri = midia?.url ?? "";
-
   const player = useVideoPlayer(videoUri, (player) => {
     player.loop = true;
     player.play();

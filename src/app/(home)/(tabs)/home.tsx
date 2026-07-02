@@ -7,12 +7,30 @@ import { style } from "@/style/pages/home";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function Home() {
-  const { data, error, isError, refetch, isLoading } = useFeedQuery({}, "feed");
+  const {
+    data,
+    hasNextPage,
+    error,
+    isFetchingNextPage,
+    isError,
+    refetch,
+    fetchNextPage,
+    isLoading,
+  } = useFeedQuery({}, "feed");
+
+  function renderFooter() {
+    if (!isFetchingNextPage) return null;
+    return <ActivityIndicator size={"large"} />;
+  }
+
   if (isError)
     return (
-      <RetryFetch onRetry={() => refetch()}>
-        <Text style={{ fontWeight: "500" }}>{error.message}</Text>
-      </RetryFetch>
+      <>
+        <Header />
+        <RetryFetch onRetry={() => refetch()}>
+          <Text style={{ fontWeight: "500" }}>{error?.message}</Text>
+        </RetryFetch>
+      </>
     );
   return (
     <>
@@ -23,13 +41,22 @@ export default function Home() {
         ) : (
           <FlatList
             contentContainerStyle={style.listaContainer}
-            data={data?.data.content}
-            keyExtractor={(publi) => publi.publicacao.id.toString()}
+            data={data?.pages.flatMap((page) => page.data.content) ?? []}
+            keyExtractor={(publi, index) =>
+              `${publi.publicacao.id.toString()}-${index}`
+            }
             renderItem={({ item }) => (
               <PublicacaoProvider idPublicacaoInit={item.publicacao.id}>
                 <Publicacao />
               </PublicacaoProvider>
             )}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            onEndReached={() => {
+              if (hasNextPage) {
+                fetchNextPage();
+              }
+            }}
           />
         )}
       </View>

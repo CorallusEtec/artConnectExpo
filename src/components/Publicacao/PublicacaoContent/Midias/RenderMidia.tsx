@@ -12,12 +12,9 @@ export function RenderMidia({ urlMidia, tipoMidia }: Props) {
   const { height } = useWindowDimensions();
   const maxHeight = height * 0.5;
 
-  const player = useVideoPlayer(
-    tipoMidia === "VIDEO" ? urlMidia : null,
-    (p) => {
-      p.loop = false;
-    },
-  );
+  const player = useVideoPlayer(tipoMidia == "VIDEO" ? urlMidia : null, (p) => {
+    p.loop = false;
+  });
 
   switch (tipoMidia) {
     case "IMAGEM":
@@ -26,7 +23,7 @@ export function RenderMidia({ urlMidia, tipoMidia }: Props) {
           <Image
             source={{ uri: urlMidia }}
             style={{ width: "100%", height: maxHeight }}
-            resizeMode="contain"
+            resizeMode="cover"
           />
           <Divider />
         </>
@@ -53,6 +50,7 @@ export function RenderMidia({ urlMidia, tipoMidia }: Props) {
       return (
         <>
           <VideoView
+            key={urlMidia}
             player={player}
             style={{ width: "100%", height: 250, backgroundColor: "#000" }}
             fullscreenOptions={{ enable: true }}
