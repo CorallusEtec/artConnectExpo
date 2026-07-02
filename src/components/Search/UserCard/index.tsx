@@ -1,3 +1,4 @@
+import { AvatarRender } from "@/components/AvatarRender";
 import { useAuth } from "@/contexts";
 import { ArteResponse } from "@/models/response/ArteResponse";
 import { GeneroArteResponse } from "@/models/response/GeneroArteResponse";
@@ -52,7 +53,7 @@ export default function UserCard({
     <Pressable onPress={() => navegarParaPerfil(getValidateId(), id)}>
       <Card style={style.card} elevation={0}>
         <Card.Content style={style.content}>
-          {avatar}
+          <AvatarRender nome={nome} size={48} uri={fotoPerfilUrl} />
 
           <View style={style.infoContainer}>
             {/* Nome e badge na mesma linha */}

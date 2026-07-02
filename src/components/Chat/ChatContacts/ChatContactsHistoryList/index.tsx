@@ -9,26 +9,31 @@ export function ChatContactsHistoryList() {
   const { data, isLoading } = useGetChatHistory();
 
   if (isLoading) return <ActivityIndicator />;
-
   if (data?.data != undefined && data?.data.length > 0) {
-    <FlatList
-      scrollEnabled={false}
-      data={data?.data ?? []}
-      renderItem={({ item }) => (
-        <List.Item
-          onPress={() => router.navigate(`/chat/${item.id}`)}
-          left={() => (
-            <AvatarRender uri={item.fotoPerfilUrl} nome={item.nome} size={40} />
-          )}
-          description={
-            <Text variant="bodySmall">
-              {AppUtils.capitalize(item.tipoConta)}
-            </Text>
-          }
-          title={<Text variant="titleSmall">{item.nome}</Text>}
-        />
-      )}
-    />;
+    return (
+      <FlatList
+        scrollEnabled={false}
+        data={data?.data}
+        renderItem={({ item }) => (
+          <List.Item
+            onPress={() => router.navigate(`/chat/${item.id}`)}
+            left={() => (
+              <AvatarRender
+                uri={item.fotoPerfilUrl}
+                nome={item.nome}
+                size={40}
+              />
+            )}
+            description={
+              <Text variant="bodySmall">
+                {AppUtils.capitalize(item.tipoConta)}
+              </Text>
+            }
+            title={<Text variant="titleSmall">{item.nome}</Text>}
+          />
+        )}
+      />
+    );
   } else {
     return (
       <List.Item

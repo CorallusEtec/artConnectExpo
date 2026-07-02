@@ -2,7 +2,10 @@ import { Publicacao } from "@/components/Publicacao";
 import { PublicacaoProvider } from "@/contexts/PublicacaoContext";
 import { useSearch } from "@/contexts/SearchContext";
 import { useFeedQuery } from "@/services/PublicacaoService";
-import { useArtistaFiltroSearchQuery, useUsuarioFiltroQuery } from "@/services/UsuarioService";
+import {
+  useArtistaFiltroSearchQuery,
+  useUsuarioFiltroQuery,
+} from "@/services/UsuarioService";
 import React, { useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Button, SegmentedButtons, Text } from "react-native-paper";
@@ -26,7 +29,7 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
 
   const publicacaoQuery = useFeedQuery(
     { legenda: filtrosAtivos.legenda },
-    "feed"
+    "feed",
   );
 
   const { data, refetch, isLoading, isFetching } =
@@ -40,7 +43,7 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
   }
 
   function handleBuscar() {
-    aplicarFiltros(); 
+    aplicarFiltros();
     refetch();
   }
 
@@ -54,7 +57,6 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
           filtrosAtivos.uf
         )
       : !!filtrosAtivos.legenda;
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ padding: 16 }}>
@@ -77,7 +79,8 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
 
         {temFiltroAtivo && (
           <Text style={{ marginVertical: 12, fontSize: 14, color: "#666" }}>
-            {data?.data?.content?.length || 0} resultados encontrados
+            {artistaQuery.data?.data?.content.length || 0} resultados
+            encontrados
           </Text>
         )}
       </View>
@@ -89,40 +92,40 @@ export function ScopeTabs({ setTipoFiltro }: ScopeTabsProps) {
           contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={true}
         >
-          {escopo === "Usuario" ? (
-            data?.data?.content?.map((item: any) => {
-              if (item.tipoConta === "ADMIN") return null;
-              return (
-                <UserCard
-                  key={item.id}
-                  id={item.id}
-                  nome={item.nome}
-                  localizacao={
-                    item.cidade && item.uf
-                      ? `${item.cidade}, ${item.uf}`
-                      : item.cidade || item.uf || ""
-                  }
-                  textoBio={item.textoBio || "Sem descrição"}
-                  tipo={item.tipoConta}
-                  fotoPerfilUrl={item.fotoPerfilUrl}
-                  arte={item.arte}
-                  generosArte={item.generosArte}
-                />
-              );
-            })
-          ) : (
-            data?.data?.content?.map((item: any) => (
-              <PublicacaoProvider
-                key={item.publicacao.id}
-                idPublicacaoInit={item.publicacao.id}
-              >
-                <Publicacao />
-              </PublicacaoProvider>
-            ))
-          )}
+          {escopo === "Usuario"
+            ? queryAtiva.data?.data?.content.map((item: any) => {
+                if (item.tipoConta === "ADMIN") return null;
+                return (
+                  <UserCard
+                    key={item.id}
+                    id={item.id}
+                    nome={item.nome}
+                    localizacao={
+                      item.cidade && item.uf
+                        ? `${item.cidade}, ${item.uf}`
+                        : item.cidade || item.uf || ""
+                    }
+                    textoBio={item.textoBio || "Sem descrição"}
+                    tipo={item.tipoConta}
+                    fotoPerfilUrl={item.fotoPerfilUrl}
+                    arte={item.arte}
+                    generosArte={item.generosArte}
+                  />
+                );
+              })
+            : data?.data?.content?.map((item: any) => (
+                <PublicacaoProvider
+                  key={item.publicacao.id}
+                  idPublicacaoInit={item.publicacao.id}
+                >
+                  <Publicacao />
+                </PublicacaoProvider>
+              ))}
         </ScrollView>
       ) : (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <EmptyState />
         </View>
       )}
